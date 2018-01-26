@@ -21,8 +21,8 @@
             <div class = "col-md-12">
                <form id = "loginForm" onsubmit="return false">
                   <div class="form-group">
-                     <label for="nome">Email:</label>
-                     <input type="text" name="login" class="form-control" placeholder="Digite email">
+                     <label for="email">Email:</label>
+                     <input type="email" name="email" class="form-control" placeholder="Digite email">
                   </div>
                   <div class="form-group">
                      <label for="senha">Senha:</label>

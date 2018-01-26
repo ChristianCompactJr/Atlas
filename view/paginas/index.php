@@ -1,7 +1,7 @@
 
 <?php
 include_once '../../util/Carregador.php';
-Carregador::CarregarClasses();
+Carregador::CarregarPacotes();
 if(isset($_GET['url']))
 {
     $url = $_GET['url'];

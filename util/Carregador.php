@@ -1,13 +1,16 @@
 <?php
 
-
+//Diretório root do documento
 define('PROJECT_ROOT', $_SERVER['DOCUMENT_ROOT'].'/atlas/');
 
+
+
+//Classe com a função de carregar outros arquivos 
 class Carregador {
     
-    private static $pacotes = array('model', 'util');
+    private static $pacotes = array('model', 'util', 'controller');
     
-    public static function CarregarClasses()
+    public static function CarregarPacotes()
     {
         foreach(self::$pacotes as $pacote)
         {
