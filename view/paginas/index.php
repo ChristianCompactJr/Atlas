@@ -1,32 +1,66 @@
-
 <?php
-include_once '../../util/Carregador.php';
-Carregador::CarregarPacotes();
-if(isset($_GET['url']))
-{
-    $url = $_GET['url'];
-    $extencao = pathinfo($url, PATHINFO_EXTENSION);
-    if($url[0] == '/' || $url[0] == "\\")
-    {
-        $url = substr($url, 1);
-    }
+    include_once '../../util/Carregador.php';
+    Carregador::CarregarPacotes();
     
     
-    if(is_file('../../'.$url) && file_exists('../../'.$url))
+    
+    function verificarSeExisteIndex($caminho)
     {
-        $caminho = '../../'.$url;
+        $extencoes = array('php', 'html', 'phtml');
+        foreach($extencoes as $extencao)
+        {
+            if(is_file($caminho.'/index.'.$extencao))
+            {
+               return $caminho.'/index.'.$extencao;
+            }
+        }
+        return false;
     }
-    else if(is_file($url) && file_exists($url))
+    
+    if(isset($_GET['url']))
     {
-        $caminho =  $url;
-    }
-    else
-    {
-        echo "erro 404";
-        return;
-    }
-    include_once $caminho;   
+        $url = $_GET['url'];
+        if(strtolower(pathinfo($url, PATHINFO_FILENAME)) == 'index')
+        {
+            include_once 'login.php';
+            return;
+        }
+        $extencao = pathinfo($url, PATHINFO_EXTENSION);
+       
+        if($url[0] == '/' || $url[0] == "\\")
+        {
+            $url = substr($url, 1);
+        }
+        $larguraExtencao = -2 + -strlen($extencao);
+        $ultimoChar = substr($url, $larguraExtencao);
+        if($ultimoChar == '\\.php' || $ultimoChar == '/.php')
+        {
+          $url = substr($url, 0, $larguraExtencao);
+        }
+       
+        //verifica se o arquivo existe fora na pasta "paginas"
+        if(is_file('../../'.$url))
+        {
+            $caminho = '../../'.$url;
+        }
+        
+        //Verifica se arquivo existe na pasta "paginas"
+        else if(is_file(PROJECT_ROOT.'view/paginas/'.$url))
+        {
+            $caminho = $url;
+        }
+         //Verifica se arquivo existe na pasta "paginas" em uma subpasta
+        else if(verificarSeExisteIndex($url) !== false)
+        {
+            $caminho = verificarSeExisteIndex($url);
+        }
+        else
+        {
+            echo "erro 404";
+            return;
+        }
+        include_once $caminho;   
 
-}
+    }
 
 ?>

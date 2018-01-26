@@ -4,4 +4,4 @@
 <link rel ="stylesheet" type ="text/css" href ="recursos/css/bootstrap.min.css" />    
 <link rel ="stylesheet" type ="text/css" href ="recursos/css/style.css" />
 <script type = "text/javascript" src ="recursos/js/jquery.js" ></script>
-
+<script type = "text/javascript" src ="recursos/js/bootstrap.min.js" ></script>

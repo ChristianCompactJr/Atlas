@@ -22,7 +22,7 @@
                <form id = "loginForm" onsubmit="return false">
                   <div class="form-group">
                      <label for="email">Email:</label>
-                     <input type="email" name="email" class="form-control" placeholder="Digite email">
+                     <input type="email" name="email" class="form-control" placeholder="Digite seu email">
                   </div>
                   <div class="form-group">
                      <label for="senha">Senha:</label>
@@ -41,11 +41,12 @@
                         <button type="submit" id="loginFormButton" class="btn btn-primary btn-lg btn-block">Entrar</button>
                      </div>
                   </div>
-                  <span><a href = "#" class = "link" data-dismiss="modal" data-toggle="modal" data-target="#modalLogin">Esqueci minha senha</a></span>
+                  <span><a href = "#" class = "link">Esqueci minha senha</a></span>
                   
                </form>
             </div>
          </div>
       </div>
+       <?php Carregador::CarregarViewFooter(); ?>
    </body>
 </html>

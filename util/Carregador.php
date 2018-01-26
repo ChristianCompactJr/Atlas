@@ -1,6 +1,6 @@
 <?php
 
-//Diretório root do documento
+//Diretório root do projeto
 define('PROJECT_ROOT', $_SERVER['DOCUMENT_ROOT'].'/atlas/');
 
 
@@ -27,6 +27,11 @@ class Carregador {
     public static function CarregarViewHeadMeta()
     {
         include_once PROJECT_ROOT.'/view/meta/headMeta.php';
+    }
+    
+    public static function CarregarViewFooter()
+    {
+        include_once PROJECT_ROOT.'/view/meta/footer.php';
     }
     
 }
