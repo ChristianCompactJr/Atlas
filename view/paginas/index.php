@@ -1,9 +1,6 @@
 <?php
     include_once '../../util/Carregador.php';
     Carregador::CarregarPacotes();
-    
-    
-    
     function verificarSeExisteIndex($caminho)
     {
         $extencoes = array('php', 'html', 'phtml');
@@ -37,7 +34,6 @@
         {
           $url = substr($url, 0, $larguraExtencao);
         }
-       
         //verifica se o arquivo existe fora na pasta "paginas"
         if(is_file('../../'.$url))
         {
@@ -59,6 +55,7 @@
             echo "erro 404";
             return;
         }
+        
         include_once $caminho;   
 
     }

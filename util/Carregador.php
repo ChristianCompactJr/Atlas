@@ -1,28 +1,38 @@
 <?php
 
-//Diretório root do projeto
-define('PROJECT_ROOT', $_SERVER['DOCUMENT_ROOT'].'/atlas/');
-
-
+include_once 'Opcoes.php';
 
 //Classe com a função de carregar outros arquivos 
-class Carregador {
+abstract class Carregador {
     
-    private static $pacotes = array('model', 'util', 'controller');
+    private static $pacotes = array('model', 'util', 'dao');
     
     public static function CarregarPacotes()
     {
         foreach(self::$pacotes as $pacote)
         {
-            
-            $arquivos = glob(PROJECT_ROOT.$pacote.'/*{php}', GLOB_BRACE);
-            foreach($arquivos as $arquivo)
-            {
-                include_once $arquivo;
-            }
+            self::carregarPacote(PROJECT_ROOT.$pacote);
         }     
     }
     
+    private static function carregarPacote($pacote)
+    {
+        $arquivos = glob($pacote.'/*', GLOB_BRACE);
+        
+        foreach($arquivos as $arquivo)
+        {
+            if(pathinfo($arquivo, PATHINFO_EXTENSION) == 'php')
+            {
+                include_once $arquivo;
+            }
+            else if(is_dir($arquivo))
+            {
+                self::carregarPacote($arquivo);
+            }
+            
+        }
+        
+    }
     
     public static function CarregarViewHeadMeta()
     {

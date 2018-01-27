@@ -1,3 +1,11 @@
+<?php
+   if(SessionController::TemSessao())
+   {
+       header("location: projeto");
+   }
+
+?>
+
 <!DOCTYPE html>
 <html>
    <head>
@@ -19,17 +27,17 @@
       <div class = "container"  id = "loginMain">
          <div class = "row">
             <div class = "col-md-12">
-               <form id = "loginForm" onsubmit="return false">
+               <form id = "Login-Form" onsubmit="return false">
                   <div class="form-group">
                      <label for="email">Email:</label>
-                     <input type="email" name="email" class="form-control" placeholder="Digite seu email">
+                     <input type="email" name="email" class="form-control" placeholder="Digite seu email" required>
                   </div>
                   <div class="form-group">
                      <label for="senha">Senha:</label>
-                     <input type="password" name="senha" class="form-control"  placeholder="********">
+                     <input type="password" name="senha" class="form-control"  placeholder="********" required>
                   </div>
                     <div class="form-group">
-                     <label class="checkbox" style = "margin-left:20px">
+                     <label class="checkbox" for = "lembrar" style = "margin-left:20px">
                         <input type="checkbox" style ="margin-left: -20px" value="lembrar" name = "lembrar"> Lembrar de mim
                     </label> 
                     </div>
@@ -48,5 +56,50 @@
          </div>
       </div>
        <?php Carregador::CarregarViewFooter(); ?>
+       <script type ="text/javascript">
+           var validando = false;
+           $("#Login-Form").on("submit", function()
+           {
+               if(validando === true){
+                   return;
+               }
+               validando = false;
+               var form = $(this);
+               
+               $.ajax({
+                  
+                  url : 'controller/usuario/LoginController.php',
+                  method : 'POST',
+                  data : form.serialize(),
+                  dataType : 'json',
+                  beforeSend : function()
+                  { 
+                    $("button[type='submit']", form).html("Validando...");
+                  },
+                  
+                  success : function(resposta)
+                  {
+                      console.log(resposta);
+                      if(resposta.tipo == "sucesso")
+                      {
+                          window.location.href = "projeto";
+                      }
+                      else
+                      {
+                          $("#loginAviso").html(resposta.mensagem);
+                      }
+                  },
+                  
+                  complete : function()
+                  {
+                      $("button[type='submit']", form).html("Entrar");
+                  }
+                  
+                  
+                  
+               });
+               
+           });
+        </script>
    </body>
 </html>
