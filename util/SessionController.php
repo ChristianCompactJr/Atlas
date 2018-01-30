@@ -20,7 +20,7 @@ abstract class SessionController
         {
             return true;
         }
-        else if(isset($_COOKIE["token"]) && $_COOKIE["token"] != NULL)
+        else if(isset($_COOKIE["token"]))
         {
             $dao = new UsuarioDAO();
             $usuario = $dao->VerificarToken($_COOKIE["token"]);
@@ -54,7 +54,6 @@ abstract class SessionController
             
         }while($dao->VerificarToken($token) != false);
         $dao->AtualizarToken($_SESSION['usuario'], $token);
-        $_SESSION['usuario']->setToken($token);
         setcookie("token", $token, time()+864000, '/');
     }
     

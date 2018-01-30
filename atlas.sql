@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.6.5.2
--- https://www.phpmyadmin.net/
+-- version 4.5.1
+-- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: 27-Jan-2018 às 16:17
--- Versão do servidor: 10.1.21-MariaDB
--- PHP Version: 5.6.30
+-- Generation Time: 30-Jan-2018 às 13:32
+-- Versão do servidor: 10.1.13-MariaDB
+-- PHP Version: 5.6.21
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -42,7 +42,26 @@ CREATE TABLE `usuario` (
 --
 
 INSERT INTO `usuario` (`id`, `nome`, `email`, `senha`, `foto`, `administrador`, `token`, `ativo`) VALUES
-(1, 'Christian Lemos', 'christian@compactjr.com', '$2y$10$rXJq0gGp00B00hmPItDyuek.K4kRp6OEp0Dji6x.kGD7bzPE8YVcC', '', 1, 'EWoVtSHCBmemNJudfRrOG3xdjcL2RBzmy7XM65mo', 1);
+(1, 'Christian Lemos', 'christian@compactjr.com', '$2y$10$rXJq0gGp00B00hmPItDyuek.K4kRp6OEp0Dji6x.kGD7bzPE8YVcC', '', 1, 'XTmWBwwbjUeXpwyvKj7wFKZg1OMp8YzbScXkzW33', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `usuario_tentativa`
+--
+
+CREATE TABLE `usuario_tentativa` (
+  `ip` varchar(40) NOT NULL,
+  `tentativas` int(11) NOT NULL,
+  `data_hora` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Extraindo dados da tabela `usuario_tentativa`
+--
+
+INSERT INTO `usuario_tentativa` (`ip`, `tentativas`, `data_hora`) VALUES
+('::1', 15, '30-01-2018 10:13:19');
 
 --
 -- Indexes for dumped tables
@@ -54,6 +73,12 @@ INSERT INTO `usuario` (`id`, `nome`, `email`, `senha`, `foto`, `administrador`, 
 ALTER TABLE `usuario`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `token` (`token`);
+
+--
+-- Indexes for table `usuario_tentativa`
+--
+ALTER TABLE `usuario_tentativa`
+  ADD PRIMARY KEY (`ip`);
 
 --
 -- AUTO_INCREMENT for dumped tables

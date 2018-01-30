@@ -6,27 +6,15 @@ class Usuario {
     private $email;
     private $foto;
     private $administrador;
-    private $token;
     
     
     
-    function __construct($id, $nome, $email, $foto, $administrador, $token) {
+    function __construct($id, $nome, $email, $foto, $administrador) {
         $this->id = $id;
         $this->nome = $nome;
         $this->email = $email;
         $this->foto = $foto;
         $this->administrador = $administrador;
-        $this->token = $token;
-    }
-
-    
-    
-    function getToken() {
-        return $this->token;
-    }
-
-    function setToken($token) {
-        $this->token = $token;
     }
 
     
