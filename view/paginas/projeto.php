@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <?php
 
 if(!SessionController::TemSessao())
@@ -8,6 +7,7 @@ if(!SessionController::TemSessao())
 
 
 ?>
+<!DOCTYPE html>
 <html>
     <head>
         <meta charset="UTF-8">

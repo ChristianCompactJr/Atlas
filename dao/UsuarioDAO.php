@@ -6,8 +6,24 @@ class UsuarioDAO extends DAO {
     }
     
     
+    public function GetUsuario($id)
+    {
+        $id = parent::LimparString($id);
+        $stmt = parent::getCon()->prepare("select * from usuario where id = ? limit 1");
+        $stmt->bindValue(1, $id);
+        $stmt->execute();
+        
+        if($stmt->rowCount() == 0)
+        {
+            return false;
+        }
+        $resultado = $stmt->fetch();
+        return new Usuario($resultado->id, $resultado->nome, $resultado->email, $resultado->foto, $resultado->administrador);
+    }
+    
     public function VerificarToken($token)
     {
+        
         $stmt = parent::getCon()->prepare("select * from usuario where token = ? limit 1");
         $stmt->bindValue(1, $token);
         $stmt->execute();
@@ -21,7 +37,89 @@ class UsuarioDAO extends DAO {
         
     }
     
-    function AtualizarToken($usuario, $token)
+    public function EncontrarUsuarioComEmail($email)
+    {
+        $stmt = parent::getCon()->prepare("select * from usuario where lower(email) = lower(?) limit 1");
+        $stmt->bindValue(1, $email);
+        $stmt->execute();
+        
+        if($stmt->rowCount() == 0)
+        {
+            throw new Exception("Usuário com este email não encontrado");
+        }
+        $resultado = $stmt->fetch();
+        return new Usuario($resultado->id, $resultado->nome, $resultado->email, $resultado->foto, $resultado->administrador);
+    }
+    
+    public function AdicionarEsqueci($id, $chave)
+    {
+        
+        $agora = date('d-m-Y h:i:s', time());
+
+         $stmt = parent::getCon()->prepare("delete from usuario_esqueci_senha where idusuario = ?");
+        $stmt->bindValue(1, $id);
+        $stmt->execute();
+        
+        $stmt = parent::getCon()->prepare("insert into usuario_esqueci_senha values (?, ?, ?)");
+        $stmt->bindValue(1, $id);
+        $stmt->bindValue(2, $chave);
+        $stmt->bindValue(3, $agora);
+        $stmt->execute();
+
+    }
+    
+    public function AtualizarSenhaEsqueci ($idusuario, $senha, $chave)
+    {
+        if($this->ValidarEsqueciSenha($idusuario, $chave))
+        {
+            $id = parent::LimparString($id);   
+            $stmt = parent::getCon()->prepare("update usuario set senha = ? where id = ?");
+            $stmt->bindValue(1, password_hash($senha, PASSWORD_BCRYPT));
+            $stmt->bindValue(2, $idusuario);
+            $stmt->execute();
+            
+            $stmt = parent::getCon()->prepare("delete from usuario_esqueci_senha where idusuario = ?");
+            $stmt->bindValue(1, $idusuario);
+            $stmt->execute();
+            
+            
+        }
+        else {
+            throw new Exception("Houve um erro ao alterar a senha");
+        }
+        
+        
+    }
+    
+    public function ValidarEsqueciSenha($id, $chave)
+    {
+        $id = parent::LimparString($id);
+        
+        $stmt = parent::getCon()->prepare("select * from usuario_esqueci_senha where idusuario = ? limit 1");
+        $stmt->bindValue(1, $id);
+        $stmt->execute();
+        $resultado = $stmt->fetch();
+        if($resultado != false)
+        {
+            $agora = date('d-m-Y h:i:s', time());
+            
+            $diferenca = round(abs(strtotime($agora) - strtotime($resultado->data_hora)) / 60, 0);
+             if($resultado->chave != $chave &&  $diferenca > 1440)
+             {
+             
+                 throw new Exception("Este link não é mais válido. Tente enviar outra solicitação.");
+             }
+             return true;
+        }
+        else
+        {
+            throw new Exception("Solicitação não pode ser concluida. Contacte o suporte ou um adminstrador se você acredita de isso ser um erro.");
+        }
+       
+        
+    }
+    
+    public function AtualizarToken($usuario, $token)
     {
         $stmt = parent::getCon()->prepare("update usuario set token = ? where id = ?");
         $stmt->bindValue(1, $token);
@@ -31,7 +129,6 @@ class UsuarioDAO extends DAO {
     
     public function Autenticar($email, $senha)    
     {
-        date_default_timezone_set('Brazil/East');
         $agora = date('d-m-Y h:i:s', time());
         $maximas_tentativas = 15;
         $minutos_para_mt = 30;

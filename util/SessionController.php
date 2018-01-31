@@ -62,6 +62,11 @@ abstract class SessionController
         setcookie("token",NULL,time()-10000, '/');
     }
     
+    public static function GetUsuario()
+    {
+        return $_SESSION['usuario'];
+    }
+    
     
 }
 

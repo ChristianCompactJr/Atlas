@@ -1,7 +1,8 @@
 <?php
-define('PROJECT_ROOT', $_SERVER['DOCUMENT_ROOT'].'/atlas/');
+define('PROJECT_HTTP_ROOT', '/atlas/');
+define('PROJECT_ROOT', $_SERVER['DOCUMENT_ROOT'].PROJECT_HTTP_ROOT);
 define('PROJECT_KEY', '');
-define('PROJECT_VERSION', '0.1.4');
+define('PROJECT_VERSION', '0.1.5');
 define('PROJECT_HOST', 'localhost');
 define('PROJECT_SGBD', 'mysql');
 define('PROJECT_BASE', 'atlas');

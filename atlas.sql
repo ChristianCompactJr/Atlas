@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: 30-Jan-2018 às 13:32
+-- Generation Time: 31-Jan-2018 às 18:47
 -- Versão do servidor: 10.1.13-MariaDB
 -- PHP Version: 5.6.21
 
@@ -47,6 +47,18 @@ INSERT INTO `usuario` (`id`, `nome`, `email`, `senha`, `foto`, `administrador`, 
 -- --------------------------------------------------------
 
 --
+-- Estrutura da tabela `usuario_esqueci_senha`
+--
+
+CREATE TABLE `usuario_esqueci_senha` (
+  `idusuario` int(11) NOT NULL,
+  `chave` text NOT NULL,
+  `data_hora` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Estrutura da tabela `usuario_tentativa`
 --
 
@@ -55,13 +67,6 @@ CREATE TABLE `usuario_tentativa` (
   `tentativas` int(11) NOT NULL,
   `data_hora` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Extraindo dados da tabela `usuario_tentativa`
---
-
-INSERT INTO `usuario_tentativa` (`ip`, `tentativas`, `data_hora`) VALUES
-('::1', 15, '30-01-2018 10:13:19');
 
 --
 -- Indexes for dumped tables
@@ -73,6 +78,12 @@ INSERT INTO `usuario_tentativa` (`ip`, `tentativas`, `data_hora`) VALUES
 ALTER TABLE `usuario`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `token` (`token`);
+
+--
+-- Indexes for table `usuario_esqueci_senha`
+--
+ALTER TABLE `usuario_esqueci_senha`
+  ADD PRIMARY KEY (`idusuario`);
 
 --
 -- Indexes for table `usuario_tentativa`
@@ -89,6 +100,16 @@ ALTER TABLE `usuario_tentativa`
 --
 ALTER TABLE `usuario`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Limitadores para a tabela `usuario_esqueci_senha`
+--
+ALTER TABLE `usuario_esqueci_senha`
+  ADD CONSTRAINT `idusuario_fk_key` FOREIGN KEY (`idusuario`) REFERENCES `usuario` (`id`);
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
