@@ -1,7 +1,6 @@
 <?php
     include_once '../../util/Carregador.php';
     Carregador::CarregarPacotes();
-    
     function verificarSeExisteIndex($caminho)
     {
         $extencoes = array('php', 'html', 'phtml');

@@ -2,8 +2,16 @@
 <IfModule mod_rewrite.c>
 RewriteEngine On
 
-RewriteRule ^$  view/paginas/login [L]
+RewriteRule ^([^\.]+)$ $1.php [NC,L]
+
+RewriteCond %{REQUEST_URI} ^(/.*)$
+RewriteRule ^$ view/paginas/index.php?url=login.php [L]
+
+RewriteCond %{REQUEST_URI} !\.(php|html)$
 RewriteRule (.*) view/paginas/$1 [L]
 
+
+RewriteRule ^$  view/paginas/index.php?url=login [L]
+RewriteRule (.*) view/paginas/index.php?url=$1 [L]
 </IfModule>
 
