@@ -57,6 +57,16 @@ abstract class SessionController
         setcookie("token", $token, time()+864000, '/');
     }
     
+    public static function IsAdmin()
+    {
+        if(!isset($_SESSION['usuario']) || $_SESSION['usuario']->getAdministrador() == false)
+        {
+            return false;
+        }
+        return true;
+    }
+
+
     public static function RemoverToken()
     {
         setcookie("token",NULL,time()-10000, '/');
