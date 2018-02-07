@@ -48,7 +48,6 @@
       
     </div>
 </div>
-
 <script type ="text/javascript">
             var validandoEmail = false;
            $("#form-enviar_suporte").on("submit", function()

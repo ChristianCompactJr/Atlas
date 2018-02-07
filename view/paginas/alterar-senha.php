@@ -47,7 +47,7 @@
                                    <input type="password" name="confsenha" id="confsenha" class="form-control"  placeholder="********" required>
                                 </div>
 
-                                <span style ="color:red" id = "esqueci-aviso"></span>
+                                <span class = "form-aviso"></span>
                                 <div class="row">
                                    <div class="col-md-3"></div>
                                    <div class="col-md-6 text-center">                         
@@ -65,7 +65,7 @@
                                      return;
                                  }
                                  validando = true;
-                                  $("#esqueci-aviso").html("");
+                                  $(".form-aviso", form).html("");
                                  if($("#confsenha").val() !== $("#novasenha").val())
                                  {
                                      $("#esqueci-aviso").html("A confirmação de senha não é igual a nova senha");
@@ -95,7 +95,7 @@
                                         }
                                         else
                                         {
-                                            $("#esqueci-aviso").html(resposta.mensagem);
+                                            $(".form-aviso", form).html(resposta.mensagem);
                                         }
                                     },
 

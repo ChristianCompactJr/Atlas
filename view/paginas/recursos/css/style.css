@@ -22,6 +22,7 @@ footer
 {
     width:40px;
     margin-top:0px;
+    margin-right:7px;
 }
 
 .navbar-brand,
@@ -29,4 +30,8 @@ footer
     line-height: 50px;
     height: 50px;
     padding-top: 0;
+}
+.form-aviso
+{
+    color:red;
 }

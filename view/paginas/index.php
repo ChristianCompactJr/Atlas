@@ -1,4 +1,6 @@
 <?php
+
+
     include_once '../../util/Carregador.php';
     Carregador::CarregarPacotes();
      $extencoes = array('php', 'html', 'phtml');
@@ -48,22 +50,21 @@
         $caminho = verificarSeExisteArquivo('../../'.$url);
         if($caminho === false)
         {
-            
-             $caminho = verificarSeExisteArquivo(PROJECT_ROOT.'view/paginas/'.$url);
-             if($caminho == false)
-             {
-                  $ultimo = substr($url, -1);
-                if($ultimo != '/' || $ultimo != '\\')
-                {
-                    $url.='/';
-                }
-                $caminho = verificarSeExisteIndex($url);
-                if($caminho === false)
-                {
-                    echo "erro 404";
-                    return;
-                }
-             }
+            $caminho = verificarSeExisteArquivo(PROJECT_ROOT.'view/paginas/'.$url);
+            if($caminho == false)
+            {
+                $ultimo = substr($url, -1);
+               if($ultimo != '/' || $ultimo != '\\')
+               {
+                   $url.='/';
+               }
+               $caminho = verificarSeExisteIndex($url);
+               if($caminho === false)
+               {
+                   echo "erro 404";
+                   return;
+               }
+            }
         }
         include_once $caminho; 
         

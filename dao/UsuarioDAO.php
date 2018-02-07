@@ -1,5 +1,4 @@
 <?php
-
 class UsuarioDAO extends DAO {
     public function __construct() {
         parent::__construct();
@@ -210,7 +209,7 @@ class UsuarioDAO extends DAO {
         $stmt->execute();
         if($stmt->rowCount() > 0)
         {
-            throw new Exception("Email já sendo utilizado pelo usuário",$stmt->fetch()->nome);
+            throw new Exception("Email já sendo utilizado pelo usuário ".$stmt->fetch()->nome);
         }
         
         $stmt = parent::getCon()->prepare("insert into usuario(nome, email, senha, foto, administrador) values (?, ?, ?, ?, ?)");

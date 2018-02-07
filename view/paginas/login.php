@@ -1,7 +1,7 @@
 <?php
    if(SessionController::TemSessao())
    {
-       header("location: projeto");
+       header("location: inicial");
    }
    
 ?>
@@ -42,7 +42,7 @@
                     </label> 
                     </div>
                     
-                  <span style ="color:red" id = "loginAviso"></span>
+                  <span class = "form-aviso"></span>
                   <div class="row">
                      <div class="col-md-3"></div>
                      <div class="col-md-6 text-center">                         
@@ -111,18 +111,18 @@
                   beforeSend : function()
                   { 
                     $("button[type='submit']", form).html("Validando...");
-                    $("#loginAviso").html("");
+                    $(".form-aviso", form).html("");
                   },
                   
                   success : function(resposta)
                   {
                       if(resposta.tipo == "sucesso")
                       {
-                          window.location.href = "projeto";
+                          window.location.href = "inicial";
                       }
                       else
                       {
-                          $("#loginAviso").html(resposta.mensagem);
+                          $(".form-aviso", form).html(resposta.mensagem);
                       }
                   },
                   
@@ -166,7 +166,7 @@
                   complete : function()
                   {
                       validando = false;
-                      $("button[type='submit']", form).html("Entrar");
+                      $("button[type='submit']", form).html("Enviar");
                   },
                   error : function(jqXHR, textStatus, errorThrown)
                   {

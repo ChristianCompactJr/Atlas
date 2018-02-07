@@ -44,4 +44,8 @@ abstract class Carregador {
         include_once PROJECT_ROOT.'/view/meta/footer.php';
     }
     
+    public static function CarregarViewNavbar()
+    {
+        include_once PROJECT_ROOT.'/view/meta/navbar.php';
+    }
 }
