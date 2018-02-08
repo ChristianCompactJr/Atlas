@@ -32,7 +32,7 @@ class Usuario {
 
     function setAdministrador($administrador) {
         $this->administrador = $administrador;
-    }
+    }   
 
         
     function getId() {
@@ -48,7 +48,16 @@ class Usuario {
     }
 
     function getFoto() {
-        return $this->foto;
+        
+        if(is_file(PROJECT_ROOT."view/paginas/".$this->foto))
+        {
+            return $this->foto;
+        }
+        else
+        {
+            return 'uploads/fotos/perfil_padrao.jpg';
+        }
+        
     }
 
     function getAdministrador() {

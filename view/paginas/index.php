@@ -1,14 +1,30 @@
 <?php
+
+
     include_once '../../util/Carregador.php';
     Carregador::CarregarPacotes();
+     $extencoes = array('php', 'html', 'phtml');
     function verificarSeExisteIndex($caminho)
     {
-        $extencoes = array('php', 'html', 'phtml');
+       global $extencoes;
         foreach($extencoes as $extencao)
         {
-            if(is_file($caminho.'/index.'.$extencao))
+            if(is_file($caminho.'index.'.$extencao))
             {
-               return $caminho.'/index.'.$extencao;
+               return $caminho.'index.'.$extencao;
+            }
+        }
+        return false;
+    }
+    
+    function verificarSeExisteArquivo($urlCaminho)
+    {
+        global $extencoes;
+        foreach($extencoes as $extencao)
+        {
+            if(is_file($urlCaminho.".".$extencao))
+            {
+               return $urlCaminho.".".$extencao;
             }
         }
         return false;
@@ -17,6 +33,7 @@
     if(isset($_GET['url']))
     {
         $url = $_GET['url'];
+        
         if(strtolower(pathinfo($url, PATHINFO_FILENAME)) == 'index')
         {
             include_once 'login.php';
@@ -24,40 +41,38 @@
         }
         $extencao = pathinfo($url, PATHINFO_EXTENSION);
        
-        if($url[0] == '/' || $url[0] == "\\")
-        {
-            $url = substr($url, 1);
-        }
-        $larguraExtencao = -2 + -strlen($extencao);
+        $larguraExtencao = -1 + -strlen($extencao);
         $ultimoChar = substr($url, $larguraExtencao);
-        if($ultimoChar == '\\.php' || $ultimoChar == '/.php')
-        {
+        
           $url = substr($url, 0, $larguraExtencao);
-        }
-        //verifica se o arquivo existe fora na pasta "paginas"
-        if(is_file('../../'.$url))
+           
+           
+        $caminho = verificarSeExisteArquivo('../../'.$url);
+        if($caminho === false)
         {
-            $caminho = '../../'.$url;
+            $caminho = verificarSeExisteArquivo(PROJECT_ROOT.'view/paginas/'.$url);
+            if($caminho == false)
+            {
+                $ultimo = substr($url, -1);
+               if($ultimo != '/' || $ultimo != '\\')
+               {
+                   $url.='/';
+               }
+               $caminho = verificarSeExisteIndex($url);
+               if($caminho === false)
+               {
+                   echo "erro 404";
+                   return;
+               }
+            }
         }
+        include_once $caminho; 
         
-        //Verifica se arquivo existe na pasta "paginas"
-        else if(is_file(PROJECT_ROOT.'view/paginas/'.$url))
-        {
-            $caminho = $url;
-        }
-         //Verifica se arquivo existe na pasta "paginas" em uma subpasta
-        else if(verificarSeExisteIndex($url) !== false)
-        {
-            $caminho = verificarSeExisteIndex($url);
-        }
-        else
-        {
-            echo "erro 404";
-            return;
-        }
-        
-        include_once $caminho;   
 
+    }
+    else
+    {
+        include_once 'login.php';
     }
 
 ?>
