@@ -35,7 +35,7 @@ class LinkMenu
     public function ToHTML(array $separadores = array())
     {
         $htmlString = '<li class="';
-        if(self::$uri == $this->href)
+        if($this->IsActive())
         {
             $htmlString .= 'active ';
         }
@@ -81,6 +81,22 @@ class LinkMenu
         }
         
         return $htmlString;
+    }
+    
+    public function IsActive()
+    {
+        if(self::$uri == $this->href)
+        {
+            return true;
+        }
+        foreach($this->linkFilhos as $filho)
+        {
+            if($filho->IsActive())
+            {
+                return true;
+            }
+        }
+        return false;
     }
     
     function AdicionarFilho(LinkMenu $filho)

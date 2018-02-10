@@ -16,7 +16,7 @@ abstract class SessionController
     public static function TemSessao()
     {
 
-        if(isset($_SESSION['usuario']))
+        if(isset($_SESSION['usuario']) && $_SESSION['usuario']->getAtivo() == true)
         {
             return true;
         }

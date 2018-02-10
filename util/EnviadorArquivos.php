@@ -29,6 +29,11 @@ abstract class EnviadorArquivos
     
     public static function UploadArquivo($tmp, $destino, $permicoes = 755)
     {
+        if($destino == 'uploads/fotos/perfil_padrao.jpg')
+        {
+            return;
+        }
+  
         $destino = self::getCaminhoUploads().$destino;
         if(move_uploaded_file($tmp, $destino))
         {
@@ -37,6 +42,16 @@ abstract class EnviadorArquivos
         else 
         {
             throw new Exception("Houve um erro a realizar a transferência do arquivo");
+        }
+        
+    }
+    
+    public static function ApagarArquivo($arquivo)
+    {
+        $arquivo = self::getCaminhoUploads().$arquivo;
+        if(is_file($arquivo))
+        {
+            unlink($arquivo);
         }
         
     }
@@ -85,7 +100,7 @@ abstract class EnviadorArquivos
     
     private static function getCaminhoUploads()
     {
-        return PROJECT_ROOT."view/paginas/uploads/";
+        return PROJECT_ROOT."view/paginas/";
     }
     
 }

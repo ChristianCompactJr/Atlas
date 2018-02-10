@@ -6,19 +6,32 @@ class Usuario {
     private $email;
     private $foto;
     private $administrador;
+    private $ativo;
     
     
-    
-    function __construct($id, $nome, $email, $foto, $administrador) {
+    function __construct($id, $nome, $email, $foto, $administrador, $ativo) {
         $this->id = $id;
         $this->nome = $nome;
         $this->email = $email;
         $this->foto = $foto;
         $this->administrador = $administrador;
+        $this->ativo = $ativo;
     }
 
-    
-    function setNome($nome) {
+    function getAtivo() {
+        return $this->ativo;
+    }
+
+    function setAtivo($ativo) {
+        if($ativo == false)
+        {
+            $this->administrador = false;
+        }
+        
+        $this->ativo = $ativo;
+    }
+
+        function setNome($nome) {
         $this->nome = $nome;
     }
 
@@ -61,6 +74,11 @@ class Usuario {
     }
 
     function getAdministrador() {
+        if($this->ativo == false)
+        {
+            return false;
+        }
+        
         return $this->administrador;
     }
 

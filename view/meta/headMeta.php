@@ -8,6 +8,7 @@ $voltas = UserRootViewFinder::GetBackSlashes();
 
 <link rel ="stylesheet" type ="text/css" href ="<?php echo $voltas;?>recursos/css/bootstrap.min.css" />    
 <link rel ="stylesheet" type ="text/css" href ="<?php echo $voltas;?>recursos/css/style.css" />
+<link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
 <script type = "text/javascript" src ="<?php echo $voltas;?>recursos/js/jquery.js" ></script>
 <script type = "text/javascript" src ="<?php echo $voltas;?>recursos/js/bootstrap.min.js" ></script>
 <script type ="text/javascript" src = "<?php echo $voltas;?>recursos/js/notify.min.js"></script>

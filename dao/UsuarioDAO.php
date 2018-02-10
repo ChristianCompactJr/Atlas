@@ -17,7 +17,61 @@ class UsuarioDAO extends DAO {
             return false;
         }
         $resultado = $stmt->fetch();
-        return new Usuario($resultado->id, $resultado->nome, $resultado->email, $resultado->foto, $resultado->administrador);
+        return new Usuario($resultado->id, $resultado->nome, $resultado->email, $resultado->foto, $resultado->administrador, $resultado->ativo);
+    }
+    
+    public function GetUsuarios()
+    {
+        $stmt = parent::getCon()->prepare("select * from usuario order by nome asc");
+        $stmt->execute();
+        
+        $linhas = $stmt->fetchAll();
+        $usuarios = array();
+        
+        foreach($linhas as $resultado)
+        {
+             $usuarios[] = new Usuario($resultado->id, $resultado->nome, $resultado->email, $resultado->foto, $resultado->administrador, $resultado->ativo);
+        }
+        return $usuarios;
+    }
+    
+    public function GetTotalUsuarios()
+    {
+        $stmt = parent::getCon()->prepare("select count(*) as total from usuario");
+        $stmt->execute();
+        return $stmt->fetch()->total;
+    }
+    
+    public function ApagarUsuario($id)
+    {
+        $stmt = parent::getCon()->prepare("select foto from usuario where id = ?");
+         $stmt->bindValue(1, $id);
+        $stmt->execute();
+        
+        EnviadorArquivos::ApagarArquivo($stmt->fetch()->foto);
+
+        $stmt = parent::getCon()->prepare("delete from usuario where id = ?");
+         $stmt->bindValue(1, $id);
+        $stmt->execute();
+    }
+    
+    public function GetUsuariosFiltro($inicio, $limite, $like)
+    {   
+
+        $stmt = parent::getCon()->prepare("select * from usuario where nome like ? order by nome asc limit ? offset ? ");
+        $stmt->bindValue(1, "%".$like."%");
+        $stmt->bindValue(2, $limite);
+        $stmt->bindValue(3, $inicio);
+        $stmt->execute();
+
+        $linhas = $stmt->fetchAll();
+        $usuarios = array();
+        
+        foreach($linhas as $resultado)
+        {
+             $usuarios[] = new Usuario($resultado->id, $resultado->nome, $resultado->email, $resultado->foto, $resultado->administrador, $resultado->ativo);
+        }
+        return $usuarios;
     }
     
     public function VerificarToken($token)
@@ -32,7 +86,7 @@ class UsuarioDAO extends DAO {
             return false;
         }
         $resultado = $stmt->fetch();
-        return new Usuario($resultado->id, $resultado->nome, $resultado->email, $resultado->foto, $resultado->administrador);
+        return new Usuario($resultado->id, $resultado->nome, $resultado->email, $resultado->foto, $resultado->administrador, $resultado->ativo);
         
     }
     
@@ -47,7 +101,7 @@ class UsuarioDAO extends DAO {
             throw new Exception("Usuário com este email não encontrado");
         }
         $resultado = $stmt->fetch();
-        return new Usuario($resultado->id, $resultado->nome, $resultado->email, $resultado->foto, $resultado->administrador);
+        return new Usuario($resultado->id, $resultado->nome, $resultado->email, $resultado->foto, $resultado->administrador, $resultado->ativo);
     }
     
     public function AdicionarEsqueci($id, $chave)
@@ -150,7 +204,7 @@ class UsuarioDAO extends DAO {
                 }
                 else
                 {
-                    echo $diferenca;
+                    //echo $diferenca;
                     $stmt = parent::getCon()->prepare("update usuario_tentativa set tentativas = 0 where ip = ?");
                     $stmt->bindValue(1, $_SERVER['REMOTE_ADDR']);
                     $stmt->execute();
@@ -189,7 +243,7 @@ class UsuarioDAO extends DAO {
             $stmt = parent::getCon()->prepare("delete from usuario_tentativa where ip = ?");
             $stmt->bindValue(1, $_SERVER['REMOTE_ADDR']);
             $stmt->execute();
-            return new Usuario($resultado->id, $resultado->nome, $resultado->email, $resultado->foto, $resultado->administrador);
+            return new Usuario($resultado->id, $resultado->nome, $resultado->email, $resultado->foto, $resultado->administrador, $resultado->ativo);
         }
         
         
@@ -223,5 +277,126 @@ class UsuarioDAO extends DAO {
         return $id;
     }
     
+    // --Funções de atualização--
+    
+    public function AtualizarNome($id, $nome)
+    {
+        $id = parent::LimparString($id);
+        $nome = parent::LimparString($nome);
+        
+        $stmt = parent::getCon()->prepare("update usuario set nome = ? where id = ?");
+        $stmt->bindValue(1, $nome);
+        $stmt->bindValue(2, $id);
+        $stmt->execute();
+    }
+    
+    public function AtualizarEmail($id, $email)
+    {
+        $id = parent::LimparString($id);
+        $email = parent::LimparString($email);
+        
+        $stmt = parent::getCon()->prepare("select * from usuario where lower(email) = lower(?) and ativo = true limit 1");
+        $stmt->bindValue(1, $email);
+        $stmt->execute();
+        if($stmt->rowCount() > 0)
+        {
+            throw new Exception("Email já sendo utilizado pelo usuário ".$stmt->fetch()->nome);
+        }
+        
+        
+        $stmt = parent::getCon()->prepare("update usuario set email = ? where id = ?");
+        $stmt->bindValue(1, $email);
+        $stmt->bindValue(2, $id);
+        $stmt->execute();
+    }
+    
+    public function AtualizarSenha($id, $senha)
+    {
+        $id = parent::LimparString($id);
+        
+        $stmt = parent::getCon()->prepare("update usuario set senha = ? where id = ?");
+        $stmt->bindValue(1, password_hash($senha, PASSWORD_BCRYPT));
+        $stmt->bindValue(2, $id);
+        $stmt->execute();
+    }
+
+    public function AtualizarFoto($id, $foto)
+    {
+        $id = parent::LimparString($id);
+        $foto = parent::LimparString($foto);
+        
+        $stmt = parent::getCon()->prepare("select foto from usuario where id = ?");
+         $stmt->bindValue(1, $id);
+        $stmt->execute();
+        
+        EnviadorArquivos::ApagarArquivo($stmt->fetch()->foto);
+        
+        
+        $stmt = parent::getCon()->prepare("update usuario set foto = ? where id = ?");
+        $stmt->bindValue(1, $foto);
+        $stmt->bindValue(2, $id);
+        $stmt->execute();
+    }
+    
+    public function AtualizarAdministrador($id, $administrador)
+    {
+         $id = parent::LimparString($id);
+        
+        if($administrador == false && $this->GetUsuario($id)->getAdministrador() == true)
+        {
+            $stmt = parent::getCon()->prepare("select count(*) as total from usuario where administrador = 1 and id  != ?");
+            $stmt->bindValue(1, $id);
+            $stmt->execute();
+            $total = $stmt->fetch()->total;
+            if($total <= 0)
+            {
+                throw new Exception("Alteração interrompida. O sistema deve ter pelo menos 1 administrador.");
+            }
+        }
+
+
+        
+        $stmt = parent::getCon()->prepare("update usuario set administrador = ? , ativo = true where id = ?");
+        $stmt->bindValue(1, $administrador);
+        $stmt->bindValue(2, $id);
+        $stmt->execute();
+    } 
+    public function AtualizarAtivo($id, $ativo)
+    {
+        $id = parent::LimparString($id);
+        
+        if($ativo == false)
+        {
+            try
+            {
+                $this->AtualizarAdministrador($id, false);          
+            }
+            catch(Exception $e)
+            {
+                throw new Exception($e->getMessage());
+            }
+            
+        }
+        if($ativo == true)
+        {
+            $usuario = $this->GetUsuario($id);
+            $stmt = parent::getCon()->prepare("select nome from usuario where lower(email) = lower(?) and ativo = 1 and id != ?");
+            $stmt->bindValue(1, $usuario->getEmail());
+            $stmt->bindValue(2, $id);
+            $stmt->execute();
+            
+            $resultado = $stmt->fetch();
+            
+            if($resultado != false)
+            {
+                throw new Exception("Não foi possivel ativar este usuário pois seu email está sendo usado por ".$resultado->nome);
+            }
+        }
+        
+        $stmt = parent::getCon()->prepare("update usuario set ativo = ? where id = ?");
+        $stmt->bindValue(1, $ativo);
+        $stmt->bindValue(2, $id);
+        $stmt->execute();
+    }
     
 }

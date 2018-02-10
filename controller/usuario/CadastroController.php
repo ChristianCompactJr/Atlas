@@ -39,11 +39,16 @@
         {
             $administrador = true;
         }
-        $dao->Cadastrar($_POST['nome'], $_POST['email'], $_POST['senha'], 'uploads/fotos/'.$foto, $administrador);
+        //$dao->Cadastrar($_POST['nome'], $_POST['email'], $_POST['senha'], 'uploads/fotos/'.$foto, $administrador);
         
         if($foto != '')
         {
-             EnviadorArquivos::UploadArquivo($_FILES['foto']['tmp_name'], 'fotos/'.$foto);
+             $dao->Cadastrar($_POST['nome'], $_POST['email'], $_POST['senha'], 'uploads/fotos/'.$foto, $administrador);
+             EnviadorArquivos::UploadArquivo($_FILES['foto']['tmp_name'], 'uploads/fotos/'.$foto);
+        }
+        else
+        {
+             $dao->Cadastrar($_POST['nome'], $_POST['email'], $_POST['senha'], '', $administrador);
         }
         $resposta = array('tipo' => 'sucesso', 'mensagem' => '');
     } 
