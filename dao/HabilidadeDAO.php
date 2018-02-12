@@ -77,10 +77,11 @@ class HabilidadeDAO extends DAO {
             if($esta == false)
             {
                 
-                $stmt = parent::getCon()->prepare("insert into atlas_habilidade_usuario values (?, ?, ?)");
+                $stmt = parent::getCon()->prepare("insert into atlas_habilidade_usuario values (?, ?, ?, ?)");
                 $stmt->bindValue(1, $hbd->getId());
                 $stmt->bindValue(2, $id);
                 $stmt->bindValue(3, 0);
+                 $stmt->bindValue(4, false);
                 $stmt->execute();
                 
             }
@@ -95,22 +96,23 @@ class HabilidadeDAO extends DAO {
         
         foreach($atualizadas  as $att)
         {
-            $retorno[] = new HabilidadeUsuario($usuario, $this->GetHabilidade($att->idhabilidade), $att->valor);
+            $retorno[] = new HabilidadeUsuario($usuario, $this->GetHabilidade($att->idhabilidade), $att->valor, $att->interesse);
         }
        return $retorno;
     }
     
     
-    public function AtulizarHabilidadeUsuario($idusuario, $idhabilidade, $valor)
+    public function AtulizarHabilidadeUsuario($idusuario, $idhabilidade, $valor, $interesse)
     {
         $idusuario = parent::LimparString($idusuario);
         $idhabilidade = parent::LimparString($idhabilidade);
         $valor = parent::LimparString($valor);
         
-        $stmt = parent::getCon()->prepare("update atlas_habilidade_usuario set valor = ? where idusuario = ? and idhabilidade = ?");
+        $stmt = parent::getCon()->prepare("update atlas_habilidade_usuario set valor = ?, interesse = ? where idusuario = ? and idhabilidade = ?");
         $stmt->bindValue(1, $valor);
-        $stmt->bindValue(2, $idusuario);
-         $stmt->bindValue(3, $idhabilidade);
+        $stmt->bindValue(2, $interesse);
+        $stmt->bindValue(3, $idusuario);
+         $stmt->bindValue(4, $idhabilidade);
         $stmt->execute();
     }
     

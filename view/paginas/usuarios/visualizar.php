@@ -124,7 +124,7 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
                                 ativoString = "Sim";
                             }
                             
-                            htmlString += '<tr><td><img src = "../'+resposta.usuarios[i].foto+'" class = "img-thumbnail" style = "max-width:50px; margin-right:10px;"><span class = "visualizar-td-nome">'+resposta.usuarios[i].nome+'</span></td><td>'+resposta.usuarios[i].email+'</td><td>'+administradorString+'</td><td>'+ativoString+'</td><td><a class="btn btn-primary ediar-usuario-btn" data-usuario = "'+resposta.usuarios[i].id+'"><em class="fa fa-edit"></em></a><a class="btn btn-danger excluir-usuario-btn" data-usuario = "'+resposta.usuarios[i].id+'"><em class="fa fa-trash"></em></a></td></tr>';
+                            htmlString += '<tr><td><img src = "../'+resposta.usuarios[i].foto+'" class = "img-thumbnail" style = "max-width:50px; margin-right:10px;"><span class = "visualizar-td-nome">'+resposta.usuarios[i].nome+'</span></td><td>'+resposta.usuarios[i].email+'</td><td>'+administradorString+'</td><td>'+ativoString+'</td><td><a class="btn btn-primary ediar-usuario-btn" data-usuario = "'+resposta.usuarios[i].id+'"><em class="fa fa-edit"></em></a><a class="btn btn-primary editar-habilidades-btn" data-usuario = "'+resposta.usuarios[i].id+'"><em class="fa fa-graduation-cap"></em></a><a class="btn btn-danger excluir-usuario-btn" data-usuario = "'+resposta.usuarios[i].id+'"><em class="fa fa-trash"></em></a></td></tr>';
                         }
                         var totalPaginasResposta = Math.ceil (resposta.total / resultadosPorPaginas);
                  
@@ -171,6 +171,42 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
             
             CarregarUsuarios((paginaAtual - 1) * resultadosPorPaginas , resultadosPorPaginas, cacheLike);
         });
+        
+        
+        $("#table-conteudo").on('click', '.editar-habilidades-btn', function()
+        {
+            var id = $(this).data('usuario');
+            
+             $.ajax({
+             data : {id : id},
+             url : '../controller/habilidades/habilidadesUsuarioJSON.php',
+             method : 'POST',
+             dataType : 'json',
+             
+             success : function(resposta)
+             {
+                console.log(resposta);
+               /* if(resposta.tipo == "sucesso")
+                {
+                    GerarNotificacao("Usuário excluido com sucesso", "success");
+                    btn.parent().parent().remove();
+                }
+                else
+                {
+                    GerarNotificacao(resposta.mensagem, "danger");
+                }*/
+                 
+                 
+             },
+             
+             error : function(jqXHR, textStatus, errorThrown)
+            {
+                GerarNotificacao(jqXHR.responseText, "danger");
+            } 
+             
+           });
+        });
+        
         $("#table-conteudo").on('click', '.ediar-usuario-btn', function()
         {
             var usuario;

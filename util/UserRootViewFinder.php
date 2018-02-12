@@ -4,7 +4,16 @@ abstract class UserRootViewFinder {
     
     public static function GetBackSlashes()
     {
-        $uri = str_replace(PROJECT_HTTP_ROOT, '', $_SERVER['REQUEST_URI']);
+    
+    	if(PROJECT_HTTP_ROOT != '/')
+    	{
+    		$uri = str_replace(PROJECT_HTTP_ROOT, '', $_SERVER['REQUEST_URI']);
+    	}
+    	else
+    	{
+    		$uri = $_SERVER['REQUEST_URI'];
+    	}
+        
         $characteresURI = str_split($uri);
         $href = "";
         foreach($characteresURI as $char)
@@ -19,7 +28,15 @@ abstract class UserRootViewFinder {
     
     public static function GetViewUrl()
     {
-        return str_replace(PROJECT_HTTP_ROOT, '', $_SERVER['REQUEST_URI']);
+        if(PROJECT_HTTP_ROOT != '/')
+    	{
+    		$uri = str_replace(PROJECT_HTTP_ROOT, '', $_SERVER['REQUEST_URI']);
+    	}
+    	else
+    	{
+    		$uri = $_SERVER['REQUEST_URI'];
+    	}
+    	return $uri;
     }
     
     

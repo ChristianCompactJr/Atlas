@@ -1,16 +1,4 @@
 <?php
-
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/**
- * Description of LinkMenu]
- *
- * @author CompAct
- */
 class LinkMenu
 {
     private $nome;
@@ -21,13 +9,17 @@ class LinkMenu
     
     public function __construct($nome, $href, array $filhos = array())
     {
-        $this->nome = $nome;      
+        $this->nome = $nome;     
         $this->href = $href;
         $this->linkFilhos = $filhos;
         self::$uri = UserRootViewFinder::GetViewUrl();
         if(self::$uri == '')
         {
             self::$uri = 'inicial';
+        }
+        else if(self::$uri[0] == '/')
+        {
+       	 self::$uri = substr(self::$uri, 1);
         }
     }
     
@@ -87,6 +79,7 @@ class LinkMenu
     {
         if(self::$uri == $this->href)
         {
+        
             return true;
         }
         foreach($this->linkFilhos as $filho)

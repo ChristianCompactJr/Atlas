@@ -30,7 +30,14 @@ $dao = new HabilidadeDAO();
         {
             //echo '<ul><li>'.$habilidade->getUsuario()->getNome().'</li><li>'.$habilidade->getHabilidade()->getNome().'</li><li>'.$habilidade->getValor().'</li></ul>';
             
-            echo '<div class = "row"><div class = "col-md-12"><h3>'.$habilidade->getHabilidade()->getNome().'</h3><div class = "habilidade-slider" data-habilidade-id = "'.$habilidade->getHabilidade()->getId().'" data-habilidade-valor = "'.$habilidade->getValor().'"><div class="ui-slider-handle habilidade-slider-handle"></div></div></div></div>';
+            echo '<div class = "row"><div class = "col-md-12"><h3>'.$habilidade->getHabilidade()->getNome().'</h3><div class = "habilidade-slider" data-habilidade-id = "'.$habilidade->getHabilidade()->getId().'" data-habilidade-valor = "'.$habilidade->getValor().'"><div class="ui-slider-handle habilidade-slider-handle"></div></div> <div class="checkbox"><label><input type="checkbox" class = "habilidade-interesse-input" data-habilidade = "'.$habilidade->getHabilidade()->getId().'" ';
+            
+            if($habilidade->getInteresse() == true)
+            {
+                echo 'checked';
+            }
+            
+            echo '>Tenho interesse em aprender esta habilidade</label></div></div></div>';
             
         }
         
@@ -57,7 +64,17 @@ $dao = new HabilidadeDAO();
                 {
                     var val = $(this).slider("option", "value");
                     var id = $(this).data('habilidade-id');
-                    habilidadesValor.push({id : id, valor : val});
+                    var interesseInput = $('.habilidade-interesse-input[data-habilidade="'+id+'"]');
+                    var interesse;
+                    if(interesseInput.is(":checked"))
+                    {
+                        interesse = true;
+                    }
+                    else
+                    {
+                        interesse = false;
+                    }
+                    habilidadesValor.push({id : id, valor : val, interesse : interesse});
                 });
                  $.ajax({
                        url : 'controller/habilidades/atualizar.php',

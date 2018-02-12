@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 12-Fev-2018 às 02:17
+-- Generation Time: 12-Fev-2018 às 19:33
 -- Versão do servidor: 10.1.21-MariaDB
--- PHP Version: 5.6.30
+-- PHP Version: 7.1.1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -31,16 +31,6 @@ CREATE TABLE `atlas_habilidades` (
   `nome` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Extraindo dados da tabela `atlas_habilidades`
---
-
-INSERT INTO `atlas_habilidades` (`id`, `nome`) VALUES
-(3, 'CSS'),
-(5, 'Javascript'),
-(7, 'SQL'),
-(8, 'HTML');
-
 -- --------------------------------------------------------
 
 --
@@ -50,22 +40,9 @@ INSERT INTO `atlas_habilidades` (`id`, `nome`) VALUES
 CREATE TABLE `atlas_habilidade_usuario` (
   `idhabilidade` int(11) NOT NULL,
   `idusuario` int(11) NOT NULL,
-  `valor` int(11) NOT NULL
+  `valor` int(11) NOT NULL,
+  `interesse` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Extraindo dados da tabela `atlas_habilidade_usuario`
---
-
-INSERT INTO `atlas_habilidade_usuario` (`idhabilidade`, `idusuario`, `valor`) VALUES
-(3, 6, 95),
-(3, 8, 0),
-(5, 6, 67),
-(5, 8, 0),
-(7, 6, 60),
-(7, 8, 0),
-(8, 6, 90),
-(8, 8, 0);
 
 -- --------------------------------------------------------
 
@@ -160,12 +137,12 @@ ALTER TABLE `atlas_usuario_tentativa`
 -- AUTO_INCREMENT for table `atlas_habilidades`
 --
 ALTER TABLE `atlas_habilidades`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 --
 -- AUTO_INCREMENT for table `atlas_usuario`
 --
 ALTER TABLE `atlas_usuario`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 --
 -- Constraints for dumped tables
 --
