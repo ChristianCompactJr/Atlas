@@ -155,3 +155,16 @@ footer
     transform: scale(0.5);
 }
 }
+
+.habilidade-slider .ui-slider-range { background-color: #8ae234 !important; }
+.habilidade-slider .ui-slider-handle { border-color: #8ae234; }
+
+.habilidade-slider-handle{
+
+ width: 3em !important;
+    height: 1.6em !important;
+    top: 50% !important;
+    margin-top: -.8em;
+    text-align: center;
+    line-height: 1.6em;
+}

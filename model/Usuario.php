@@ -7,7 +7,7 @@ class Usuario {
     private $foto;
     private $administrador;
     private $ativo;
-    
+    private $habilidades;
     
     function __construct($id, $nome, $email, $foto, $administrador, $ativo) {
         $this->id = $id;
@@ -18,6 +18,15 @@ class Usuario {
         $this->ativo = $ativo;
     }
 
+    
+    
+    
+    public function getHabilidades()
+    {
+        $dao = new HabilidadeDAO(); 
+    }
+   
+    
     function getAtivo() {
         return $this->ativo;
     }

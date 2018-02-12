@@ -17,6 +17,11 @@ $projetos = new LinkMenu("Projetos", "projetos");
 
 $relatorios = new LinkMenu("Relatórios", 'relatorios');
 
+$alterardados = new LinkMenu("Alterar Dados", 'alterar-dados');
+$alterarhabilidades = new LinkMenu('Habilidades', 'habilidades');
+
+$confhabilidades = new LinkMenu('Configurar Habilidades', 'configurar-habilidades');
+
 $voltas = UserRootViewFinder::GetBackSlashes();
 ?>
 
@@ -46,6 +51,7 @@ $voltas = UserRootViewFinder::GetBackSlashes();
           {
               echo $usuarios->ToHTML();
               echo $relatorios->ToHTML();
+              echo $confhabilidades->ToHTML();
           }
           ?>
           
@@ -56,7 +62,8 @@ $voltas = UserRootViewFinder::GetBackSlashes();
 
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><img alt="" src="<?php echo $voltas.$usuario->getFoto(); ?>" class = "perfil-menu"><span id = "nome-menu"><?php echo $usuario->getNome(); ?></span> <span class="caret"></span></a>
             <ul class="dropdown-menu">
-              <li><a href="<?php echo $voltas;?>alterar-dados">Alterar Dados</a></li>
+                <?php echo $alterardados->ToHTML(); ?>
+                <?php echo $alterarhabilidades->ToHTML(); ?>
             </ul>
           </li>
           <li><a href ="<?php echo $voltas;?>controller/usuario/logoutController.php">Logout</a></li>

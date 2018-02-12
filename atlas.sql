@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.5.1
--- http://www.phpmyadmin.net
+-- version 4.6.5.2
+-- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 31-Jan-2018 às 18:47
--- Versão do servidor: 10.1.13-MariaDB
--- PHP Version: 5.6.21
+-- Generation Time: 12-Fev-2018 às 02:17
+-- Versão do servidor: 10.1.21-MariaDB
+-- PHP Version: 5.6.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -23,10 +23,57 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `usuario`
+-- Estrutura da tabela `atlas_habilidades`
 --
 
-CREATE TABLE `usuario` (
+CREATE TABLE `atlas_habilidades` (
+  `id` int(11) NOT NULL,
+  `nome` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Extraindo dados da tabela `atlas_habilidades`
+--
+
+INSERT INTO `atlas_habilidades` (`id`, `nome`) VALUES
+(3, 'CSS'),
+(5, 'Javascript'),
+(7, 'SQL'),
+(8, 'HTML');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `atlas_habilidade_usuario`
+--
+
+CREATE TABLE `atlas_habilidade_usuario` (
+  `idhabilidade` int(11) NOT NULL,
+  `idusuario` int(11) NOT NULL,
+  `valor` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Extraindo dados da tabela `atlas_habilidade_usuario`
+--
+
+INSERT INTO `atlas_habilidade_usuario` (`idhabilidade`, `idusuario`, `valor`) VALUES
+(3, 6, 95),
+(3, 8, 0),
+(5, 6, 67),
+(5, 8, 0),
+(7, 6, 60),
+(7, 8, 0),
+(8, 6, 90),
+(8, 8, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `atlas_usuario`
+--
+
+CREATE TABLE `atlas_usuario` (
   `id` int(11) NOT NULL,
   `nome` varchar(90) NOT NULL,
   `email` text NOT NULL,
@@ -38,19 +85,20 @@ CREATE TABLE `usuario` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Extraindo dados da tabela `usuario`
+-- Extraindo dados da tabela `atlas_usuario`
 --
 
-INSERT INTO `usuario` (`id`, `nome`, `email`, `senha`, `foto`, `administrador`, `token`, `ativo`) VALUES
-(1, 'Christian Lemos', 'christian@compactjr.com', '$2y$10$rXJq0gGp00B00hmPItDyuek.K4kRp6OEp0Dji6x.kGD7bzPE8YVcC', '', 1, 'XTmWBwwbjUeXpwyvKj7wFKZg1OMp8YzbScXkzW33', 1);
+INSERT INTO `atlas_usuario` (`id`, `nome`, `email`, `senha`, `foto`, `administrador`, `token`, `ativo`) VALUES
+(6, 'Christian Luã Lemos', 'christian@compactjr.com', '$2y$10$XBQ.esicOMf0xICB8L9P7uuIs1sgwq4p0f4ONG5lg7wn4uMYc7KK.', 'uploads/fotos/perfil_xWZIKXexGfVFaNFRy3wj.jpg', 1, NULL, 1),
+(8, 'Eduardo Hirt', 'eduardo.hirt@compactjr.com', '$2y$10$vwhWsgyO7gxd/SPjAiEqj.gkSgDbAbjcbcmoB1jo9xhqEDgAXzxqy', 'uploads/fotos/perfil_w9AnmN2QbosxlnWGFJ50.jpg', 1, NULL, 1);
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `usuario_esqueci_senha`
+-- Estrutura da tabela `atlas_usuario_esqueci_senha`
 --
 
-CREATE TABLE `usuario_esqueci_senha` (
+CREATE TABLE `atlas_usuario_esqueci_senha` (
   `idusuario` int(11) NOT NULL,
   `chave` text NOT NULL,
   `data_hora` text NOT NULL
@@ -59,10 +107,10 @@ CREATE TABLE `usuario_esqueci_senha` (
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `usuario_tentativa`
+-- Estrutura da tabela `atlas_usuario_tentativa`
 --
 
-CREATE TABLE `usuario_tentativa` (
+CREATE TABLE `atlas_usuario_tentativa` (
   `ip` varchar(40) NOT NULL,
   `tentativas` int(11) NOT NULL,
   `data_hora` text NOT NULL
@@ -73,22 +121,35 @@ CREATE TABLE `usuario_tentativa` (
 --
 
 --
--- Indexes for table `usuario`
+-- Indexes for table `atlas_habilidades`
 --
-ALTER TABLE `usuario`
+ALTER TABLE `atlas_habilidades`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `atlas_habilidade_usuario`
+--
+ALTER TABLE `atlas_habilidade_usuario`
+  ADD PRIMARY KEY (`idhabilidade`,`idusuario`),
+  ADD KEY `idusuario` (`idusuario`);
+
+--
+-- Indexes for table `atlas_usuario`
+--
+ALTER TABLE `atlas_usuario`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `token` (`token`);
 
 --
--- Indexes for table `usuario_esqueci_senha`
+-- Indexes for table `atlas_usuario_esqueci_senha`
 --
-ALTER TABLE `usuario_esqueci_senha`
+ALTER TABLE `atlas_usuario_esqueci_senha`
   ADD PRIMARY KEY (`idusuario`);
 
 --
--- Indexes for table `usuario_tentativa`
+-- Indexes for table `atlas_usuario_tentativa`
 --
-ALTER TABLE `usuario_tentativa`
+ALTER TABLE `atlas_usuario_tentativa`
   ADD PRIMARY KEY (`ip`);
 
 --
@@ -96,19 +157,31 @@ ALTER TABLE `usuario_tentativa`
 --
 
 --
--- AUTO_INCREMENT for table `usuario`
+-- AUTO_INCREMENT for table `atlas_habilidades`
 --
-ALTER TABLE `usuario`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+ALTER TABLE `atlas_habilidades`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+--
+-- AUTO_INCREMENT for table `atlas_usuario`
+--
+ALTER TABLE `atlas_usuario`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 --
 -- Constraints for dumped tables
 --
 
 --
--- Limitadores para a tabela `usuario_esqueci_senha`
+-- Limitadores para a tabela `atlas_habilidade_usuario`
 --
-ALTER TABLE `usuario_esqueci_senha`
-  ADD CONSTRAINT `idusuario_fk_key` FOREIGN KEY (`idusuario`) REFERENCES `usuario` (`id`);
+ALTER TABLE `atlas_habilidade_usuario`
+  ADD CONSTRAINT `atlas_habilidade_usuario_ibfk_1` FOREIGN KEY (`idhabilidade`) REFERENCES `atlas_habilidades` (`id`),
+  ADD CONSTRAINT `atlas_habilidade_usuario_ibfk_2` FOREIGN KEY (`idusuario`) REFERENCES `atlas_usuario` (`id`);
+
+--
+-- Limitadores para a tabela `atlas_usuario_esqueci_senha`
+--
+ALTER TABLE `atlas_usuario_esqueci_senha`
+  ADD CONSTRAINT `idusuario_fk_key` FOREIGN KEY (`idusuario`) REFERENCES `atlas_usuario` (`id`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

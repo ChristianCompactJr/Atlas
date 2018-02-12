@@ -217,15 +217,16 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
         $("#table-conteudo").on('click', '.excluir-usuario-btn', function()
         {
             var btn = $(this);
-            var confirmacao = confirm("Tem certeza que deseja apagar o usuário " + $("td:first-child .visualizar-td-nome", btn.parent().parent()).html());
+           
+            //var confirmacao = confirm("Tem certeza que deseja apagar o usuário " + $("td:first-child .visualizar-td-nome", btn.parent().parent()).html());
             
-            if(confirmacao === false)
-            {
-                return;
-            }
-            
-
-            var id = btn.data('usuario');
+           // if(confirmacao === false)
+            //{
+            //    return;
+           // }
+            var btnid = btn.data('usuario');
+            var excluir = function(){
+            var id = btnid;
             
            $.ajax({
              data : {id : id},
@@ -235,19 +236,28 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
              
              success : function(resposta)
              {
-                 alert(resposta.mensagem);
+                if(resposta.tipo == "sucesso")
+                {
+                    GerarNotificacao("Usuário excluido com sucesso", "success");
+                    btn.parent().parent().remove();
+                }
+                else
+                {
+                    GerarNotificacao(resposta.mensagem, "danger");
+                }
                  
-                 btn.parent().parent().remove();
+                 
              },
              
              error : function(jqXHR, textStatus, errorThrown)
             {
-                  alert(jqXHR.responseText);
+                GerarNotificacao(jqXHR.responseText, "danger");
             } 
              
            });
-        });
-        
+        };
+         GerarConfirmacao("Tem certeza que deseja apagar o usuário " + $("td:first-child .visualizar-td-nome", btn.parent().parent()).html(),  excluir);
+    });
         $("#pesquisa-bar").on('submit', function()
         {
             var pesquisa = $("#pesquisa-bar-input").val();
@@ -367,7 +377,6 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
                   beforeSend : function()
                   { 
                     $("button[type='submit']", form).html("Validando...");
-                    $(".form-aviso", form).html("");
                     $("input, textarea, button", form).attr('disabled', true);
                   },
                   
@@ -375,7 +384,7 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
                   {
                       if(resposta.tipo == "sucesso")
                       {
-                           alert(resposta.mensagem);
+                           GerarNotificacao(resposta.mensagem, 'success');
                            var id = $(".alterar-hidden-id", form).val();
                            var linha =  $('#table-conteudo a[data-usuario="'+id+'"]').parent().parent();
                            $("td:nth-child(1) .visualizar-td-nome", linha).html($("#modalEditarUsuario-nome").val());
@@ -383,7 +392,8 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
                      
                       else
                       {
-                          $(".form-aviso", form).html(resposta.mensagem);
+                          GerarNotificacao(resposta.mensagem, 'danger');
+                          
                       }
                   },
                   
@@ -394,7 +404,7 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
                   },
                   error : function(jqXHR, textStatus, errorThrown)
                   {
-                        alert(jqXHR.responseText);
+                        GerarNotificacao(jqXHR.responseText, 'danger');
                   } 
                });
                
@@ -420,7 +430,7 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
                   {
                       if(resposta.tipo == "sucesso")
                       {
-                           alert(resposta.mensagem);
+                           GerarNotificacao(resposta.mensagem, 'success');
                            var id = $(".alterar-hidden-id", form).val();
                            var linha =  $('#table-conteudo a[data-usuario="'+id+'"]').parent().parent();
                            $("td:nth-child(2)", linha).html($("#modalEditarUsuario-email").val());
@@ -428,7 +438,7 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
                      
                       else
                       {
-                          $(".form-aviso", form).html(resposta.mensagem);
+                          GerarNotificacao(resposta.mensagem, 'danger');
                       }
                   },
                   
@@ -439,7 +449,7 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
                   },
                   error : function(jqXHR, textStatus, errorThrown)
                   {
-                        alert(jqXHR.responseText);
+                        GerarNotificacao(jqXHR.responseText, 'danger');
                   } 
                });
                
@@ -472,12 +482,12 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
                   {
                       if(resposta.tipo == "sucesso")
                       {
-                           alert(resposta.mensagem);
+                           GerarNotificacao(resposta.mensagem, 'success');
                       }
                      
                       else
                       {
-                          $(".form-aviso", form).html(resposta.mensagem);
+                           GerarNotificacao(resposta.mensagem, 'danger');
                       }
                   },
                   
@@ -488,7 +498,7 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
                   },
                   error : function(jqXHR, textStatus, errorThrown)
                   {
-                        alert(jqXHR.responseText);
+                        GerarNotificacao(jqXHR.responseText, 'danger');
                   } 
                });
                
@@ -508,7 +518,6 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
                   beforeSend : function()
                   { 
                     $("button[type='submit']", form).html("Validando...");
-                    $(".form-aviso", form).html("");
                     $("input, textarea, button", form).attr('disabled', true);
                   },
                   
@@ -516,7 +525,7 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
                   {
                       if(resposta.tipo == "sucesso")
                       {
-                           alert(resposta.mensagem);
+                           GerarNotificacao(resposta.mensagem, 'success');
                            $("#modalEditarUsuario-img").attr('src', "../"+resposta.novafoto);
                            var id = $(".alterar-hidden-id", form).val();
                            var linha =  $('#table-conteudo a[data-usuario="'+id+'"]').parent().parent();
@@ -525,7 +534,7 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
                      
                       else
                       {
-                          $(".form-aviso", form).html(resposta.mensagem);
+                          GerarNotificacao(resposta.mensagem, 'danger');
                       }
                   },
                   
@@ -536,7 +545,7 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
                   },
                   error : function(jqXHR, textStatus, errorThrown)
                   {
-                        alert(jqXHR.responseText);
+                        GerarNotificacao(jqXHR.responseText, 'danger');
                   },
                   cache: false,
         contentType: false,
@@ -567,7 +576,6 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
                   beforeSend : function()
                   { 
                     $("button[type='submit']", form).html("Validando...");
-                    $(".form-aviso", form).html("");
                     $("input, textarea, button", form).attr('disabled', true);
                   },
                   
@@ -575,7 +583,7 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
                   {
                       if(resposta.tipo == "sucesso")
                       {
-                           alert(resposta.mensagem);
+                           GerarNotificacao(resposta.mensagem, 'success');
                            var id = $(".alterar-hidden-id", form).val();
                            var linha =  $('#table-conteudo a[data-usuario="'+id+'"]').parent().parent();
                            var texto;
@@ -595,7 +603,7 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
                      
                       else
                       {
-                          $(".form-aviso", form).html(resposta.mensagem);
+                          GerarNotificacao(resposta.mensagem, 'danger');
                       }
                   },
                   
@@ -606,7 +614,7 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
                   },
                   error : function(jqXHR, textStatus, errorThrown)
                   {
-                        alert(jqXHR.responseText);
+                        GerarNotificacao(jqXHR.responseText, 'danger');
                   } 
                });
                
@@ -634,7 +642,6 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
                   beforeSend : function()
                   { 
                     $("button[type='submit']", form).html("Validando...");
-                    $(".form-aviso", form).html("");
                     $("input, textarea, button", form).attr('disabled', true);
                   },
                   
@@ -642,7 +649,7 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
                   {
                       if(resposta.tipo == "sucesso")
                       {
-                           alert(resposta.mensagem);
+                          GerarNotificacao(resposta.mensagem, 'success');
                            
                            var texto;
                            var id = $(".alterar-hidden-id", form).val();
@@ -664,7 +671,7 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
                      
                       else
                       {
-                          $(".form-aviso", form).html(resposta.mensagem);
+                          GerarNotificacao(resposta.mensagem, 'danger');
                       }
                   },
                   
@@ -675,7 +682,7 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
                   },
                   error : function(jqXHR, textStatus, errorThrown)
                   {
-                        alert(jqXHR.responseText);
+                        GerarNotificacao(jqXHR.responseText, 'danger');
                   } 
                });
                

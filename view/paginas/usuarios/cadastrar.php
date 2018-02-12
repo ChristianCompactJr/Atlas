@@ -93,11 +93,11 @@ if(!SessionController::IsAdmin())
                   {
                       if(resposta.tipo == "sucesso")
                       {
-                          alert("Usuário cadastrado com sucesso");
+                          GerarNotificacao("Usuário cadastrado com sucesso", "success");
                       }
                       else
                       {
-                          $(".form-aviso", form).html(resposta.mensagem);
+                          GerarNotificacao(resposta.mensagem, "danger");
                       }
                   },
                   
