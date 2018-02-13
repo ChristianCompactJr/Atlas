@@ -186,6 +186,47 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
              success : function(resposta)
              {
                 console.log(resposta);
+                htmlString = '';
+                console.log(Object.keys(resposta).length);
+                for(var j = 0; j < Object.keys(resposta).length; j++)
+                {
+                    htmlString += '<div class = "col-md-12"><h3>'+resposta[j].nomehabilidade+'</h3><div class = "habilidade-slider" data-habilidade-id = "'+resposta[j].idhabilidade+'" data-habilidade-valor = "'+resposta[j].valor+'"><div class="ui-slider-handle habilidade-slider-handle"></div></div> <div class="checkbox"><label><input type="checkbox" class = "habilidade-interesse-input" data-habilidade = "'+resposta[j].idhabilidade+'" ';
+                    
+                    if(resposta[j].interesse == true)
+                    {
+                        htmlString += 'checked';
+                    }
+                    
+                    htmlString += '>Tem interesse nesta habilidade</label></div></div>';
+                    
+                }
+                alterarHabilidadeUsuarioId = id;
+                console.log(htmlString);
+                $("#habilidades-editar-conteudo").html(htmlString);
+                
+                $(".habilidade-slider").each(function(index)
+                {
+                    
+                    var handle = $(".habilidade-slider-handle", $(this));
+                $(this).slider({range : "min", max : 100, min : 0, value : $(this).data('habilidade-valor'),slide: function( event, ui ) {handle.text( ui.value );}, create : function() {  handle.text( $( this ).slider( "value" ) ); }});
+                 
+                    /*var val = $(this).slider("option", "value");
+                    var id = $(this).data('habilidade-id');
+                    var interesseInput = $('.habilidade-interesse-input[data-habilidade="'+id+'"]');
+                    var interesse;
+                    if(interesseInput.is(":checked"))
+                    {
+                        interesse = true;
+                    }
+                    else
+                    {
+                        interesse = false;
+                    }
+                    habilidadesValor.push({id : id, valor : val, interesse : interesse});*/
+                });
+                
+                
+                $("#modalEditarHabilidades").modal('show');
                /* if(resposta.tipo == "sucesso")
                 {
                     GerarNotificacao("Usuário excluido com sucesso", "success");
@@ -348,6 +389,7 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
                     <div class="form-group">
                       <label for="senha">Nova senha: </label>
                        <input type="password" name = "senha" id="modalEditarUsuario-novasenha" class="form-control" placeholder="********" required>
+                       <div class="pwstrength_viewport_progress"></div>
                     </div>
                     <div class="form-group">
                       <label for="confsenha">Confirmação da nova senha: </label>
@@ -399,7 +441,83 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
       
     </div>
 </div>
+        
+        
+        <div class="modal fade" id="modalEditarHabilidades" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Habilidades</h4>
+        </div>
+        <div class="modal-body" >
+
+            <div class = "row" id = "habilidades-editar-conteudo" style = "padding:20px">
+                
+            </div>
+            <button class ="btn btn-block btn-primary" id = "btn-salvar-habilidades" style = "margin-top: 20px" type = "button">Salvar Habilidades</button> 
+        </div>
+        
+      </div>
+      
+    </div>
+</div>
         <script>
+            var alterarHabilidadeUsuarioId;
+            $("#btn-salvar-habilidades").on('click', function()
+            {
+                var btn = $(this);
+                btn.attr('disabled', true);
+                var habilidadesValor = [];
+                
+                $(".habilidade-slider").each(function(index)
+                {
+                    var val = $(this).slider("option", "value");
+                    var id = $(this).data('habilidade-id');
+                    var interesseInput = $('.habilidade-interesse-input[data-habilidade="'+id+'"]');
+                    var interesse;
+                    if(interesseInput.is(":checked"))
+                    {
+                        interesse = true;
+                    }
+                    else
+                    {
+                        interesse = false;
+                    }
+                    habilidadesValor.push({id : id, valor : val, interesse : interesse});
+                });
+                 $.ajax({
+                       url : '../controller/habilidades/atualizar.php',
+                       method : 'POST',
+                        dataType: "json",
+                       data : {info : habilidadesValor, id : alterarHabilidadeUsuarioId},
+                       
+                       success : function(resposta)
+                       {
+                           if(resposta.tipo == "sucesso")
+                            {
+                                 GerarNotificacao(resposta.mensagem, 'success');
+                            }
+
+                            else
+                            {
+                                GerarNotificacao(resposta.mensagem, 'danger');
+                            }
+                       },
+                       complete : function()
+                        {
+                            btn.attr('disabled', false);
+                        },
+                       error : function(jqXHR, textStatus, errorThrown)
+                         {
+                        GerarNotificacao(jqXHR.responseText, 'danger');
+                        } 
+                    });
+            });
+            
+            
             $("#alterar-nome").on("submit", function()
            {
                var form = $(this);

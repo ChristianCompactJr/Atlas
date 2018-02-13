@@ -16,7 +16,7 @@ $dao = new HabilidadeDAO();
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>Alterar Dados - Atlas</title>
+        <title>Habilidades - Atlas</title>
         <?php Carregador::CarregarViewHeadMeta(); ?>    
     </head>
     <body>

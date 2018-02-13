@@ -48,7 +48,8 @@ $usuario = SessionController::GetUsuario();
                     <input type ="hidden" name ="id" value ="<?php echo $usuario->getId(); ?>" class = "alterar-hidden-id">
                     <div class="form-group">
                       <label for="senha">Nova senha: </label>
-                       <input type="password" name = "senha" id="modalEditarUsuario-novasenha" class="form-control" placeholder="********" required>
+                       <input type="password" name = "senha" id="modalEditarUsuario-novasenha" class="form-control form-senha" placeholder="********" required>
+                       <div class="pwstrength_viewport_progress"></div>
                     </div>
                     <div class="form-group">
                       <label for="confsenha">Confirmação da nova senha: </label>

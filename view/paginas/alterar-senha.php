@@ -40,7 +40,8 @@
 	                        <input type="hidden" name="id" value = "<?php echo $_GET['u']; ?>">
                                 <div class="form-group">
                                    <label for="novasenha">Sua nova senha:</label>
-                                   <input type="password" id="novasenha" name="novasenha" class="form-control" placeholder="********" required>
+                                   <input type="password" id="novasenha" name="novasenha" class="form-control form-senha" placeholder="********" required>
+                                   <div class="pwstrength_viewport_progress"></div>
                                 </div>
                                 <div class="form-group">
                                    <label for="confsenha">Confirmação da nova senha:</label>

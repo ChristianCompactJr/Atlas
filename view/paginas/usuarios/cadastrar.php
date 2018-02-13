@@ -33,12 +33,15 @@ if(!SessionController::IsAdmin())
                         </div>
                         <div class ="form-group">
                             <label for="nome">Senha:</label>
-                            <input type ="password" name = "senha" id ="senha" class ="form-control" placeholder = "A senha do usuário" required>
+                            <input type ="password" name = "senha" id ="senha" class ="form-control form-senha" placeholder = "A senha do usuário" required>
+                            <div class="pwstrength_viewport_progress"></div>
                         </div>
                         <div class ="form-group">
                             <label for="password">Confirmação da senha:</label>
                             <input type ="password" name ="confsenha" id ="confsenha" class ="form-control" placeholder = "Confirmação da senha do usuário" required>
                         </div>
+                        
+                        
                         <div class ="form-group">
                             <label for="foto">Foto de perfil (Não é obrigatório. Tamanho máximo de <?php echo EnviadorArquivos::GetMaxUploadSize() /1000000; ?>MB):</label>
                             <input type ="file" name ="foto" class ="form-control" placeholder = "Foto de perfil do usuário">
@@ -61,6 +64,7 @@ if(!SessionController::IsAdmin())
         </div>
         
         <?php Carregador::CarregarViewFooter(); ?>
+        
         <script type ="text/javascript">
             var validandoCadastro = false;
            $("#cadastro-usuario-form").on("submit", function()

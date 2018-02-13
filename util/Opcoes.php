@@ -2,7 +2,7 @@
 define('PROJECT_HTTP_ROOT', '/atlas/');
 define('PROJECT_ROOT', $_SERVER['DOCUMENT_ROOT'].PROJECT_HTTP_ROOT);
 define('PROJECT_KEY', '');
-define('PROJECT_VERSION', '0.2');
+define('PROJECT_VERSION', '0.3.2');
 define('PROJECT_HOST', 'localhost');
 define('PROJECT_SGBD', 'mysql');
 define('PROJECT_BASE', 'atlas');

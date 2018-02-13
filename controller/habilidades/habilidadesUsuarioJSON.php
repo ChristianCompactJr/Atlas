@@ -12,7 +12,7 @@ if(SessionController::IsAdmin())
     
     foreach($habilidades as $habilidade)
     {
-        $resposta[] = array('idhabilidade' => $habilidade->getHabilidade()->getId(), 'valor' => $habilidade->getValor(), 'interesse' => $habilidade->getInteresse());
+        $resposta[] = array('idhabilidade' => $habilidade->getHabilidade()->getId(), 'nomehabilidade' => $habilidade->getHabilidade()->getNome(), 'valor' => $habilidade->getValor(), 'interesse' => $habilidade->getInteresse());
     }
     
     echo json_encode($resposta, JSON_FORCE_OBJECT);

@@ -173,3 +173,7 @@ footer
     text-align: center;
     line-height: 1.6em;
 }
+
+.progress-bar {
+    color: #333;
+} 

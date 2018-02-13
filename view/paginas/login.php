@@ -71,7 +71,7 @@
                     <div class = "col-md-1">
                     </div>
                      
-                    <div class ="col-md-10 col-sm-12">
+                    <div class ="col-md-10 col-sm-12" id = "conteudo-enviar-esqueci">
                        <form onsubmit="return false" id = "form-enviar_esqueci">
                            <div class="form-group">
                               <label for="email">Digite seu Email para podermos redefinir sua senha: </label>
@@ -133,7 +133,7 @@
                   },
                   error : function(jqXHR, textStatus, errorThrown)
                   {
-                        alert(jqXHR.responseText);
+                       GerarNotificacao(jqXHR.responseText, 'danger');
                   } 
                });
                
@@ -160,7 +160,15 @@
                   
                   success : function(resposta)
                   {
-                      alert(resposta.mensagem);
+                      if(resposta.tipo == "sucesso")
+                      {
+                          var htmlString = '<img src = "recursos/img/email.png" class = "img-responsive" style = "display:block;margin:auto;max-width:140px;"> <h3 class = "text-center">Enviamos uma mensagem para seu email</h3><p>Siga as instruções na mensagem para alterar sua senha.<br /><strong>Não se esqueça de checar sua caixa de entrada de span.</strong></p>';
+                         $("#conteudo-enviar-esqueci").html(htmlString);
+                      }
+                      else
+                      {
+                          GerarNotificacao(resposta.mensagem, 'danger');
+                      }
                   },
                   
                   complete : function()
@@ -170,7 +178,7 @@
                   },
                   error : function(jqXHR, textStatus, errorThrown)
                   {
-                        alert(jqXHR.responseText);
+                      GerarNotificacao(jqXHR.responseText, 'danger');
                   }    
                });
                
