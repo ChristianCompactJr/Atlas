@@ -1,6 +1,6 @@
 <?php
 
-
+    $_SERVER['REQUEST_URI'] = strtolower($_SERVER['REQUEST_URI']);
     include_once '../../util/Carregador.php';
     Carregador::CarregarPacotes();
      $extencoes = array('php', 'html', 'phtml');

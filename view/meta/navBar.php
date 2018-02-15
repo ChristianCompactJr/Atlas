@@ -12,13 +12,28 @@ $visualizarUsuario = new LinkMenu("Visualizar Usuários", "usuarios/visualizar")
 $usuarios->AdicionarFilho($cadastrarUsuario);
 $usuarios->AdicionarFilho($visualizarUsuario);
 
+if(SessionController::IsAdmin())
+{
+    $projetos = new LinkMenu("Projetos", "#");
+    $cadastrarProjetos = new LinkMenu("Cadastrar Projeto", "projetos/cadastrar");
+    $visualizarProjetos = new LinkMenu("Visualizar Projetos", "projetos/visualizar");
+    $projetos->AdicionarFilho($cadastrarProjetos);
+    $projetos->AdicionarFilho($visualizarProjetos);
+}
+else
+{
+    $projetos = new LinkMenu("Projetos", "projetos/visualizar");
+}
 
-$projeto = new LinkMenu("Projetos", "projetos");
 
 $relatorios = new LinkMenu("Relatórios", 'relatorios');
 
-$voltas = UserRootViewFinder::GetBackSlashes();
+$alterardados = new LinkMenu("Alterar Dados", 'alterar-dados');
+$alterarhabilidades = new LinkMenu('Habilidades', 'habilidades');
 
+$confhabilidades = new LinkMenu('Configurar Habilidades', 'configurar-habilidades');
+
+$voltas = UserRootViewFinder::GetBackSlashes();
 ?>
 
 <nav class="navbar navbar-default">
@@ -42,11 +57,12 @@ $voltas = UserRootViewFinder::GetBackSlashes();
          
           <?php 
           echo $paginaInicial->ToHTML(); 
-          echo $projeto->ToHTML();
+          echo $projetos->ToHTML();
           if(SessionController::IsAdmin() == true)
           {
               echo $usuarios->ToHTML();
               echo $relatorios->ToHTML();
+              echo $confhabilidades->ToHTML();
           }
           ?>
           
@@ -55,9 +71,10 @@ $voltas = UserRootViewFinder::GetBackSlashes();
 
           <li class="dropdown">
 
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><img alt="" src="<?php echo $voltas.$usuario->getFoto(); ?>" class = "perfil-menu"><?php echo $usuario->getNome(); ?> <span class="caret"></span></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><img alt="" src="<?php echo $voltas.$usuario->getFoto(); ?>" class = "perfil-menu"><span id = "nome-menu"><?php echo $usuario->getNome(); ?></span> <span class="caret"></span></a>
             <ul class="dropdown-menu">
-              <li><a href="<?php echo $voltas;?>alterar-dados">Alterar Dados</a></li>
+                <?php echo $alterardados->ToHTML(); ?>
+                <?php echo $alterarhabilidades->ToHTML(); ?>
             </ul>
           </li>
           <li><a href ="<?php echo $voltas;?>controller/usuario/logoutController.php">Logout</a></li>
