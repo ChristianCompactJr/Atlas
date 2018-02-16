@@ -23,7 +23,7 @@ if(!SessionController::IsAdmin())
             <h1>Cadastrar Projetos</h1>
             <div class = "row">
                 <div class = "col-md-12">
-                    <form id ="cadastro-projeto-form"  onsubmit="return false">
+                    <form id ="cadastro-projeto-form"  onsubmit="return true" method = "POST" action = "../controller/projeto/CadastroController.php">
                         <div class ="form-group">
                             <label for="nome">Nome:</label>
                             <input type ="text" name = "nome" class ="form-control" placeholder = "Nome do projeto" required>
@@ -34,6 +34,20 @@ if(!SessionController::IsAdmin())
                         </div>
                         <div class ="form-group">
                             <label>Scrum Master:</label><br />
+                            <div class ="container">
+                                <div class ="row">
+                                    <div class ="col-md-12">
+                                        <div class ="table-responsive">
+                                            <table class ="table">
+                                                
+                                                <tbody id = "table-master-conteudo">
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <button id ="btn-escolher-scrum-master" type ="button" class ="btn btn-success" title="Escolher Scrum Master">Escolher Scrum Master</button>
                         </div>
                         <div class ="form-group">
@@ -61,19 +75,19 @@ if(!SessionController::IsAdmin())
                         </div>
                         <div class ="form-group">
                             <label for="inicio">Data de inicio:</label>
-                            <input type ="text" name = "inicio" class ="form-control" placeholder = "A data de inicio do projeto" required>
+                            <input type ="text" name = "inicio" id ="inicio" class ="form-control" placeholder = "A data de inicio do projeto" required>
                         </div>
                         <div class ="form-group">
                             <label for="prazo">Prazo:</label>
-                            <input type ="text" name = "prazo" class ="form-control" placeholder = "O prazo do projeto" required>
+                            <input type ="text" name = "prazo" id ="prazo" class ="form-control" placeholder = "O prazo do projeto" required>
                         </div>
                         <div class ="form-group">
                             <label for="backlog">Backlog:</label>
-                            <textarea rows ="7" name = "backlog" class ="form-control" placeholder = "O backlog do proejto"></textarea>
+                            <textarea rows ="7" name = "backlog" class ="form-control" placeholder = "O backlog do projeto"></textarea>
                         </div>
                         <div class ="form-group">
-                            <label for="backlog">Observações:</label>
-                            <textarea rows ="7" name = "backlog" class ="form-control" placeholder = "O backlog do proejto"></textarea>
+                            <label for="obs">Observações:</label>
+                            <textarea rows ="7" name = "obs" class ="form-control" placeholder = "Observações importantes do projeto"></textarea>
                         </div>
                          <div class ="form-group">
                             <label for="estagio">Estágio:</label>
@@ -106,7 +120,7 @@ if(!SessionController::IsAdmin())
                   <h4 class="modal-title">Escolha um usuário</h4>
                 </div>
                 <div class="modal-body">
-                    <form id="pesquisar-usuario-dev-form" class = "form-inline" onsubmit="return false">
+                    <form id="pesquisar-usuario-dev-form" class = "form-inline" onsubmit="return false" data-mostrarhabilidades="">
                         <div class ="form-group">
                             <label for ="pesquisar-usuario-dev">Pesquisar:</div>
                             <input type ="text" name ="pesquisar-usuario-dev" class ="form-control" id ="pesquisar-usuario-dev-form_input" placeholder = "Digite o nome do usuário">
@@ -124,85 +138,97 @@ if(!SessionController::IsAdmin())
             </div>
         </div>
         <script>
-            var resultadoDeUsuarioArray;
-            
-            function CarregarDevs(devs, add)
+            var resultadoDeUsuarioArray = null;
+
+            function CarregarDevs(devs, add, mostrarhabilidades, master)
             {
-                if(add == true)
+                var classebtnescolher;
+                
+                if(master == true)
                 {
-                    devs = devs.filter(function (el) {
-                    var tem = false;    
-                    $(".hidden-dev-input").each(function(index)
-                    {
-                       var hiddenval = $(this).val();
-                       console.log(hiddenval + " " + el.id);
-                       if(hiddenval == el.id)
-                       {
-                           tem = true;
-                       }
-                    });
-                        
-                    return tem == false;
-                });
-               
-                    
+                    classebtnescolher = 'btn-modal-escolher-master';
+                }
+                else
+                {
+                    classebtnescolher = 'btn-modal-escolher-dev'
                 }
                 
+                if (add == true)
+                {
+                    devs = devs.filter(function(el)
+                    {
+                        var tem = false;
+                        $(".hidden-dev-input").each(function(index)
+                        {
+                            var hiddenval = $(this).val();
+                            if (hiddenval == el.id)
+                            {
+                                tem = true;
+                            }
+                        });
+
+                        return tem == false;
+                    });
+
+
+                }
+
                 var htmlString = '';
                 var totalUsuarios = Object.keys(devs).length;
-                for(var i = 0; i < totalUsuarios; i++)
+                for (var i = 0; i < totalUsuarios; i++)
                 {
-                    htmlString += '<img src ="../'+devs[i].foto+'" class = "img-thumbnail" style = "display:block;margin:auto;max-width:150px;"><h3 class = "text-center">'+devs[i].nome+'</h3>';
-
-                    var totalHabilidades = Object.keys(devs[i].habilidades).length;
-
-                    for(var j = 0; j < totalHabilidades; j++)
+                    htmlString += '<img src ="../' + devs[i].foto + '" class = "img-thumbnail" style = "display:block;margin:auto;max-width:150px;"><h3 class = "text-center">' + devs[i].nome + '</h3>';
+                    if (mostrarhabilidades == true)
                     {
-                        
-                        
-                        
-                        
-                        var valor = devs[i].habilidades[j].valor;
-                        var classe;
-                        if(valor <= 20)
-                        {
-                            classe = "progress-bar-danger";
-                        }
-                        else if(valor <= 40 && valor > 20)
-                        {
-                            classe = "progress-bar-warning";
-                        }
-                         else if(valor <= 60 && valor > 40)
-                        {
-                            classe = "progress-bar-info";
-                        }
-                         else if(valor <= 80 && valor > 60)
-                        {
-                            classe = "progress-bar-primary";
-                        }
-                         else 
-                        {
-                            classe = "progress-bar-success";
-                        }
-                        var interessadoString = '';
 
-                        if(devs[i].habilidades[j].interesse == true)
+
+                        var totalHabilidades = Object.keys(devs[i].habilidades).length;
+
+                        for (var j = 0; j < totalHabilidades; j++)
                         {
-                            interessadoString = '<div class="interessado-icon" title = "Interessado"><div class="text">*</div></div>';
+                            var valor = devs[i].habilidades[j].valor;
+                            var classe;
+                            if (valor <= 20)
+                            {
+                                classe = "progress-bar-danger";
+                            }
+                            else if (valor <= 40 && valor > 20)
+                            {
+                                classe = "progress-bar-warning";
+                            }
+                            else if (valor <= 60 && valor > 40)
+                            {
+                                classe = "progress-bar-info";
+                            }
+                            else if (valor <= 80 && valor > 60)
+                            {
+                                classe = "progress-bar-primary";
+                            }
+                            else
+                            {
+                                classe = "progress-bar-success";
+                            }
+                            var interessadoString = '';
+
+                            if (devs[i].habilidades[j].interesse == true)
+                            {
+                                interessadoString = '<div class="interessado-icon" title = "Interessado"><div class="text">*</div></div>';
+                            }
+                            htmlString += '<div class="progress"><div class="progress-bar ' + classe + '" role="progressbar" aria-valuenow="' + valor + '" aria-valuemin="0" aria-valuemax="100" style="width: ' + valor + '%;"><span class="sr-only">' + valor + '% Complete</span></div><span class="progress-type">' + devs[i].habilidades[j].nomehabilidade + '</span><span class="progress-completed">' + valor + '</span>' + interessadoString + '</div></div>';
                         }
-                        htmlString += '<div class="progress"><div class="progress-bar '+classe+'" role="progressbar" aria-valuenow="'+valor+'" aria-valuemin="0" aria-valuemax="100" style="width: '+valor+'%;"><span class="sr-only">'+valor+'% Complete</span></div><span class="progress-type">'+devs[i].habilidades[j].nomehabilidade+'</span><span class="progress-completed">'+valor+'</span>'+interessadoString+'</div></div>';
                     }
-                    if(add == true)
+                    if (add == true)
                     {
-                        htmlString += '<button type = "button" class = "btn btn-primary btn-block btn-modal-escolher-dev" data-id="'+devs[i].id+'" data-imgsrc = '+devs[i].foto+' data-nome = '+devs[i].nome+' >Escolher</button>';
+                        htmlString += '<button type = "button" class = "btn btn-primary btn-block '+classebtnescolher+'" data-id="' + devs[i].id + '" data-imgsrc = ' + devs[i].foto + ' data-nome = ' + devs[i].nome + ' >Escolher</button>';
+
                         $("#pesquisar-usuario-dev-form").show();
                     }
                     else
                     {
                         $("#pesquisar-usuario-dev-form").hide();
                     }
-                    
-                    
+
+
                     htmlString += '<hr /><br />';
 
 
@@ -211,68 +237,163 @@ if(!SessionController::IsAdmin())
                 $("#modal-escolher-dev__conteudo").html(htmlString);
                 $("#modal-escolher-dev").modal('show');
             }
-            
+
             $("#modal-escolher-dev__conteudo").on('click', '.btn-modal-escolher-dev', function()
             {
                 var imgsrc = $(this).data('imgsrc');
                 var nome = $(this).data('nome');
                 var id = $(this).data('id');
-               $("#table-devs-conteudo").append('<tr><input type = "hidden" name = "dev[]" class = "hidden-dev-input" value = "'+id+'"><td><img src = "../'+imgsrc+'" class = "img-thumbnail" style = "max-width:50px; margin-right:10px;"><span class = "visualizar-td-nome">'+nome+'</span></td><td><a class="btn btn-primary ver-dev-btn" data-id="'+id+'"><em class="fa fa-eye"></em></a><a class="btn btn-danger excluir-dev-btn"><em class="fa fa-trash"></em></a></td></tr>'); 
-               $("#modal-escolher-dev").modal('hide');
+                $("#table-devs-conteudo").append('<tr><input type = "hidden" name = "dev[]" class = "hidden-dev-input" value = "' + id + '"><td><img src = "../' + imgsrc + '" class = "img-thumbnail" style = "max-width:50px; margin-right:10px;"><span class = "visualizar-td-nome">' + nome + '</span></td><td><a class="btn btn-primary ver-dev-btn" data-id="' + id + '"><em class="fa fa-eye"></em></a><a class="btn btn-danger excluir-dev-btn"><em class="fa fa-trash"></em></a></td></tr>');
+                $("#modal-escolher-dev").modal('hide');
             });
-            
-            $("#table-devs-conteudo").on('click', '.excluir-dev-btn', function()
+            $("#modal-escolher-dev__conteudo").on('click', '.btn-modal-escolher-master', function()
             {
-               $(this).parent().parent().remove(); 
+                var imgsrc = $(this).data('imgsrc');
+                var nome = $(this).data('nome');
+                var id = $(this).data('id');
+                $("#table-master-conteudo").html('<tr><input type = "hidden" name = "master" class = "hidden-dev-input" value = "' + id + '"><td><img src = "../' + imgsrc + '" class = "img-thumbnail" style = "max-width:50px; margin-right:10px;"><span class = "visualizar-td-nome">' + nome + '</span></td><td><a class="btn btn-danger excluir-dev-btn"><em class="fa fa-trash"></em></a></td></tr>');
+                $("#modal-escolher-dev").modal('hide');
+            });
+
+
+            $("#table-devs-conteudo, #table-master-conteudo").on('click', '.excluir-dev-btn', function()
+            {
+                $(this).parent().parent().remove();
             });
             $("#table-devs-conteudo").on('click', '.ver-dev-btn', function()
             {
                 var id = $(this).data('id');
-              var newArray = resultadoDeUsuarioArray.filter(function (el) {
-                return el.id == id;
-              });
-              CarregarDevs(newArray, false);
+                var newArray = resultadoDeUsuarioArray.filter(function(el)
+                {
+                    return el.id == id;
+                });
+                CarregarDevs(newArray, false, true, false);
             });
-            
-            
+
+
             $("#pesquisar-usuario-dev-form").on('submit', function()
             {
                 var pesquisa = $("#pesquisar-usuario-dev-form_input").val().toUpperCase();
 
-                var newArray = resultadoDeUsuarioArray.filter(function (el) {
-                return el.nome.toUpperCase().match(pesquisa)
-              });
-              CarregarDevs(newArray, true);
+                var newArray = resultadoDeUsuarioArray.filter(function(el)
+                {
+                    return el.nome.toUpperCase().match(pesquisa)
+                });
+                var mh = $(this).data('mostrarhabilidades');
+
+                CarregarDevs(newArray, true, mh, mh);
             });
-            
-            
-            
-            
-            $("#btn-escolher-dev").on('click', function(){
-               
-               $.ajax({
-                  url : '../controller/usuario/CarregarJSONCompleto.php',
-                  method : 'POST',
-                  
-                  success : function(resposta)
-                  {
-                       resultadoDeUsuarioArray = $.map(resposta, function(el) { return el });
-                       
-                       CarregarDevs(resultadoDeUsuarioArray, true);
-                  },
-                  error : function(jqXHR, textStatus, errorThrown)
-                  {
-                      console.log(jqXHR.responseText);
-                  }   
-                  
-               });
-               
+
+
+
+
+            $("#btn-escolher-dev").on('click', function()
+            {
+                if (resultadoDeUsuarioArray !== null)
+                {
+                    CarregarDevs(resultadoDeUsuarioArray, true, true, false);
+                }
+                else
+                {
+                    $.ajax(
+                    {
+                        url: '../controller/usuario/CarregarJSONCompleto.php',
+                        method: 'POST',
+
+                        success: function(resposta)
+                        {
+                            resultadoDeUsuarioArray = $.map(resposta, function(el)
+                            {
+                                return el
+                            });
+
+                            CarregarDevs(resultadoDeUsuarioArray, true, true, false);
+
+                        },
+                        error: function(jqXHR, textStatus, errorThrown)
+                        {
+                            console.log(jqXHR.responseText);
+                        }
+
+                    });
+                }
+                $("#pesquisar-usuario-dev-form").data('mostrarhabilidades', '1');
+
+
             });
-            
+            $("#btn-escolher-scrum-master").on('click', function()
+            {
+                if (resultadoDeUsuarioArray !== null)
+                {
+                    CarregarDevs(resultadoDeUsuarioArray, true, false, true);
+                }
+                else
+                {
+                    $.ajax(
+                    {
+                        url: '../controller/usuario/CarregarJSONCompleto.php',
+                        method: 'POST',
+
+                        success: function(resposta)
+                        {
+                            resultadoDeUsuarioArray = $.map(resposta, function(el)
+                            {
+                                return el
+                            });
+
+                            CarregarDevs(resultadoDeUsuarioArray, true, false, true);
+                        },
+                        error: function(jqXHR, textStatus, errorThrown)
+                        {
+                            alert(jqXHR.responseText);
+                        }
+
+                    });
+                }
+                $("#pesquisar-usuario-dev-form").data('mostrarhabilidades', '0');
+
+            });
             $("#cadastro-projeto-form").on('submit', function()
             {
-               console.log($(this).serialize()); 
+                var mastercount = $('input[name="master"]').length;
+                
+                if(mastercount != 1)
+                {
+                    GerarNotificacao("O projeto deve ter um SCRUM Master", 'danger');
+                    return;
+                }
+                var devcount = $('input[name="dev[]"').length;
+                console.log(devcount);
+                if(devcount <= 0)
+                {
+                    GerarNotificacao("O projeto deve ter um membro na equipe SCRUM", 'danger');
+                
+                    return;
+                }
+                
+                console.log(mastercount);
+                
+                
+                console.log($(this).serialize());
             });
+
+            $('#inicio, #prazo').datepicker(
+            {
+                dateFormat: 'dd/mm/yy',
+                dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+                dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
+                dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+                monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+                monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                nextText: 'Proximo',
+                prevText: 'Anterior'
+            });
+
+            $("#inicio, #prazo").on('focus', function()
+            {
+                $(this).blur();
+            });
+            
         </script>
 
     </body>

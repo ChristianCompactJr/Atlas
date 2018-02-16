@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.6.5.2
--- https://www.phpmyadmin.net/
+-- version 4.5.1
+-- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: 15-Fev-2018 às 21:14
--- Versão do servidor: 10.1.21-MariaDB
--- PHP Version: 7.1.1
+-- Generation Time: 16-Fev-2018 às 16:53
+-- Versão do servidor: 10.1.13-MariaDB
+-- PHP Version: 5.6.21
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -63,7 +63,7 @@ CREATE TABLE `atlas_habilidade_usuario` (
 --
 
 INSERT INTO `atlas_habilidade_usuario` (`idhabilidade`, `idusuario`, `valor`, `interesse`) VALUES
-(17, 6, 100, 1),
+(17, 6, 85, 1),
 (17, 8, 0, 0),
 (17, 10, 0, 0),
 (17, 11, 0, 0),
@@ -87,11 +87,11 @@ INSERT INTO `atlas_habilidade_usuario` (`idhabilidade`, `idusuario`, `valor`, `i
 (22, 8, 0, 0),
 (22, 10, 0, 0),
 (22, 11, 0, 0),
-(23, 6, 85, 1),
+(23, 6, 77, 1),
 (23, 8, 0, 0),
 (23, 10, 0, 0),
 (23, 11, 0, 0),
-(24, 6, 90, 1),
+(24, 6, 85, 1),
 (24, 8, 0, 0),
 (24, 10, 0, 0),
 (24, 11, 0, 0);
@@ -110,9 +110,16 @@ CREATE TABLE `atlas_projeto` (
   `prazo` text,
   `cliente` text NOT NULL,
   `backlog` text,
-  `observações` text,
+  `observacoes` text,
   `estagio` enum('Desenvolvimento','Entrege','Manutenção') NOT NULL DEFAULT 'Desenvolvimento'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Extraindo dados da tabela `atlas_projeto`
+--
+
+INSERT INTO `atlas_projeto` (`id`, `nome`, `scrum_master`, `data_inicio`, `prazo`, `cliente`, `backlog`, `observacoes`, `estagio`) VALUES
+(2, 'Atlas', 6, '26-01-2018', '05-03-2018', 'Compact jr', 'Fazer coisa pra caralho', 'Muita coisa', 'Desenvolvimento');
 
 -- --------------------------------------------------------
 
@@ -124,6 +131,14 @@ CREATE TABLE `atlas_projeto_desenvolvedor` (
   `idprojeto` int(11) NOT NULL,
   `idusuario` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Extraindo dados da tabela `atlas_projeto_desenvolvedor`
+--
+
+INSERT INTO `atlas_projeto_desenvolvedor` (`idprojeto`, `idusuario`) VALUES
+(2, 8),
+(2, 10);
 
 -- --------------------------------------------------------
 
@@ -189,7 +204,7 @@ CREATE TABLE `atlas_usuario` (
 INSERT INTO `atlas_usuario` (`id`, `nome`, `email`, `senha`, `foto`, `administrador`, `token`, `ativo`) VALUES
 (6, 'Christian Luã Lemos', 'christian@compactjr.com', '$2y$10$XBQ.esicOMf0xICB8L9P7uuIs1sgwq4p0f4ONG5lg7wn4uMYc7KK.', 'uploads/fotos/perfil_xWZIKXexGfVFaNFRy3wj.jpg', 1, NULL, 1),
 (8, 'Eduardo Hirt', 'eduardo.hirt@compactjr.com', '$2y$10$vwhWsgyO7gxd/SPjAiEqj.gkSgDbAbjcbcmoB1jo9xhqEDgAXzxqy', 'uploads/fotos/perfil_w9AnmN2QbosxlnWGFJ50.jpg', 1, NULL, 1),
-(10, 'visitante', 'visitante@compactjr.com', '$2y$10$jmk0uG535X5rPRv9u8hEI.XVmHaig8RH98oWf/Ii78Jw.b/rWebQ.', '', 0, NULL, 0),
+(10, 'visitante', 'visitante@compactjr.com', '$2y$10$pLT/yf6LwwncBxGzHoBj2uzgup.3qUDvbtIbmrCg9R68czOOiRnAS', '', 0, NULL, 1),
 (11, 'Chris', 'christianlualemosc@hotmail.com', '$2y$10$WUGbBATm2/xeK9RveTTqwOpT.AGdPmoRQwpCCVQsHOfld2YiaiaAa', '', 0, NULL, 1);
 
 -- --------------------------------------------------------
@@ -222,6 +237,13 @@ CREATE TABLE `atlas_usuario_tentativa` (
   `tentativas` int(11) NOT NULL,
   `data_hora` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Extraindo dados da tabela `atlas_usuario_tentativa`
+--
+
+INSERT INTO `atlas_usuario_tentativa` (`ip`, `tentativas`, `data_hora`) VALUES
+('::1', 1, '16-02-2018 10:14:31');
 
 --
 -- Indexes for dumped tables
@@ -307,7 +329,7 @@ ALTER TABLE `atlas_habilidades`
 -- AUTO_INCREMENT for table `atlas_projeto`
 --
 ALTER TABLE `atlas_projeto`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `atlas_projeto_tarefa_macro`
 --
