@@ -27,7 +27,27 @@
             }
             array_multisort($habilidadesSorted, SORT_DESC, $habilidadesArray);
             
-            $resposta[] = array('id' => $usuario->getId(), 'nome' => $usuario->getNome(), 'email' => $usuario->getEmail(), 'foto' => $usuario->getFoto(), 'administrador' => $usuario->getAdministrador(), 'ativo' => $usuario->getAtivo(), 'habilidades' => $habilidadesArray);
+            $projetodao = new ProjetoDAO();
+            
+            $masters = $projetodao->GetProjetosUsuarioMaster($usuario->getId());
+            $masterToArrayJSON = array();
+            foreach($masters as $master)
+            {
+                $masterToArrayJSON[] = array('nomeprojeto' => $master->getNome(), 'estagio' => $master->getEstagio());
+                
+            }
+           
+            
+            $devs = $projetodao->GetProjetosUsuarioDev($usuario->getId());
+            $devsToArrayJSON = array();
+            
+            foreach($devs as $dev)
+            {
+                $devsToArrayJSON[] = array('nomeprojeto' => $dev->getNome(), 'estagio' => $dev->getEstagio());
+            }
+            
+            $resposta[] = array('id' => $usuario->getId(), 'nome' => $usuario->getNome(), 'email' => $usuario->getEmail(), 'foto' => $usuario->getFoto(), 'administrador' => $usuario->getAdministrador(), 'ativo' => $usuario->getAtivo(), 'habilidades' => $habilidadesArray, 'master' => $masterToArrayJSON, 'devs' => $devsToArrayJSON);
+            
         }
         
         echo json_encode($resposta, JSON_FORCE_OBJECT);

@@ -1,28 +1,29 @@
 <?php
-
-    
-    $_POST['inicio'] = str_replace('/', '-', $_POST['inicio']);
-    $_POST['prazo'] = str_replace('/', '-', $_POST['prazo']);
-    
-    print_r($_POST);
-    
-    $inicio = $_POST['inicio'];
-$inicio = str_replace('/', '-', $inicio);
-
- $prazo = $_POST['prazo'];
-$prazo = str_replace('/', '-', $prazo);
-     if(strtotime($inicio) > strtotime($prazo))
-     {
-         echo "O inicio é maior que o prazo";
-     }
-     else
-     {
-         echo "O prazo é o maior que o inicio";
-     }
+    header('Content-Type: application/json');
+    if(SessionController::IsAdmin())
+    {
+        if(!isset($_POST['dev']) || !isset($_POST['master']))
+        {
+            $resposta = array('tipo' => 'erro', 'mensagem' => 'O Projeto deve ter um SCRUM Master e pelo mesmo um equipe SCRUM');
+        }
+        else
+        {
+            try
+            {
+                $dao = new ProjetoDAO();
+                $dao->CriarProjeto($_POST['nome'], $_POST['cliente'], $_POST['master'], $_POST['dev'], $_POST['inicio'], $_POST['prazo'], $_POST['backlog'], $_POST['obs'], $_POST['estagio']);
+                $resposta = array('tipo' => 'sucesso', 'mensagem' => 'Projeto cadastrado com sucesso');
+            }
+            catch (Exception $e)
+            {
+                $resposta = array('tipo' => 'erro', 'mensagem' => $e->getMessage());
+            }
+        }
+        
+        
+        echo json_encode($resposta, JSON_FORCE_OBJECT);
      
-     $dao = new ProjetoDAO();
-     $dao->CriarProjeto($_POST['nome'], $_POST['cliente'], $_POST['master'], $_POST['dev'], $inicio, $prazo, $_POST['backlog'], $_POST['obs'], $_POST['estagio']);
-     //$diferenca = round(abs(strtotime($_POST['agora']) - strtotime($resultadoTentativas->data_hora)) / 60, 0);
+    }
 
 ?>
 

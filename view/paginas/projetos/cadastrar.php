@@ -23,7 +23,7 @@ if(!SessionController::IsAdmin())
             <h1>Cadastrar Projetos</h1>
             <div class = "row">
                 <div class = "col-md-12">
-                    <form id ="cadastro-projeto-form"  onsubmit="return true" method = "POST" action = "../controller/projeto/CadastroController.php">
+                    <form id ="cadastro-projeto-form"  onsubmit="return false" method = "POST" action = "../controller/projeto/CadastroController.php">
                         <div class ="form-group">
                             <label for="nome">Nome:</label>
                             <input type ="text" name = "nome" class ="form-control" placeholder = "Nome do projeto" required>
@@ -217,6 +217,105 @@ if(!SessionController::IsAdmin())
                             htmlString += '<div class="progress"><div class="progress-bar ' + classe + '" role="progressbar" aria-valuenow="' + valor + '" aria-valuemin="0" aria-valuemax="100" style="width: ' + valor + '%;"><span class="sr-only">' + valor + '% Complete</span></div><span class="progress-type">' + devs[i].habilidades[j].nomehabilidade + '</span><span class="progress-completed">' + valor + '</span>' + interessadoString + '</div></div>';
                         }
                     }
+                    
+                    var larguraMaster = Object.keys(devs[i].master).length;
+                    var larguraDev = Object.keys(devs[i].devs).length;
+                    htmlString += "<h4>Projetos atuais</h4>";
+                    if(larguraMaster == 0 && larguraDev == 0)
+                    {
+                        htmlString += "<br />Está envolvido em nenhum projeto";
+                    }
+                    else
+                    {
+                        htmlString += '<strong>Como Scrum Master:</strong>';
+                        if(larguraMaster == 0)
+                        {               
+                            htmlString += " Nenhum";
+                        }
+                        else
+                        {
+                            var masterFiltrados = new Array();
+                            for(var w = 0; w < larguraMaster; w++)
+                            {
+                                if(devs[i].master[w].estagio != 'Entrege')
+                                {
+                                    masterFiltrados.push(devs[i].master[w]);
+                                }  
+                            }
+                            
+                                
+                            var larguraFiltrados = masterFiltrados.length;
+                            if(larguraFiltrados == 0)
+                            {               
+                                htmlString += " Nenhum";
+                            }
+                            else
+                            {
+                                for(var w = 0; w < larguraFiltrados; w++)
+                                {
+
+                                    htmlString += ' ' + masterFiltrados[w].nomeprojeto;
+                                    if(w != larguraFiltrados - 1)
+                                    {
+                                        if(w == larguraFiltrados - 2)
+                                        {
+                                            htmlString += ' e';
+                                        }
+                                        else
+                                        {
+                                            htmlString += ',';
+                                        }
+                                    }
+
+                                }
+                            }
+                            
+                        }
+                        htmlString += "<br /> <strong>Como Equipe SCRUM:</strong>";
+                        if(larguraDev == 0)
+                        {               
+                            htmlString += "Nenhum";
+                        }
+                        else
+                        {
+                            
+                            var devsFiltrados = new Array();
+                            for(var w = 0; w < larguraDev; w++)
+                            {
+                                if(devs[i].devs[w].estagio != 'Entrege')
+                                {
+                                    devsFiltrados.push(devs[i].devs[w]);
+                                }  
+                            }
+                            
+                            var larguraFiltrados = devsFiltrados.length;
+                            if(larguraFiltrados == 0)
+                            {               
+                                htmlString += " Nenhum";
+                            }
+                            else
+                            {
+                                for(var w = 0; w < larguraFiltrados; w++)
+                                {
+
+                                    htmlString += ' ' + devsFiltrados[w].nomeprojeto;
+                                    if(w != larguraFiltrados - 1)
+                                    {
+                                        if(w == larguraFiltrados - 2)
+                                        {
+                                            htmlString += ' e';
+                                        }
+                                        else
+                                        {
+                                            htmlString += ',';
+                                        }
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+                    
                     if (add == true)
                     {
                         htmlString += '<button type = "button" class = "btn btn-primary btn-block '+classebtnescolher+'" data-id="' + devs[i].id + '" data-imgsrc = ' + devs[i].foto + ' data-nome = ' + devs[i].nome + ' >Escolher</button>';
@@ -251,7 +350,7 @@ if(!SessionController::IsAdmin())
                 var imgsrc = $(this).data('imgsrc');
                 var nome = $(this).data('nome');
                 var id = $(this).data('id');
-                $("#table-master-conteudo").html('<tr><input type = "hidden" name = "master" class = "hidden-dev-input" value = "' + id + '"><td><img src = "../' + imgsrc + '" class = "img-thumbnail" style = "max-width:50px; margin-right:10px;"><span class = "visualizar-td-nome">' + nome + '</span></td><td><a class="btn btn-danger excluir-dev-btn"><em class="fa fa-trash"></em></a></td></tr>');
+                $("#table-master-conteudo").html('<tr><input type = "hidden" name = "master" class = "hidden-dev-input" value = "' + id + '"><td><img src = "../' + imgsrc + '" class = "img-thumbnail" style = "max-width:50px; margin-right:10px;"><span class = "visualizar-td-nome">' + nome + '</span></td><td><a class="btn btn-primary ver-dev-btn" data-id="' + id + '"><em class="fa fa-eye"></em></a><a class="btn btn-danger excluir-dev-btn"><em class="fa fa-trash"></em></a></td></tr>');
                 $("#modal-escolher-dev").modal('hide');
             });
 
@@ -269,6 +368,15 @@ if(!SessionController::IsAdmin())
                 });
                 CarregarDevs(newArray, false, true, false);
             });
+             $("#table-master-conteudo").on('click', '.ver-dev-btn', function()
+            {
+                var id = $(this).data('id');
+                var newArray = resultadoDeUsuarioArray.filter(function(el)
+                {
+                    return el.id == id;
+                });
+                CarregarDevs(newArray, false, false, false);
+            });
 
 
             $("#pesquisar-usuario-dev-form").on('submit', function()
@@ -279,9 +387,14 @@ if(!SessionController::IsAdmin())
                 {
                     return el.nome.toUpperCase().match(pesquisa)
                 });
-                var mh = $(this).data('mostrarhabilidades');
+                var mh = $(this).attr('data-mostrarhabilidades');
+                var mhboolean = false;
+                if(mh == 1)
+                {
+                    mhboolean = true;
+                }
 
-                CarregarDevs(newArray, true, mh, mh);
+                CarregarDevs(newArray, true, mhboolean, !mhboolean);
             });
 
 
@@ -317,7 +430,7 @@ if(!SessionController::IsAdmin())
 
                     });
                 }
-                $("#pesquisar-usuario-dev-form").data('mostrarhabilidades', '1');
+                $("#pesquisar-usuario-dev-form").attr('data-mostrarhabilidades', '1');
 
 
             });
@@ -345,12 +458,13 @@ if(!SessionController::IsAdmin())
                         },
                         error: function(jqXHR, textStatus, errorThrown)
                         {
+                            console.log(jqXHR.responseText);
                             alert(jqXHR.responseText);
                         }
 
                     });
                 }
-                $("#pesquisar-usuario-dev-form").data('mostrarhabilidades', '0');
+                $("#pesquisar-usuario-dev-form").attr('data-mostrarhabilidades', '0');
 
             });
             $("#cadastro-projeto-form").on('submit', function()
@@ -370,11 +484,44 @@ if(!SessionController::IsAdmin())
                 
                     return;
                 }
+                var form = $(this);
                 
-                console.log(mastercount);
+                $.ajax({
+                  
+                  url : '../controller/projeto/CadastroController.php',
+                  method : 'POST',
+                  data : form.serialize(),
+                  dataType : 'json',
+                  beforeSend : function()
+                  { 
+                    $("button[type='submit']", form).html("Validando...");
+                    $(".form-aviso", form).html("");
+                  },
+                  
+                  success : function(resposta)
+                  {
+                        if(resposta.tipo == "sucesso")
+                        {
+                             GerarNotificacao(resposta.mensagem, 'success');
+                        }
+
+                        else
+                        {
+                            GerarNotificacao(resposta.mensagem, 'danger');
+                        }
+                  },
+                  
+                  complete : function()
+                  {
+                      validando = false;
+                      $("button[type='submit']", form).html("Entrar");
+                  },
+                  error : function(jqXHR, textStatus, errorThrown)
+                  {
+                       GerarNotificacao(jqXHR.responseText, 'danger');
+                  } 
+               });
                 
-                
-                console.log($(this).serialize());
             });
 
             $('#inicio, #prazo').datepicker(

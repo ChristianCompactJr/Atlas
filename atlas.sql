@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.5.1
--- http://www.phpmyadmin.net
+-- version 4.6.5.2
+-- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 16-Fev-2018 às 16:53
--- Versão do servidor: 10.1.13-MariaDB
--- PHP Version: 5.6.21
+-- Generation Time: 16-Fev-2018 às 22:56
+-- Versão do servidor: 10.1.21-MariaDB
+-- PHP Version: 7.1.1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -83,7 +83,7 @@ INSERT INTO `atlas_habilidade_usuario` (`idhabilidade`, `idusuario`, `valor`, `i
 (21, 8, 0, 0),
 (21, 10, 0, 0),
 (21, 11, 0, 0),
-(22, 6, 10, 0),
+(22, 6, 10, 1),
 (22, 8, 0, 0),
 (22, 10, 0, 0),
 (22, 11, 0, 0),
@@ -119,7 +119,10 @@ CREATE TABLE `atlas_projeto` (
 --
 
 INSERT INTO `atlas_projeto` (`id`, `nome`, `scrum_master`, `data_inicio`, `prazo`, `cliente`, `backlog`, `observacoes`, `estagio`) VALUES
-(2, 'Atlas', 6, '26-01-2018', '05-03-2018', 'Compact jr', 'Fazer coisa pra caralho', 'Muita coisa', 'Desenvolvimento');
+(2, 'Atlas', 6, '26-01-2018', '05-03-2018', 'Compact jr', 'Fazer coisa pra caralho', 'Muita coisa', 'Desenvolvimento'),
+(3, 'Compact Jr V2', 6, '08-02-2018', '23-02-2018', 'Compact Jr', '123', '123', 'Entrege'),
+(4, 'Terra', 6, '06-02-2018', '28-02-2018', '123123', 'fga', 'gadf', 'Desenvolvimento'),
+(6, 'SM Estacas Site', 8, '16-02-2018', '23-02-2018', 'SM Estacas\'', 'Um backlog qualquer', '', 'Desenvolvimento');
 
 -- --------------------------------------------------------
 
@@ -138,7 +141,12 @@ CREATE TABLE `atlas_projeto_desenvolvedor` (
 
 INSERT INTO `atlas_projeto_desenvolvedor` (`idprojeto`, `idusuario`) VALUES
 (2, 8),
-(2, 10);
+(2, 10),
+(3, 8),
+(3, 10),
+(3, 11),
+(6, 10),
+(6, 11);
 
 -- --------------------------------------------------------
 
@@ -239,13 +247,6 @@ CREATE TABLE `atlas_usuario_tentativa` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Extraindo dados da tabela `atlas_usuario_tentativa`
---
-
-INSERT INTO `atlas_usuario_tentativa` (`ip`, `tentativas`, `data_hora`) VALUES
-('::1', 1, '16-02-2018 10:14:31');
-
---
 -- Indexes for dumped tables
 --
 
@@ -329,7 +330,7 @@ ALTER TABLE `atlas_habilidades`
 -- AUTO_INCREMENT for table `atlas_projeto`
 --
 ALTER TABLE `atlas_projeto`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 --
 -- AUTO_INCREMENT for table `atlas_projeto_tarefa_macro`
 --
@@ -366,8 +367,8 @@ ALTER TABLE `atlas_projeto`
 -- Limitadores para a tabela `atlas_projeto_desenvolvedor`
 --
 ALTER TABLE `atlas_projeto_desenvolvedor`
-  ADD CONSTRAINT `atlas_projeto_desenvolvedor_ibfk_1` FOREIGN KEY (`idprojeto`) REFERENCES `atlas_projeto` (`id`),
-  ADD CONSTRAINT `atlas_projeto_desenvolvedor_ibfk_2` FOREIGN KEY (`idusuario`) REFERENCES `atlas_usuario` (`id`);
+  ADD CONSTRAINT `atlas_projeto_desenvolvedor_ibfk_1` FOREIGN KEY (`idprojeto`) REFERENCES `atlas_projeto` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `atlas_projeto_desenvolvedor_ibfk_2` FOREIGN KEY (`idusuario`) REFERENCES `atlas_usuario` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Limitadores para a tabela `atlas_projeto_tarefa_macro`

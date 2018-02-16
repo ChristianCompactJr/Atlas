@@ -53,24 +53,6 @@ $voltas = UserRootViewFinder::GetBackSlashes();
     
     function GerarConfirmacao(mensagem, funcao)
     {
-        /*bootbox.confirm({
-            message: mensagem,
-            size : 'small',
-            buttons: {
-                confirm: {
-                    label: 'Sim',
-                    className: 'btn-primary'
-                },
-                cancel: {
-                    label: 'Não',
-                    className: 'btn-danger'
-                }
-            },
-            callback: function (result) {
-                console.log('This was logged in the callback: ' + result);
-                return result;
-            }
-        })*/
         var retorno;
         bootbox.confirm({ 
   size: "small",

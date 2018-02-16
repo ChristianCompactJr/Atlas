@@ -22,6 +22,7 @@ if(!SessionController::TemSessao())
             <h1>Visualizar Projetos</h1>     
         </div>
         
+        
         <?php Carregador::CarregarViewFooter(); ?>
         
        

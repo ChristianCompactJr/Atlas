@@ -7,7 +7,6 @@ class Usuario {
     private $foto;
     private $administrador;
     private $ativo;
-    private $habilidades;
     
     function __construct($id, $nome, $email, $foto, $administrador, $ativo) {
         $this->id = $id;
@@ -18,14 +17,13 @@ class Usuario {
         $this->ativo = $ativo;
     }
 
-    
-    
-    
-    public function getHabilidades()
+    public function ToJSONPreparedArray()
     {
-        $dao = new HabilidadeDAO(); 
+        return array('id' => $this->id, 'nome' => $this->nome, 'email' => $this->email, 'foto' => $this->getFoto(), 'administrador' => $this->getAdministrador(), 'ativo' => $this->getAtivo());
+          
     }
-   
+    
+    
     
     function getAtivo() {
         return $this->ativo;
