@@ -2,7 +2,7 @@
 
 if(!SessionController::TemSessao())
 {
-    header("location: login");
+    header("location: ../login");
 }
 
 ?>
@@ -10,13 +10,21 @@ if(!SessionController::TemSessao())
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>Projetos - Atlas</title>
+        <title>Visualizar Projetos - Atlas</title>
         <?php Carregador::CarregarViewHeadMeta(); ?>    
     </head>
     <body>
         <?php Carregador::CarregarViewNavbar(); ?>  
-        <h1>Relatórios</h1>
+               
+        
+        
+        <div class ="container">
+            <h1>Visualizar Projetos</h1>     
+        </div>
+        
         
         <?php Carregador::CarregarViewFooter(); ?>
+        
+       
     </body>
 </html>

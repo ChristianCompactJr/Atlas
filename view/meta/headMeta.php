@@ -9,14 +9,15 @@ $voltas = UserRootViewFinder::GetBackSlashes();
 <link rel ="stylesheet" type ="text/css" href ="<?php echo $voltas;?>recursos/css/bootstrap.min.css" />    
 
 <link rel ="stylesheet" type ="text/css" href ="<?php echo $voltas;?>recursos/css/animate.css" />
-<link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-<link rel ="stylesheet" type ="text/css" href ="<?php echo $voltas;?>recursos/css/style.css" />
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+<link rel ="stylesheet" type ="text/css" href ="<?php echo $voltas;?>recursos/css/style.css" />
 <script type = "text/javascript" src ="<?php echo $voltas;?>recursos/js/jquery.js" ></script>
 <script type = "text/javascript" src ="<?php echo $voltas;?>recursos/js/jqueryui.js" ></script>
 <script type = "text/javascript" src ="<?php echo $voltas;?>recursos/js/bootstrap.min.js" ></script>
 <script type ="text/javascript" src = "<?php echo $voltas;?>recursos/js/bootstrap-notify.min.js"></script>
 <script type ="text/javascript" src = "<?php echo $voltas;?>recursos/js/bootbox.min.js"></script>
+<script type ="text/javascript" src = "<?php echo $voltas;?>recursos/js/font-awesome.js"></script>
 <script>
     
     function GerarNotificacao(mensagem, tipo)
@@ -52,24 +53,6 @@ $voltas = UserRootViewFinder::GetBackSlashes();
     
     function GerarConfirmacao(mensagem, funcao)
     {
-        /*bootbox.confirm({
-            message: mensagem,
-            size : 'small',
-            buttons: {
-                confirm: {
-                    label: 'Sim',
-                    className: 'btn-primary'
-                },
-                cancel: {
-                    label: 'Não',
-                    className: 'btn-danger'
-                }
-            },
-            callback: function (result) {
-                console.log('This was logged in the callback: ' + result);
-                return result;
-            }
-        })*/
         var retorno;
         bootbox.confirm({ 
   size: "small",

@@ -214,7 +214,7 @@ class UsuarioDAO extends DAO {
         
 
         $email = parent::LimparString($email);
-        $stmt = parent::getCon()->prepare("select * from atlas_usuario where lower(email) = lower(?)");
+        $stmt = parent::getCon()->prepare("select * from atlas_usuario where lower(email) = lower(?) and ativo = true");
         $stmt->bindValue(1, $email);
         $stmt->execute();
         $resultado = $stmt->fetch();
