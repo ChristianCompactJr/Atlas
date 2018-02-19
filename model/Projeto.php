@@ -25,10 +25,76 @@ class Projeto {
         $this->estagio = $estagio;
     }
     
+    function getEquipe()
+    {
+        $dao = new ProjetoDAO();
+       
+        return $dao->GetDevsProjeto($this->id);
+    }
+    
+    function getPorcentual()
+    {
+        
+        $dao = new ProjetoDAO();
+        $total = $dao->GetTotalTarefasMicro($this->id);
+        $concluidas = $dao->GetTotalTarefasMicroConcluidas($this->id);
+
+        
+        if($total != 0)
+        {
+             $porcentual = ceil((100 * $concluidas) / $total);
+             return $porcentual; 
+        }
+        else
+        {
+            return 0;
+        }
+       
+             
+    }
+    
+    function getFarol()
+    {
+         date_default_timezone_set('Brazil/East');
+         
+        $agora = time();
+       $inicio = date('Y-m-d', strtotime($this->inicio));
+       $prazo = date('Y-m-d', strtotime($this->prazo));
+       
+       $diferenca = strtotime($prazo) - strtotime($inicio);
+       $diferenca = round($diferenca / (60 * 60 * 24));
    
+       $andamentoPrevisto = ($agora - strtotime($inicio));
+       $andamentoPrevisto = round( $andamentoPrevisto / (60 * 60 * 24), 0);
+       $porcentagem = $this->getPorcentual();
+       
+       
+       //porcentagem = 50, previsto = 70, resultado = 50 - 70
+       $metrica = $porcentagem - $andamentoPrevisto;
+       
+       if($metrica >= 15)
+       {
+           return "verde";
+       }
+       else if($metrica <= -15)
+       {
+           return "vermelho";
+       }
+       else
+       {
+           return "amarelo";
+       }
+       
+    }
     
-    
-    
+    function getInicioFormatted()
+    {
+        return str_replace('-', '/', $this->inicio);
+    }
+    function getPrazoFormatted()
+    {
+        return str_replace('-', '/', $this->prazo);
+    }
 
     
     function getId() {

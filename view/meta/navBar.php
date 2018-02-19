@@ -22,7 +22,7 @@ if(SessionController::IsAdmin())
 }
 else
 {
-    $projetos = new LinkMenu("Projetos", "projetos/visualizar");
+    $projetos = new LinkMenu("Projetos", "projetos/");
 }
 
 

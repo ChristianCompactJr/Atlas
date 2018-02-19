@@ -3,7 +3,65 @@
 
 class ProjetoDAO extends DAO {
    
+    
+    
+    public function GetDevsProjeto($idprojeto)
+    {
+        $udao = new UsuarioDAO();
+        
+        $stmt = parent::getCon()->prepare("select idusuario from atlas_projeto_desenvolvedor where idprojeto = ?");
+        $stmt->bindValue(1, $idprojeto);
+        $stmt->execute();
+        
+        $resultado = $stmt->fetchAll();
+        $retorno = array();
+        foreach($resultado as $linha)
+        {
+            $usuario = $udao->GetUsuario($linha->idusuario);
+            $retorno[] = $usuario;
+        }
+        return $retorno;
+        
+    }
+    
+    
+    public function ApagarProjeto($idprojeto)
+    {
+        $idprojeto = parent::LimparString($idprojeto);
+        $stmt = parent::getCon()->prepare("delete from atlas_projeto where id = ?");
+       $stmt->bindValue(1, $idprojeto);
+       $stmt->execute();
+    }
+   public function GetTotalTarefasMicro($idprojeto)
+   {
+       $stmt = parent::getCon()->prepare("select count(*) as total from atlas_projeto_tarefa_micro as micro where exists(select * from atlas_projeto_tarefa_macro as macro where micro.idmacro = macro.id and exists(select * from atlas_projeto as ap where ap.id = ? and macro.idprojeto = ap.id))");
+       $stmt->bindValue(1, $idprojeto);
+       $stmt->execute();
+       return $stmt->fetch()->total;
+   }
+   public function GetTotalTarefasMicroConcluidas($idprojeto)
+   {
+       $stmt = parent::getCon()->prepare("select count(*) as total from atlas_projeto_tarefa_micro as micro where micro.concluida = true and exists(select * from atlas_projeto_tarefa_macro as macro where micro.idmacro = macro.id and exists(select * from atlas_projeto as ap where ap.id = ? and macro.idprojeto = ap.id))");
+       $stmt->bindValue(1, $idprojeto);
+       $stmt->execute();
+       return $stmt->fetch()->total;
+   }
    
+    public function GetProjetos()
+    {
+        $stmt = parent::getCon()->prepare("select * from atlas_projeto");
+        $stmt->execute();
+        $resultados = $stmt->fetchAll();
+        $retorno = array();
+        
+        foreach($resultados as $resultado)
+        {
+            $retorno[] = new Projeto($resultado->id, $resultado->nome, $resultado->scrum_master, $resultado->data_inicio, $resultado->prazo, $resultado->cliente, $resultado->backlog, $resultado->observacoes, $resultado->estagio);
+        }
+        return $retorno;
+    }
+    
+    
     public function CriarProjeto($nome, $cliente, $master, $equipe, $inicio, $prazo, $backlog, $obs, $estagio)
     {
         $inicio = parent::LimparString($inicio);
