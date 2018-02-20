@@ -18,7 +18,7 @@ if(!SessionController::TemSessao())
                
         
         
-        <div class ="container" style = "margin-bottom:20px">
+        <div class ="container">
             <h1>Visualizar Projetos</h1>
             <ul class="nav nav-pills">
                 <li role="presentation" class="active projetos-tab" id ="meus-projetos"><a href="#">Meus Projetos</a></li>
@@ -26,10 +26,40 @@ if(!SessionController::TemSessao())
             </ul>
         </div>
         <div class="container">
+            <div class ="row">
+            <div class="col-sm-12 col-md-6">
+            <form id="pesquisar-projeto" style="margin:20px 0px;" onsubmit="return false"> 
+                <div class="input-group stylish-input-group">
+                    <input type="text" class="form-control"  placeholder="Pesquisar por nome" >
+                    <span class="input-group-addon">
+                        <button type="submit">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </button>  
+                    </span>
+                </div>
+            </form>
+        </div>
+            </div>
+            
             <div class="row">
                 <ul class="thumbnails" id = "projetos-conteudo">
 
                 </ul>
+            </div>
+            <div class ="container">
+                <div class ="">
+            <ul class="pagination pull-right" id = "div-paginacao">
+                <li class ="active">
+                    <a href="#" class="pagination_pagina" data-idpagina="1">1</a>
+                </li>
+                <li>
+                    <a href="#" class="pagination_pagina" data-idpagina="2">2</a>
+                </li>
+                <li>
+                    <a href="#" class="pagination_pagina" data-idpagina="3">3</a>
+                </li>
+            </ul>
+                </div>
             </div>
         </div>
         
@@ -44,14 +74,32 @@ if(!SessionController::TemSessao())
                var loader = '<div class="container"><div class="row"> <div id="loader"> <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="lading"></div></div></div>'; 
                var todosProjetos = new Array();
                var meusProjetos = new Array();
+               var resultadosPorPagina = 6;
                
-               
-               function CarregarProjetos (json)
+               function CarregarProjetos (json, offset ,recarregarPaginacao)
                {
+                     $("#pesquisar-projeto button[type='submit']").attr('disabled', true);
+                      
                       var htmlString = '';
                       var total = Object.keys(json).length;
-                      for(var i = 0; i < total; i++)
+                      var paginationString = '';
+                      if(recarregarPaginacao == true)
+                        {
+                            offset = 0;
+                            var totalpaginas = Math.ceil(total / resultadosPorPagina);
+                            for(var w = 0; w < totalpaginas; w++)
+                            {
+                                paginationString += '<li';
+                              if(w == 0)
+                              {
+                                  paginationString += ' class = "active"';
+                              }
+                              paginationString += '><a href="#" class="pagination_pagina" data-idpagina="'+w+'">'+(w+1)+'</a></li>'; 
+                            }
+                        }
+                     for(var i = offset, j = 0;  i < total && j < resultadosPorPagina; i++, j++)
                       {
+                          
                           var farolString;
                           if(json[i].farol == 'verde')
                           {
@@ -84,7 +132,7 @@ if(!SessionController::TemSessao())
                         <?php
                         if(SessionController::IsAdmin())
                         {?>
-                            htmlString += '<a href="#" class="btn btn-success">Editar</a><a href="#" class="btn btn-danger btn-excluir-projeto" data-idprojeto="'+json[i].id+'">Apagar</a>';
+                            htmlString += '<a href="#" class="btn btn-success">Editar</a><a href="#" class="btn btn-danger btn-excluir-projeto" data-idprojeto="'+json[i].id+'" data-nomeprojeto = "'+json[i].nome+'">Apagar</a>';
                         <?php }
                         else
                         {?>
@@ -100,7 +148,11 @@ if(!SessionController::TemSessao())
                         htmlString += '</div></div></div></div>';
                       }
                        $("#projetos-conteudo").html(htmlString);
-
+                       if(recarregarPaginacao == true)
+                          {
+                              $("#div-paginacao").html(paginationString);
+                          }
+                         $("#pesquisar-projeto button[type='submit']").attr('disabled', false);
                }
                
                function CarregarJSON(__callback)
@@ -118,7 +170,6 @@ if(!SessionController::TemSessao())
 
                    success : function(resposta)
                    {
-
                        todosProjetos = $.map(resposta, function(el)
                          {
                              return el
@@ -143,7 +194,6 @@ if(!SessionController::TemSessao())
                                  return false;
                              }
 
-                             return el.id == id;
                          });
                          carregandoProjetos = false;
                          __callback();
@@ -165,9 +215,10 @@ if(!SessionController::TemSessao())
                    }
                    $(".projetos-tab.active").removeClass("active");
                    
-                   CarregarProjetos(meusProjetos);
+                   CarregarProjetos(meusProjetos, 0, true);
                    
                    $(this).addClass("active");
+                   $("#pesquisar-projeto input").val('');
                });
                
                $("#todos-projetos").on('click', function()
@@ -178,15 +229,24 @@ if(!SessionController::TemSessao())
                    }
                    $(".projetos-tab.active").removeClass("active");
                    
-                   CarregarProjetos(todosProjetos);
+                   CarregarProjetos(todosProjetos, 0, true);
                    
                    $(this).addClass("active");
+                   $("#pesquisar-projeto input").val('');
                });
                
                $("#projetos-conteudo").on('click', '.btn-excluir-projeto', function()
                {
-                   var idprojeto = $(this).data('idprojeto');
-                   var btn = $(this);
+                   var idprojetoesc = $(this).data('idprojeto');
+                   var btnesc = $(this);
+                   var nomeprojeto = $(this).data('nomeprojeto');
+                   
+                   
+                   
+                   var excluir = function()
+                   {
+                   var idprojeto = idprojetoesc;
+                   var btn = btnesc;
                    var meusprojetoselecionado;
                    $.ajax({
                       url :'../controller/projeto/ApagarProjeto.php',
@@ -223,11 +283,11 @@ if(!SessionController::TemSessao())
                             {
                                 if(meusprojetoselecionado == true)
                                 {
-                                    CarregarProjetos(meusProjetos);
+                                    CarregarProjetos(meusProjetos, 0, true);
                                 }
                                 else
                                 {
-                                    CarregarProjetos(todosProjetos);
+                                    CarregarProjetos(todosProjetos, 0, true);
                                 }
                                  
                             });
@@ -240,14 +300,77 @@ if(!SessionController::TemSessao())
                       }
                       
                    });
+               }
+               GerarConfirmacao("Tem certeza que queres excluir o projeto "+nomeprojeto+"?", excluir);
                });
-               
                CarregarJSON(function()
                {
-                   CarregarProjetos(meusProjetos);
+                   CarregarProjetos(meusProjetos, 0, true);
                });
               
-
+                $("#pesquisar-projeto").on('submit', function()
+                {
+                    var pesquisa = $("input", $(this)).val().toUpperCase();
+                    
+                    var selecionados;
+                    if($("#meus-projetos").is(".active"))
+                    {
+                        selecionados = meusProjetos.filter(function(el)
+                        {
+                           return el.nome.toUpperCase().match(pesquisa)
+                        }); 
+                    }
+                    else
+                    {
+                        selecionados = todosProjetos.filter(function(el)
+                        {
+                           return el.nome.toUpperCase().match(pesquisa)
+                        });
+                    }
+                    
+                    CarregarProjetos(selecionados, 0, true);
+                    
+                     
+                    
+                });
+                
+                $("#div-paginacao").on('click', '.pagination_pagina', function()
+                {
+                    
+                    if($(this).parent().is(".active"))
+                    {
+                        return;
+                    }
+                    
+                    
+                    
+                   var paginaoffset = $(this).data('idpagina') * resultadosPorPagina;
+                   if($("#meus-projetos").is(".active"))
+                    {
+                        var filtrado = meusProjetos.filter(function(el)
+                        {
+                            var pesquisa = $("#pesquisar-projeto input").val().toUpperCase();
+                           return el.nome.toUpperCase().match(pesquisa);
+                        });
+                        
+                        CarregarProjetos(filtrado, paginaoffset, false);
+                    }
+                    else
+                    {
+                        var filtrado = todosProjetos.filter(function(el)
+                        {
+                            var pesquisa = $("#pesquisar-projeto input").val().toUpperCase();
+                           return el.nome.toUpperCase().match(pesquisa);
+                        });
+                        CarregarProjetos(filtrado, paginaoffset, false);
+                    }
+                    
+                    $("#div-paginacao .active").removeClass("active");
+                    $(this).parent().addClass("active");
+                   
+                   
+                });
+                
             });
             
         </script>

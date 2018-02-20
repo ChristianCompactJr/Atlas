@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.6.5.2
--- https://www.phpmyadmin.net/
+-- version 4.5.1
+-- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: 19-Fev-2018 às 22:45
--- Versão do servidor: 10.1.21-MariaDB
--- PHP Version: 7.1.1
+-- Generation Time: 20-Fev-2018 às 15:52
+-- Versão do servidor: 10.1.13-MariaDB
+-- PHP Version: 5.6.21
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -120,7 +120,12 @@ CREATE TABLE `atlas_projeto` (
 
 INSERT INTO `atlas_projeto` (`id`, `nome`, `scrum_master`, `data_inicio`, `prazo`, `cliente`, `backlog`, `observacoes`, `estagio`) VALUES
 (9, 'Atlas', 6, '26-01-2018', '05-03-2018', 'Compact Jr', '', '', 'Desenvolvimento'),
-(10, 'SM Estacas', 8, '26-01-2018', '05-03-2018', 'SM Estacas', '', '', 'Desenvolvimento');
+(12, 'Morita', 8, '14-01-2018', '28-02-2018', 'Morita', 'Um back qualquer', 'Obs qualquer', 'Desenvolvimento'),
+(13, 'SM Estacas', 8, '14-01-2018', '28-02-2018', 'SM Estacas', 'Um back qualquer', 'Obs qualquer', 'Desenvolvimento'),
+(14, 'Help!', 6, '14-01-2018', '28-02-2018', 'Help consultoria', 'Um back qualquer', 'Obs qualquer', 'Desenvolvimento'),
+(15, 'Nani?', 10, '20-02-2018', '27-02-2018', '?', '123', '123', 'Desenvolvimento'),
+(16, 'CR Campeiro 7', 6, '11-02-2018', '28-02-2018', 'UFSM', '', '', 'Desenvolvimento'),
+(17, 'Optimus', 6, '11-02-2018', '28-02-2018', 'Optimus', '', '', 'Desenvolvimento');
 
 -- --------------------------------------------------------
 
@@ -139,8 +144,18 @@ CREATE TABLE `atlas_projeto_desenvolvedor` (
 
 INSERT INTO `atlas_projeto_desenvolvedor` (`idprojeto`, `idusuario`) VALUES
 (9, 8),
-(10, 10),
-(10, 11);
+(12, 10),
+(12, 11),
+(13, 10),
+(13, 11),
+(14, 10),
+(14, 11),
+(15, 6),
+(16, 8),
+(16, 10),
+(16, 11),
+(17, 10),
+(17, 11);
 
 -- --------------------------------------------------------
 
@@ -324,7 +339,7 @@ ALTER TABLE `atlas_habilidades`
 -- AUTO_INCREMENT for table `atlas_projeto`
 --
 ALTER TABLE `atlas_projeto`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 --
 -- AUTO_INCREMENT for table `atlas_projeto_tarefa_macro`
 --
@@ -355,7 +370,7 @@ ALTER TABLE `atlas_habilidade_usuario`
 -- Limitadores para a tabela `atlas_projeto`
 --
 ALTER TABLE `atlas_projeto`
-  ADD CONSTRAINT `atlas_projeto_ibfk_1` FOREIGN KEY (`scrum_master`) REFERENCES `atlas_usuario` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `atlas_projeto_ibfk_1` FOREIGN KEY (`scrum_master`) REFERENCES `atlas_usuario` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Limitadores para a tabela `atlas_projeto_desenvolvedor`
