@@ -55,11 +55,24 @@ class Projeto {
     
     function getFarol()
     {
-         date_default_timezone_set('Brazil/East');
-         
+        
+        if($this->estagio == 'Entrege')
+        {
+            return 'entrege';
+        }
+        
+        date_default_timezone_set('Brazil/East');
+        
+        
+        
         $agora = time();
        $inicio = date('Y-m-d', strtotime($this->inicio));
        $prazo = date('Y-m-d', strtotime($this->prazo));
+       
+       if(strtotime($prazo) < $agora)
+       {
+           return 'vermelho';
+       }
        
        $diferenca = strtotime($prazo) - strtotime($inicio);
        $diferenca = round($diferenca / (60 * 60 * 24));
@@ -69,7 +82,6 @@ class Projeto {
        $porcentagem = $this->getPorcentual();
        
        
-       //porcentagem = 50, previsto = 70, resultado = 50 - 70
        $metrica = $porcentagem - $andamentoPrevisto;
        
        if($metrica >= 15)
@@ -124,9 +136,23 @@ class Projeto {
     function getBacklog() {
         return $this->backlog;
     }
+    
+    function getBacklogFormatted()
+    {
+        $texto =  preg_replace("/[\r\n]+/", "\n", $this->backlog);
+          return str_replace(array("\r\n", "\r", "\n"), "<br /><br />", $texto);
+    }
+    
+    
 
     function getObservacoes() {
         return $this->observacoes;
+    }
+    
+    function GetObservacoesFormatted()
+    {
+        $texto =  preg_replace("/[\r\n]+/", "\n", $this->observacoes);
+          return str_replace(array("\r\n", "\r", "\n"), "<br /><br />", $texto);
     }
 
     function getEstagio() {

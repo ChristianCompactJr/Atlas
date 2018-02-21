@@ -1,6 +1,6 @@
 <?php
     header('Content-Type: application/json');
-    if(SessionController::IsAdmin())
+    if(SessionController::TemSessao())
     {
         $usuarioDAO = new UsuarioDAO();
         $habilidadeDAO = new HabilidadeDAO();

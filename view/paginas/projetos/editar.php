@@ -1,37 +1,60 @@
 <?php
 
-if(!SessionController::IsAdmin())
+
+$dao = new ProjetoDAO();
+
+try
+{
+    $projeto = $dao->GetProjeto($_GET['id']);
+
+    
+    if(SessionController::GetUsuario()->getId() != $projeto->getScrumMaster() && !SessionController::IsAdmin())
+    {
+        header("location: ../index.php");
+    }
+
+    $udao = new UsuarioDAO();
+}
+
+
+
+catch(Exception $e)
 {
     header("location: ../index.php");
 }
-
 ?>
 <!DOCTYPE html>
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>Cadastrar Projetos - Atlas</title>
+        <title>Editar Projeto - Atlas</title>
         <?php Carregador::CarregarViewHeadMeta(); ?>  
             
     </head>
     <body>
         <?php Carregador::CarregarViewNavbar(); ?>  
                
-        
+
         
         <div class ="container">
             <h1>Cadastrar Projetos</h1>
             <div class = "row">
                 <div class = "col-md-12">
                     <form id ="cadastro-projeto-form"  onsubmit="return false" method = "POST" action = "../controller/projeto/CadastroController.php">
+                        <input type ="hidden" name="idprojeto" value ="<?php echo $projeto->getId() ?>" /> 
                         <div class ="form-group">
                             <label for="nome">Nome:</label>
-                            <input type ="text" name = "nome" class ="form-control" placeholder = "Nome do projeto" required>
+                            <input type ="text" name = "nome" class ="form-control" placeholder = "Nome do projeto" value="<?php echo $projeto->getNome(); ?>" required>
                         </div>
                         <div class ="form-group">
                             <label for="cliente">Cliente:</label>
-                            <input type ="text" name = "cliente" class ="form-control" placeholder = "Nome do cliente" required>
+                            <input type ="text" name = "cliente" class ="form-control" placeholder = "Nome do cliente" value="<?php echo $projeto->getCliente(); ?>"  required>
                         </div>
+                        <?php
+                            $scrumMaster = $udao->GetUsuario($projeto->getScrumMaster());
+                            if(SessionController::IsAdmin())
+                            { ?>
+                                
                         <div class ="form-group">
                             <label>Scrum Master:</label><br />
                             <div class ="container">
@@ -41,7 +64,13 @@ if(!SessionController::IsAdmin())
                                             <table class ="table">
                                                 
                                                 <tbody id = "table-master-conteudo">
-
+                                                <?php    
+                                                
+                                                    
+                                                    
+                                                    echo '<tr><input type = "hidden" name = "master" class = "hidden-dev-input" value = "'.$scrumMaster->getId().'"><td><img src = "../'.$scrumMaster->getFoto().'" class = "img-thumbnail" style = "max-width:50px; margin-right:10px;"><span class = "visualizar-td-nome">'.$scrumMaster->getNome().'</span></td><td><a class="btn btn-primary ver-dev-btn" data-id="'.$scrumMaster->getId().'"><em class="fa fa-eye"></em></a><a class="btn btn-danger excluir-dev-btn"><em class="fa fa-trash"></em></a></td></tr>';
+                                                    
+                                                 ?>
                                                 </tbody>
                                             </table>
                                         </div>
@@ -50,6 +79,13 @@ if(!SessionController::IsAdmin())
                             </div>
                             <button id ="btn-escolher-scrum-master" type ="button" class ="btn btn-success" title="Escolher Scrum Master">Escolher Scrum Master</button>
                         </div>
+                        
+                        <?php }
+                        else
+                        {
+                            echo '<input type = "hidden" name = "master" class = "hidden-dev-input" value = "'.$scrumMaster->getId().'">';
+                        }
+                        ?>
                         <div class ="form-group">
                             <label>Equipe SCRUM:</label><br />
                             <div class ="container">
@@ -64,7 +100,13 @@ if(!SessionController::IsAdmin())
                                                     </tr>
                                                 </thead>
                                                 <tbody id = "table-devs-conteudo">
-
+                                                    <?php
+                                                        $devs = $dao->GetDevsProjeto($_GET['id']);
+                                                        foreach($devs as $dev)
+                                                        {
+                                                            echo '<tr><input type = "hidden" name = "dev[]" class = "hidden-dev-input" value = "'.$dev->getId().'"><td><img src = "../'.$dev->getFoto().'" class = "img-thumbnail" style = "max-width:50px; margin-right:10px;"><span class = "visualizar-td-nome">'.$dev->getNome().'</span></td><td><a class="btn btn-primary ver-dev-btn" data-id="'.$dev->getId().'"><em class="fa fa-eye"></em></a><a class="btn btn-danger excluir-dev-btn"><em class="fa fa-trash"></em></a></td></tr>';
+                                                        }
+                                                    ?>
                                                 </tbody>
                                             </table>
                                         </div>
@@ -75,23 +117,23 @@ if(!SessionController::IsAdmin())
                         </div>
                         <div class ="form-group">
                             <label for="inicio">Data de inicio:</label>
-                            <input type ="text" name = "inicio" id ="inicio" class ="form-control" placeholder = "A data de inicio do projeto" required>
+                            <input type ="text" name = "inicio" id ="inicio" class ="form-control" placeholder = "A data de inicio do projeto"  value="<?php echo $projeto->getInicioFormatted(); ?>"  required>
                         </div>
                         <div class ="form-group">
                             <label for="prazo">Prazo:</label>
-                            <input type ="text" name = "prazo" id ="prazo" class ="form-control" placeholder = "O prazo do projeto" required>
+                            <input type ="text" name = "prazo" id ="prazo" class ="form-control" placeholder = "O prazo do projeto" value="<?php echo $projeto->getPrazoFormatted(); ?>"  required>
                         </div>
                         <div class ="form-group">
                             <label for="backlog">Backlog:</label>
-                            <textarea rows ="7" name = "backlog" class ="form-control" placeholder = "O backlog do projeto"></textarea>
+                            <textarea rows ="7" name = "backlog" class ="form-control" placeholder = "O backlog do projeto"><?php echo preg_replace("/[\r\n]+/", "\n", $projeto->getBacklog()); ?></textarea>
                         </div>
                         <div class ="form-group">
                             <label for="obs">Observações:</label>
-                            <textarea rows ="7" name = "obs" class ="form-control" placeholder = "Observações importantes do projeto"></textarea>
+                            <textarea rows ="7" name = "obs" class ="form-control" placeholder = "Observações importantes do projeto"><?php echo preg_replace("/[\r\n]+/", "\n", $projeto->getObservacoes());?></textarea>
                         </div>
                          <div class ="form-group">
                             <label for="estagio">Estágio:</label>
-                            <select name ="estagio" class ="form-control">
+                            <select name ="estagio" class ="form-control" value = "">
                                 <option value ="Desenvolvimento">Desenvolvimento</option>
                                 <option value ="Entrege">Entrege</option>
                                 <option value ="Manutenção">Manutenção</option>
@@ -101,7 +143,7 @@ if(!SessionController::IsAdmin())
                         <div class="row">
                            <div class="col-md-3"></div>
                            <div class="col-md-6 text-center">                         
-                              <button type="submit" class="btn btn-primary btn-lg btn-block">Cadastrar Projeto</button>
+                              <button type="submit" class="btn btn-primary btn-lg btn-block">Editar Projeto</button>
                            </div>
                         </div>
                     </form>
@@ -138,6 +180,11 @@ if(!SessionController::IsAdmin())
             </div>
         </div>
         <script>
+            
+            $(document).ready(function()
+            {
+                
+
             var resultadoDeUsuarioArray = null;
 
             function CarregarDevs(devs, add, mostrarhabilidades, master)
@@ -398,40 +445,45 @@ if(!SessionController::IsAdmin())
             });
 
 
+            
+            
+            function CarregarJSON(__callback)
+            {
+                $.ajax(
+                {
+                    url: '../controller/usuario/CarregarJSONCompleto.php',
+                    method: 'POST',
+                    dataType: 'json',
+                    success: function(resposta)
+                    {
+                        resultadoDeUsuarioArray = $.map(resposta, function(el)
+                        {
+                            return el
+                        });
 
 
+                    },
+                    error: function(jqXHR, textStatus, errorThrown)
+                    {
+                        GerarNotificacao(jqXHR.responseText, 'danger');
+                    }
+
+                });
+               
+                if(!isNaN(__callback))
+                {
+                    __callback();
+                }
+                
+            }
+            
             $("#btn-escolher-dev").on('click', function()
             {
                 if (resultadoDeUsuarioArray !== null)
                 {
                     CarregarDevs(resultadoDeUsuarioArray, true, true, false);
                 }
-                else
-                {
-                    $.ajax(
-                    {
-                        url: '../controller/usuario/CarregarJSONCompleto.php',
-                        method: 'POST',
-
-                        success: function(resposta)
-                        {
-                            resultadoDeUsuarioArray = $.map(resposta, function(el)
-                            {
-                                return el
-                            });
-
-                            CarregarDevs(resultadoDeUsuarioArray, true, true, false);
-
-                        },
-                        error: function(jqXHR, textStatus, errorThrown)
-                        {
-                            GerarNotificacao(jqXHR.responseText, 'danger');
-                        }
-
-                    });
-                }
                 $("#pesquisar-usuario-dev-form").attr('data-mostrarhabilidades', '1');
-
 
             });
             $("#btn-escolher-scrum-master").on('click', function()
@@ -440,41 +492,24 @@ if(!SessionController::IsAdmin())
                 {
                     CarregarDevs(resultadoDeUsuarioArray, true, false, true);
                 }
-                else
-                {
-                    $.ajax(
-                    {
-                        url: '../controller/usuario/CarregarJSONCompleto.php',
-                        method: 'POST',
-
-                        success: function(resposta)
-                        {
-                            resultadoDeUsuarioArray = $.map(resposta, function(el)
-                            {
-                                return el
-                            });
-
-                            CarregarDevs(resultadoDeUsuarioArray, true, false, true);
-                        },
-                        error: function(jqXHR, textStatus, errorThrown)
-                        {
-                            GerarNotificacao(jqXHR.responseText, 'danger');
-                        }
-
-                    });
-                }
                 $("#pesquisar-usuario-dev-form").attr('data-mostrarhabilidades', '0');
 
             });
             $("#cadastro-projeto-form").on('submit', function()
             {
                 var mastercount = $('input[name="master"]').length;
+                <?php
+                    if(SessionController::IsAdmin())
+                    { ?>
+                        if(mastercount != 1)
+                        {
+                            GerarNotificacao("O projeto deve ter um SCRUM Master", 'danger');
+                            return;
+                        }
+                    
+                <?php }
+                ?>
                 
-                if(mastercount != 1)
-                {
-                    GerarNotificacao("O projeto deve ter um SCRUM Master", 'danger');
-                    return;
-                }
                 var devcount = $('input[name="dev[]"').length;
                 if(devcount <= 0)
                 {
@@ -486,7 +521,7 @@ if(!SessionController::IsAdmin())
                 
                 $.ajax({
                   
-                  url : '../controller/projeto/CadastroController.php',
+                  url : '../controller/projeto/EditarController.php',
                   method : 'POST',
                   data : form.serialize(),
                   dataType : 'json',
@@ -507,12 +542,14 @@ if(!SessionController::IsAdmin())
                         {
                             GerarNotificacao(resposta.mensagem, 'danger');
                         }
+                        
+                        CarregarJSON();
                   },
                   
                   complete : function()
                   {
                       validando = false;
-                      $("button[type='submit']", form).html("Cadastrar Projeto");
+                      $("button[type='submit']", form).html("Editar Projeto");
                   },
                   error : function(jqXHR, textStatus, errorThrown)
                   {
@@ -538,7 +575,8 @@ if(!SessionController::IsAdmin())
             {
                 $(this).blur();
             });
-            
+            CarregarJSON();
+                        });
         </script>
 
     </body>

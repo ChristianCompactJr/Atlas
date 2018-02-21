@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.5.1
--- http://www.phpmyadmin.net
+-- version 4.6.5.2
+-- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 20-Fev-2018 às 15:52
--- Versão do servidor: 10.1.13-MariaDB
--- PHP Version: 5.6.21
+-- Generation Time: 21-Fev-2018 às 18:54
+-- Versão do servidor: 10.1.21-MariaDB
+-- PHP Version: 7.1.1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -120,8 +120,7 @@ CREATE TABLE `atlas_projeto` (
 
 INSERT INTO `atlas_projeto` (`id`, `nome`, `scrum_master`, `data_inicio`, `prazo`, `cliente`, `backlog`, `observacoes`, `estagio`) VALUES
 (9, 'Atlas', 6, '26-01-2018', '05-03-2018', 'Compact Jr', '', '', 'Desenvolvimento'),
-(12, 'Morita', 8, '14-01-2018', '28-02-2018', 'Morita', 'Um back qualquer', 'Obs qualquer', 'Desenvolvimento'),
-(13, 'SM Estacas', 8, '14-01-2018', '28-02-2018', 'SM Estacas', 'Um back qualquer', 'Obs qualquer', 'Desenvolvimento'),
+(13, 'SM Estacas', 8, '31-01-2018', '28-02-2018', 'SM Estacas', '', '', 'Desenvolvimento'),
 (14, 'Help!', 6, '14-01-2018', '28-02-2018', 'Help consultoria', 'Um back qualquer', 'Obs qualquer', 'Desenvolvimento'),
 (15, 'Nani?', 10, '20-02-2018', '27-02-2018', '?', '123', '123', 'Desenvolvimento'),
 (16, 'CR Campeiro 7', 6, '11-02-2018', '28-02-2018', 'UFSM', '', '', 'Desenvolvimento'),
@@ -135,27 +134,27 @@ INSERT INTO `atlas_projeto` (`id`, `nome`, `scrum_master`, `data_inicio`, `prazo
 
 CREATE TABLE `atlas_projeto_desenvolvedor` (
   `idprojeto` int(11) NOT NULL,
-  `idusuario` int(11) NOT NULL
+  `idusuario` int(11) NOT NULL,
+  `ativo` tinyint(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Extraindo dados da tabela `atlas_projeto_desenvolvedor`
 --
 
-INSERT INTO `atlas_projeto_desenvolvedor` (`idprojeto`, `idusuario`) VALUES
-(9, 8),
-(12, 10),
-(12, 11),
-(13, 10),
-(13, 11),
-(14, 10),
-(14, 11),
-(15, 6),
-(16, 8),
-(16, 10),
-(16, 11),
-(17, 10),
-(17, 11);
+INSERT INTO `atlas_projeto_desenvolvedor` (`idprojeto`, `idusuario`, `ativo`) VALUES
+(9, 8, 1),
+(13, 6, 0),
+(13, 10, 1),
+(13, 11, 1),
+(14, 10, 1),
+(14, 11, 1),
+(15, 6, 1),
+(16, 8, 1),
+(16, 10, 1),
+(16, 11, 1),
+(17, 10, 1),
+(17, 11, 1);
 
 -- --------------------------------------------------------
 
@@ -339,7 +338,7 @@ ALTER TABLE `atlas_habilidades`
 -- AUTO_INCREMENT for table `atlas_projeto`
 --
 ALTER TABLE `atlas_projeto`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 --
 -- AUTO_INCREMENT for table `atlas_projeto_tarefa_macro`
 --

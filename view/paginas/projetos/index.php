@@ -5,6 +5,7 @@ if(!SessionController::TemSessao())
     header("location: ../login");
 }
 
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -15,9 +16,6 @@ if(!SessionController::TemSessao())
     </head>
     <body>
         <?php Carregador::CarregarViewNavbar(); ?>  
-               
-        
-        
         <div class ="container">
             <h1>Visualizar Projetos</h1>
             <ul class="nav nav-pills">
@@ -109,6 +107,10 @@ if(!SessionController::TemSessao())
                           {
                              farolString = '<span style = "color:orange;font-weight:bold">Como previsto</span>';
                           }
+                          else if(json[i].farol == 'entrege')
+                          {
+                              farolString = '<span style = "color:green;font-weight:bold">Entrege</span>';
+                          }
                           else
                           {
                               farolString = '<span style = "color:red;font-weight:bold">Atrasado</span>';
@@ -128,18 +130,18 @@ if(!SessionController::TemSessao())
                                 visualizarString = "Visualizar";
                             }
                             
-                          htmlString += '<div class="col-md-4"><div class="thumbnail"><div class="caption"><h3>'+json[i].nome+'</h3><p><Strong>Inicio: </Strong>'+json[i].inicio+'</p><p><Strong>Prazo: </Strong>'+json[i].prazo+'</p><p><Strong>Estágio: </Strong>'+json[i].estagio+'</p><p><Strong>Andamento: </Strong>'+farolString+'</p><div class="progress"><div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="'+json[i].porcentual+'" aria-valuemin="0" aria-valuemax="100" style="width: '+json[i].porcentual+'%"><span class="sr-only">'+json[i].porcentual+'% Completado</span></div><span class="progress-type">Completado</span><span class="progress-completed" style = "padding: 3px 10px 2px;">'+json[i].porcentual+'%</span></div><div class ="btn-group btn-group-justified"><a href="#" class="btn btn-primary btn-block">'+visualizarString+'</a>'
+                          htmlString += '<div class="col-md-4"><div class="thumbnail"><div class="caption"><h3>'+json[i].nome+'</h3><p><Strong>SCRUM Master: </Strong><img src = "../'+json[i].master.foto+'" class = "img-thumbnail" style = "max-width:50px;margin-right:5px;">'+json[i].master.nome+'</p><p><Strong>Inicio: </Strong>'+json[i].inicio+'</p><p><Strong>Prazo: </Strong>'+json[i].prazo+'</p><p><Strong>Estágio: </Strong>'+json[i].estagio+'</p><p><Strong>Andamento: </Strong>'+farolString+'</p><div class="progress"><div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="'+json[i].porcentual+'" aria-valuemin="0" aria-valuemax="100" style="width: '+json[i].porcentual+'%"><span class="sr-only">'+json[i].porcentual+'% Completado</span></div><span class="progress-type">Completado</span><span class="progress-completed" style = "padding: 3px 10px 2px;">'+json[i].porcentual+'%</span></div><div class ="btn-group btn-group-justified"><a href="#" class="btn btn-primary btn-block">'+visualizarString+'</a>'
                         <?php
                         if(SessionController::IsAdmin())
                         {?>
-                            htmlString += '<a href="#" class="btn btn-success">Editar</a><a href="#" class="btn btn-danger btn-excluir-projeto" data-idprojeto="'+json[i].id+'" data-nomeprojeto = "'+json[i].nome+'">Apagar</a>';
+                            htmlString += '<a href="editar?id='+json[i].id+'" class="btn btn-success">Editar</a><a href="#" class="btn btn-danger btn-excluir-projeto" data-idprojeto="'+json[i].id+'" data-nomeprojeto = "'+json[i].nome+'">Apagar</a>';
                         <?php }
                         else
                         {?>
                             
                             if(master == true)
                             {
-                                htmlString +=  '<a href="#" class="btn btn-success">Editar</a>';
+                                htmlString +=  '<a href="editar?id='+json[i].id+'" class="btn btn-success">Editar</a>';
                             }
                             
                         <?php }
@@ -182,7 +184,7 @@ if(!SessionController::TemSessao())
                              }
                              else
                              {
-                                 var totalDevs = Object.keys(el.devs);
+                                 var totalDevs = Object.keys(el.devs).length;
 
                                  for(var j = 0; j < totalDevs; j++)
                                  {
@@ -370,8 +372,31 @@ if(!SessionController::TemSessao())
                    
                    
                 });
-                
+                 $("#projetos-conteudo").on('click', '.btn-editar-projeto', function()
+                {
+                    var idprojeto = $(this).data('projeto-id');
+                    var projetoEscolhido = todosProjetos.filter(function(el)
+                    {
+                       return idprojeto === el.id;
+                    });
+                    
+                    
+                    <?php
+                        if(!SessionController::IsAdmin())
+                        { ?>
+                           if(projetoEscolhido.master.id != idusuario)
+                           {
+                               return;
+                           }
+                            
+                        <?php }
+                    ?>
+
+                   
+                });
             });
+            
+           
             
         </script>
         
