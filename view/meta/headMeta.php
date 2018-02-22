@@ -55,8 +55,15 @@ $voltas = UserRootViewFinder::GetBackSlashes();
     {
         var retorno;
         bootbox.confirm({ 
-  size: "small",
   message: mensagem, 
+  buttons: {
+        cancel: {
+            label: '<i class="fa fa-times"></i> Cancelar'
+        },
+        confirm: {
+            label: '<i class="fa fa-check"></i> Confirmar'
+        }
+    },
   callback: function(result){ if(result == true){funcao();}
       }
 });

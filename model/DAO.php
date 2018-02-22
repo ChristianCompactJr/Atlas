@@ -17,7 +17,7 @@ abstract class DAO {
     public function __construct()
     {
         self::init();
-                date_default_timezone_set('Brazil/East');
+        date_default_timezone_set('Brazil/East');
     }
 
     public final  function fecharConexao()

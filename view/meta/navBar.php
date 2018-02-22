@@ -16,13 +16,13 @@ if(SessionController::IsAdmin())
 {
     $projetos = new LinkMenu("Projetos", "#");
     $cadastrarProjetos = new LinkMenu("Cadastrar Projeto", "projetos/cadastrar");
-    $visualizarProjetos = new LinkMenu("Visualizar Projetos", "projetos/visualizar");
+    $visualizarProjetos = new LinkMenu("Visualizar Projetos", "projetos/");
     $projetos->AdicionarFilho($cadastrarProjetos);
     $projetos->AdicionarFilho($visualizarProjetos);
 }
 else
 {
-    $projetos = new LinkMenu("Projetos", "projetos/visualizar");
+    $projetos = new LinkMenu("Projetos", "projetos/");
 }
 
 
@@ -34,6 +34,11 @@ $alterarhabilidades = new LinkMenu('Habilidades', 'habilidades');
 $confhabilidades = new LinkMenu('Configurar Habilidades', 'configurar-habilidades');
 
 $voltas = UserRootViewFinder::GetBackSlashes();
+
+$perfilPai = New LinkMenu('<img alt="" src="'.$voltas.$usuario->getFoto().'" class = "perfil-menu"><span id = "nome-menu">'.$usuario->getNome().'</span>', "#");
+$perfilPai->AdicionarFilho($alterardados);
+$perfilPai->AdicionarFilho($alterarhabilidades);
+
 ?>
 
 <nav class="navbar navbar-default">
@@ -69,14 +74,9 @@ $voltas = UserRootViewFinder::GetBackSlashes();
         </ul>
         <ul class="nav navbar-nav navbar-right"> 
 
-          <li class="dropdown">
-
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><img alt="" src="<?php echo $voltas.$usuario->getFoto(); ?>" class = "perfil-menu"><span id = "nome-menu"><?php echo $usuario->getNome(); ?></span> <span class="caret"></span></a>
-            <ul class="dropdown-menu">
-                <?php echo $alterardados->ToHTML(); ?>
-                <?php echo $alterarhabilidades->ToHTML(); ?>
-            </ul>
-          </li>
+          <?php
+            echo $perfilPai->ToHTML();
+          ?>
           <li><a href ="<?php echo $voltas;?>controller/usuario/logoutController.php">Logout</a></li>
         </ul>
       </div>
