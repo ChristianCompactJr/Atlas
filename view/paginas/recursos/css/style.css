@@ -16,7 +16,7 @@ footer
     left: 0;
     font-size: 11px;
     padding:10px 30px;
-    z-index: 9999999999999999999999;
+    z-index: 10000;
 }
 
 .logo-menu
@@ -276,4 +276,26 @@ footer
 .stylish-input-group button{
     border:0;
     background:transparent;
+}
+
+.tarefa-macro-panel .list-group-item
+{
+    display: flow-root;
+}
+.tarefa-macro-panel h4
+{
+    float:left;
+    display:inline;
+    margin-top:10px;
+}
+.tarefa-macro-panel p
+{
+    text-align: center;
+}
+
+.concluida-btn
+{
+    float: left;
+    margin-top: 5px;
+    margin-right: 5px;
 }

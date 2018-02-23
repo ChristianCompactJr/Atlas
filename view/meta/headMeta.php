@@ -39,7 +39,7 @@ $voltas = UserRootViewFinder::GetBackSlashes();
 	},
 	offset: 20,
 	spacing: 10,
-	z_index: 9999999,
+	z_index: 10001,
 	delay: 3000,
 	timer: 1000,
 	url_target: '_blank',

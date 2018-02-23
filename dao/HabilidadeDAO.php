@@ -2,11 +2,6 @@
 
 class HabilidadeDAO extends DAO {
     
-    public function __construct() {
-        parent::__construct();
-    }
-    
-    
     public function GetHabilidade($id)
     {
         $id = parent::LimparString($id);

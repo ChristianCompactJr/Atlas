@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 21-Fev-2018 às 18:54
+-- Generation Time: 23-Fev-2018 às 01:00
 -- Versão do servidor: 10.1.21-MariaDB
 -- PHP Version: 7.1.1
 
@@ -150,6 +150,7 @@ INSERT INTO `atlas_projeto_desenvolvedor` (`idprojeto`, `idusuario`, `ativo`) VA
 (14, 10, 1),
 (14, 11, 1),
 (15, 6, 1),
+(15, 8, 0),
 (16, 8, 1),
 (16, 10, 1),
 (16, 11, 1),
@@ -338,17 +339,17 @@ ALTER TABLE `atlas_habilidades`
 -- AUTO_INCREMENT for table `atlas_projeto`
 --
 ALTER TABLE `atlas_projeto`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 --
 -- AUTO_INCREMENT for table `atlas_projeto_tarefa_macro`
 --
 ALTER TABLE `atlas_projeto_tarefa_macro`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 --
 -- AUTO_INCREMENT for table `atlas_projeto_tarefa_micro`
 --
 ALTER TABLE `atlas_projeto_tarefa_micro`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 --
 -- AUTO_INCREMENT for table `atlas_usuario`
 --

@@ -1,10 +1,7 @@
 <?php
 class UsuarioDAO extends DAO {
-    public function __construct() {
-        parent::__construct();
-    }
     
-    
+
     public function GetUsuario($id)
     {
         $id = parent::LimparString($id);

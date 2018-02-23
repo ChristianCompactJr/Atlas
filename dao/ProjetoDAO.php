@@ -3,7 +3,7 @@
 
 class ProjetoDAO extends DAO {
    
-    
+
     
     public function GetDevsProjeto($idprojeto)
     {

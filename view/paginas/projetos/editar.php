@@ -37,7 +37,7 @@ catch(Exception $e)
 
         
         <div class ="container">
-            <h1>Cadastrar Projetos</h1>
+            <h1>Editar Projeto</h1>
             <div class = "row">
                 <div class = "col-md-12">
                     <form id ="cadastro-projeto-form"  onsubmit="return false" method = "POST" action = "../controller/projeto/CadastroController.php">
