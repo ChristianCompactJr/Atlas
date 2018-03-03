@@ -18,5 +18,7 @@ if(!SessionController::TemSessao())
         <h1>Página Inicial</h1>
         
         <?php Carregador::CarregarViewFooter(); ?>
+        <script>
+    </script>
     </body>
 </html>

@@ -5,25 +5,61 @@ class TarefaMicro {
     private $macro;
     private $nome;
     private $descricao;
-    private $tempoPrevisto;
+    private $observacoes;
     private $linkUteis;
-    private $concluida;
-    
-    function __construct($id, $macro, $nome, $descricao, $tempoPrevisto, $linkUteis, $concluida) {
+    private $prioridade;
+    private $estimativa;
+    private $estado;
+    function __construct($id, $macro, $nome, $descricao, $observacoes, $linkUteis, $prioridade, $estimativa, $estado) {
         $this->id = $id;
         $this->macro = $macro;
         $this->nome = $nome;
         $this->descricao = $descricao;
-        $this->tempoPrevisto = $tempoPrevisto;
+        $this->observacoes = $observacoes;
         $this->linkUteis = $linkUteis;
-        $this->concluida = $concluida;
+        $this->prioridade = $prioridade;
+        $this->estimativa = $estimativa;
+        $this->estado = $estado;
     }
-    
+
+        
     
     public function toArray()
     {
-        return array('id' => $this->id, 'macro' => $this->macro, 'nome' => $this->nome, 'descricao' => $this->getDescricaoFormatted(), 'tempo' => $this->tempoPrevisto, 'links' => $this->getLinksUteisFormatted(), 'concluida' => $this->concluida);
+        return array('id' => $this->id, 'macro' => $this->macro, 'nome' => $this->nome, 'descricao' => $this->getDescricaoFormatted(), 'descricaoUnformatted' => $this->descricao, 'observacoes' => $this->getObservacoesFormatted(), 'observacoesUnformatted' => $this->observacoes ,'links' => $this->getLinksUteisFormatted(), 'linksUnformatted' => $this->linkUteis, 'estimativa' => $this->estimativa, 'prioridade' => $this->prioridade, 'estado' => $this->estado);
     }
+    
+        function getObservacoes() {
+        return $this->observacoes;
+    }
+
+       function getEstado() {
+        return $this->estado;
+    }
+
+    function setEstado($estado) {
+        $this->estado = $estado;
+    }
+    function getPrioridade() {
+        return $this->prioridade;
+    }
+
+    function getEstimativa() {
+        return $this->estimativa;
+    }
+
+    function setObservacoes($observacoes) {
+        $this->observacoes = $observacoes;
+    }
+
+    function setPrioridade($prioridade) {
+        $this->prioridade = $prioridade;
+    }
+
+    function setEstimativa($estimativa) {
+        $this->estimativa = $estimativa;
+    }
+    
     function getId() {
         return $this->id;
     }
@@ -45,6 +81,11 @@ class TarefaMicro {
         $texto =  preg_replace("/[\r\n]+/", "\n", $this->descricao);
           return str_replace(array("\r\n", "\r", "\n"), "<br /><br />", $texto);
     }
+    public function getObservacoesFormatted()
+    {
+        $texto =  preg_replace("/[\r\n]+/", "\n", $this->observacoes);
+          return str_replace(array("\r\n", "\r", "\n"), "<br /><br />", $texto);
+    }
     
     function getTempoPrevisto() {
         return $this->tempoPrevisto;
@@ -56,8 +97,34 @@ class TarefaMicro {
     
     public function getLinksUteisFormatted()
     {
+        $retorno = '';
         $texto =  preg_replace("/[\r\n]+/", "\n", $this->linkUteis);
-          return str_replace(array("\r\n", "\r", "\n"), "<br /><br />", $texto);
+        $texto = str_replace(array("\r\n", "\r", "\n"), "<br />", $texto);
+        $linhas = explode('<br />', $texto);
+        foreach($linhas as $linha)
+        {
+            $palavras = explode(' ', $linha);
+            
+            foreach($palavras as $palavra)
+            {
+                if(filter_var($palavra, FILTER_VALIDATE_URL))
+                {
+                    $retorno .= '<a href = "'.$palavra.'" target = "_blank" class = "link">'.$palavra."</a>";
+                }
+                else
+                {
+                    $retorno .= $palavra;
+                }
+                $retorno .= " ";
+            }
+            $retorno .= "<br />";
+        }
+        $retorno = preg_replace('#(<br */?>\s*)+#i', '<br />', $retorno);
+        return $retorno;
+        
+        
+        
+       
     }
 
     function getConcluida() {

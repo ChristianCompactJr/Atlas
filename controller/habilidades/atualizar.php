@@ -1,7 +1,5 @@
 <?php
-
-     header('Content-Type: application/json');
-     
+     SessionController::VerificarCSRFToken();
      if(SessionController::IsAdmin() || (SessionController::TemSessao() && SessionController::GetUsuario()->getId() == $_POST['id']))
      {
          
@@ -13,13 +11,12 @@
                 $interesse = filter_var($info['interesse'], FILTER_VALIDATE_BOOLEAN);
                 $dao->AtulizarHabilidadeUsuario($_POST['id'], $info['id'], $info['valor'], $interesse);
             }
-            $resposta = array('tipo' => 'sucesso', 'mensagem' => 'Habilidades Atualizadas com sucesso'); 
+            JSONResponder::ResponderSucesso("Habilidades atualizadas com sucesso", true, true);
          }
          catch(Exception $e)
          {
-             $resposta = array('tipo' => 'erro', 'mensagem' => $ex->getMessage());
+             JSONResponder::ResponderFalha($e->getMessage(), true, true);
          }
-         echo json_encode($resposta, JSON_FORCE_OBJECT);
          
      }
 

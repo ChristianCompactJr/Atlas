@@ -8,19 +8,17 @@ class Projeto {
     private $inicio;
     private $prazo;
     private $cliente;
-    private $backlog;
     private $observacoes;
     private $estagio;
     
     
-    function __construct($id, $nome, $scrumMaster, $inicio, $prazo, $cliente, $backlog, $observacoes, $estagio) {
+    function __construct($id, $nome, $scrumMaster, $inicio, $prazo, $cliente, $observacoes, $estagio) {
         $this->id = $id;
         $this->nome = $nome;
         $this->scrumMaster = $scrumMaster;
-        $this->inicio = $inicio;
         $this->prazo = $prazo;
+        $this->inicio = $inicio;
         $this->cliente = $cliente;
-        $this->backlog = $backlog;
         $this->observacoes = $observacoes;
         $this->estagio = $estagio;
     }
@@ -101,11 +99,11 @@ class Projeto {
     
     function getInicioFormatted()
     {
-        return str_replace('-', '/', $this->inicio);
+        return date("d/m/Y", strtotime($this->inicio));
     }
     function getPrazoFormatted()
     {
-        return str_replace('-', '/', $this->prazo);
+         return date("d/m/Y", strtotime($this->prazo));
     }
 
     
@@ -131,16 +129,6 @@ class Projeto {
 
     function getCliente() {
         return $this->cliente;
-    }
-
-    function getBacklog() {
-        return $this->backlog;
-    }
-    
-    function getBacklogFormatted()
-    {
-        $texto =  preg_replace("/[\r\n]+/", "\n", $this->backlog);
-          return str_replace(array("\r\n", "\r", "\n"), "<br /><br />", $texto);
     }
     
     

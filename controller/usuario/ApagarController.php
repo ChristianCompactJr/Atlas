@@ -1,13 +1,13 @@
     <?php
-    header('Content-Type: application/json');
+    SessionController::VerificarCSRFToken();
     try
     {
         $dao = new UsuarioDAO();  
         $dao->ApagarUsuario($_POST['id']);
-        $resposta = array('tipo' => 'sucesso', 'mensagem' => 'Usuário apagado com sucesso.');
+        JSONResponder::ResponderSucesso("Usuário apagado com sucesso.", true, true);
+        
     }
     catch(Exception $e)
     {
-        $resposta = array('tipo' => 'erro', 'mensagem' => $e->getMessage());
+        JSONResponder::ResponderFalha($e->getMessage(), true, true);
     }
-    echo json_encode($resposta, JSON_FORCE_OBJECT);

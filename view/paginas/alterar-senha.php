@@ -25,7 +25,6 @@
                     
                     if((!isset($_GET['u']) || !isset($_GET['chave'])) || (SessionController::TemSessao() && $_GET['u'] !== SessionController::GetUsuario()->getId()))
                     {
-                    echo "aqui";
                         echo '<p style = "color:red">Houve um erro ao redefinir a senha. Tente novamente ou contacte o suporte ou um administrador do sistema</p>';
                     }
                     else
@@ -76,10 +75,9 @@
                                  var form = $(this);
 
                                  $.ajax({
-
-                                    url : 'controller/usuario/redefinirSenhaEsqueci.php',
+                                    url : '<?php echo UrlManager::GetPathToController("usuario/redefinirSenhaEsqueci.php"); ?>',
                                     method : 'POST',
-                                    data : form.serialize(),
+                                    data : GerarSerializedParam(form),
                                     dataType : 'json',
                                     beforeSend : function()
                                     { 
@@ -89,7 +87,8 @@
 
                                     success : function(resposta)
                                     {
-                                        if(resposta.tipo == "sucesso")
+                                        
+                                        if(resposta.tipo == "success")
                                         {
                                             alert("Senha redefinida com sucesso");
                                             window.location.href = "login";
@@ -104,7 +103,12 @@
                                     {
                                         validando = false;
                                         $("button[type='submit']", form).html("Redefinir senha");
+                                    },
+                                    error : function(a)
+                                    {
+                                        console.log(a);
                                     }
+                                    
                                  });
 
                              });

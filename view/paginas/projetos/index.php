@@ -159,11 +159,12 @@ if(!SessionController::TemSessao())
                
                function CarregarJSON(__callback)
                {
+                   var data = {idusuario : idusuario};
+                AdicionarCSRFTokenObj(data);
                 $.ajax({
-
-                   url: '../controller/projeto/PaginacaoController.php',
+                    url : '<?php echo UrlManager::GetPathToController("projeto/PaginacaoController.php"); ?>',
                    method : 'POST',
-                   data : {idusuario : idusuario},
+                   data : data,
 
                    beforeSend : function()
                    {
@@ -202,6 +203,7 @@ if(!SessionController::TemSessao())
                    },
                    error : function(a, b, c)
                    {
+                       console.log(a);
                        GerarNotificacao("Houve um erro ao carregar os projetos", "danger");
                    }  
                 });
@@ -250,10 +252,12 @@ if(!SessionController::TemSessao())
                    var idprojeto = idprojetoesc;
                    var btn = btnesc;
                    var meusprojetoselecionado;
+                   var data = {idprojeto: idprojeto};
+                AdicionarCSRFTokenObj(data);
                    $.ajax({
-                      url :'../controller/projeto/ApagarProjeto.php',
+                       url : '<?php echo UrlManager::GetPathToController("projeto/ApagarProjeto.php"); ?>',
                       method : 'POST',
-                      data : {idprojeto: idprojeto},
+                      data : data,
                       
                       beforeSend : function()
                       {
@@ -269,18 +273,11 @@ if(!SessionController::TemSessao())
                       },
                       success : function(resposta)
                       {   
-                          
-                          if(resposta.tipo == "sucesso")
+                          GerarNotificacao(resposta.mensagem, resposta.tipo);
+                          if(resposta.tipo != "success")
                           {
-                             
-                              GerarNotificacao(resposta.mensagem, "success");
+                             btn.attr("disabled", false);
                           }
-                          else
-                          {
-                               btn.attr("disabled", false);
-                              GerarNotificacao(resposta.mensagem, "danger");
-                          }
-                          
                            CarregarJSON(function()
                             {
                                 if(meusprojetoselecionado == true)

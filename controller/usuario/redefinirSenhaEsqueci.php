@@ -1,22 +1,18 @@
 <?php
-
-header('Content-Type: application/json');
+    SessionController::VerificarCSRFToken();
     $dao = new UsuarioDAO();
     if($_POST['novasenha'] !== $_POST['confsenha'])
     {
-        $resposta = array('tipo' => 'erro', 'mensagem' => "A confirmação de senha não é igual a nova senha.");
-        echo json_encode($resposta, JSON_FORCE_OBJECT);
-        return;
+        JSONResponder::ResponderFalha("A confirmação de senha não é igual a nova senha.", true, true);
     }
     
     try {
        $dao->AtualizarSenhaEsqueci($_POST['id'], $_POST['novasenha'], $_POST['chave']);
-        $resposta = array('tipo' => 'sucesso', 'mensagem' => "Senha redefinida com sucesso");
+       JSONResponder::ResponderSucesso("Senha redefinida com sucesso", true, true);
         
     } 
     catch (Exception $ex) {
-       $resposta = array('tipo' => 'erro', 'mensagem' => $ex->getMessage());
+       JSONResponder::ResponderFalha($ex->getMessage(), true, true);
     }
-    echo json_encode($resposta, JSON_FORCE_OBJECT);
     
 ?>

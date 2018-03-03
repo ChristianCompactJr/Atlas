@@ -1,25 +1,22 @@
 <?php
-$voltas = UserRootViewFinder::GetBackSlashes();
+$voltas = UrlManager::GetBackSlashes();
 
 ?>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" href="<?php echo $voltas;?>recursos/img/logo_limpo.png" type="image/png">
-
-<link rel ="stylesheet" type ="text/css" href ="<?php echo $voltas;?>recursos/css/bootstrap.min.css" />    
-
-<link rel ="stylesheet" type ="text/css" href ="<?php echo $voltas;?>recursos/css/animate.css" />
+<link rel="icon" href="<?php echo UrlManager::GetPathToView("recursos/img/logo_limpo.png"); ?>" type="image/png">
+<link rel ="stylesheet" type ="text/css" href ="<?php echo UrlManager::GetPathToView("recursos/css/bootstrap.min.css"); ?>" />    
+<link rel ="stylesheet" type ="text/css" href ="<?php echo UrlManager::GetPathToView("recursos/css/animate.css"); ?>" />
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
-<link rel ="stylesheet" type ="text/css" href ="<?php echo $voltas;?>recursos/css/style.css" />
-<script type = "text/javascript" src ="<?php echo $voltas;?>recursos/js/jquery.js" ></script>
-<script type = "text/javascript" src ="<?php echo $voltas;?>recursos/js/jqueryui.js" ></script>
-<script type = "text/javascript" src ="<?php echo $voltas;?>recursos/js/bootstrap.min.js" ></script>
-<script type ="text/javascript" src = "<?php echo $voltas;?>recursos/js/bootstrap-notify.min.js"></script>
-<script type ="text/javascript" src = "<?php echo $voltas;?>recursos/js/bootbox.min.js"></script>
-<script type ="text/javascript" src = "<?php echo $voltas;?>recursos/js/font-awesome.js"></script>
-<script>
-    
+<link rel ="stylesheet" type ="text/css" href ="<?php echo UrlManager::GetPathToView("recursos/css/style.css"); ?>" />
+<script type = "text/javascript" src ="<?php echo UrlManager::GetPathToView("recursos/js/jquery.js"); ?>" ></script>
+<script type = "text/javascript" src ="<?php echo UrlManager::GetPathToView("recursos/js/jqueryui.js"); ?>" ></script>
+<script type = "text/javascript" src ="<?php echo UrlManager::GetPathToView("recursos/js/bootstrap.min.js"); ?>" ></script>
+<script type ="text/javascript" src = "<?php echo UrlManager::GetPathToView("recursos/js/bootstrap-notify.min.js"); ?>"></script>
+<script type ="text/javascript" src = "<?php echo UrlManager::GetPathToView("recursos/js/bootbox.min.js"); ?>"></script>
+<script type ="text/javascript" src = "<?php echo UrlManager::GetPathToView("recursos/js/font-awesome.js"); ?>"></script>
+<script> 
     function GerarNotificacao(mensagem, tipo)
     {
         $.notify({
@@ -69,5 +66,29 @@ $voltas = UserRootViewFinder::GetBackSlashes();
 });
 return retorno;
     }
+    
+    
+    
+function GerarFormDataFormulario(formulario)
+{
+    var fm = new FormData(formulario);
+    fm.append("csrftoken", "<?php echo SessionController::GetCSRFToken() ?>");
+    return fm;
+}
+
+function AdicionarCSRFTokenObj(obj)
+{
+    obj['csrftoken'] = '<?php echo SessionController::GetCSRFToken() ?>';
+}
+
+function GerarSerializedParam(formulario)
+{
+    var retorno = formulario.serializeArray();
+  
+    retorno.push({'name' : 'csrftoken', 'value' : '<?php echo SessionController::GetCSRFToken() ?>'});
+   
+    return $.param(retorno);
+}
+
     
 </script>

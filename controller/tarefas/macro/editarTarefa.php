@@ -1,6 +1,5 @@
 <?php
-
-    header('Content-Type: application/json');
+SessionController::VerificarCSRFToken();
     $pdao = new ProjetoDAO();
     $macrodao = new TarefaMacroDAO();
     
@@ -12,14 +11,13 @@
         try
         {
             $macrodao->AtualizarTarefa($_POST['idmacro'], $_POST['nome'], $_POST['descricao']);
-            $resposta = array('tipo' => 'sucesso', 'mensagem' => 'Tarefa macro alterada com sucesso');
+            JSONResponder::ResponderSucesso("Tarefa macro alterada com sucesso", true, true);
         }
         catch (Exception $e)
         {
-            $resposta = array('tipo' => 'erro', 'mensagem' => $e->getMessage());
+            JSONResponder::ResponderFalha($e->getMessage(), true, true);
         }
         
-        echo json_encode($resposta, JSON_FORCE_OBJECT);
      
     }   
 

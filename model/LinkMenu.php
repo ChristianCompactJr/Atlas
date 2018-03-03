@@ -12,7 +12,7 @@ class LinkMenu
         $this->nome = $nome;     
         $this->href = $href;
         $this->linkFilhos = $filhos;
-        self::$uri = UserRootViewFinder::GetViewUrl();
+        self::$uri = UrlManager::GetViewUrl();
         if(self::$uri == '')
         {
             self::$uri = 'inicial';
@@ -35,7 +35,7 @@ class LinkMenu
         
         if(count($this->linkFilhos) <= 0)
         {
-           $htmlString .= '"><a href="'.UserRootViewFinder::GetBackSlashes().$this->href.'">'.$this->nome; 
+           $htmlString .= '"><a href="'.UrlManager::GetBackSlashes().$this->href.'">'.$this->nome; 
            
            if(self::$uri == $this->href)
             {
@@ -45,7 +45,7 @@ class LinkMenu
         }
         else
         {
-            $htmlString .= 'dropdown "> <a href="'.UserRootViewFinder::GetBackSlashes().$this->href.'" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">'.$this->nome.'<span class="caret"></span>';
+            $htmlString .= 'dropdown "> <a href="'.UrlManager::GetBackSlashes().$this->href.'" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">'.$this->nome.'<span class="caret"></span>';
             
             if(self::$uri == $this->href)
             {

@@ -1,6 +1,5 @@
 <?php
-
-    header('Content-Type: application/json');
+SessionController::VerificarCSRFToken();
     $pdao = new ProjetoDAO();
     $projeto = $pdao->GetProjeto($_POST['idprojeto']);
     if(SessionController::IsAdmin() || SessionController::GetUsuario()->getID() == $projeto->getScrumMaster())
@@ -9,14 +8,12 @@
         {
             $dao = new TarefaMacroDAO();
             $dao->AdicionarTarefa($projeto->getId(), $_POST['nome'], $_POST['descricao']);
-            $resposta = array('tipo' => 'sucesso', 'mensagem' => 'Tarefa macro cadastrada com sucesso');
+            JSONResponder::ResponderSucesso("Tarefa macro cadastrada com sucesso", true, true);
         }
         catch (Exception $e)
         {
-            $resposta = array('tipo' => 'erro', 'mensagem' => $e->getMessage());
+            JSONResponder::ResponderFalha($e->getMessage(), true, true);
         }
-        
-        echo json_encode($resposta, JSON_FORCE_OBJECT);
      
     }   
 

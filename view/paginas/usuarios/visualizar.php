@@ -80,11 +80,13 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
                
                ConstruirPaginacao(totalPaginas);
                CarregarUsuarios(0, resultadosPorPaginas, '');
-            function CarregarUsuarios(inicio, limite, like){    
+            function CarregarUsuarios(inicio, limite, like){
+                var data = {inicio: inicio, limite : limite, like : like};
+                AdicionarCSRFTokenObj(data); 
                  $.ajax({
-                    url : '../controller/usuario/PaginacaoController.php',
+                    url : '<?php echo UrlManager::GetPathToController("usuario/PaginacaoController.php"); ?>',
                     method : 'POST',
-                    data : {inicio: inicio, limite : limite, like : like},
+                    data : data,
                     dataType : 'json',
                     
                     beforeSend : function()
@@ -176,18 +178,17 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
         $("#table-conteudo").on('click', '.editar-habilidades-btn', function()
         {
             var id = $(this).data('usuario');
-            
+            var data = {id : id};
+            AdicionarCSRFTokenObj(data); 
              $.ajax({
-             data : {id : id},
-             url : '../controller/habilidades/habilidadesUsuarioJSON.php',
+             data : data,
+             url : '<?php echo UrlManager::GetPathToController("habilidades/habilidadesUsuarioJSON.php"); ?>',
              method : 'POST',
              dataType : 'json',
              
              success : function(resposta)
              {
-                console.log(resposta);
                 htmlString = '';
-                console.log(Object.keys(resposta).length);
                 for(var j = 0; j < Object.keys(resposta).length; j++)
                 {
                     htmlString += '<div class = "col-md-12"><h3>'+resposta[j].nomehabilidade+'</h3><div class = "habilidade-slider" data-habilidade-id = "'+resposta[j].idhabilidade+'" data-habilidade-valor = "'+resposta[j].valor+'"><div class="ui-slider-handle habilidade-slider-handle"></div></div> <div class="checkbox"><label><input type="checkbox" class = "habilidade-interesse-input" data-habilidade = "'+resposta[j].idhabilidade+'" ';
@@ -201,7 +202,6 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
                     
                 }
                 alterarHabilidadeUsuarioId = id;
-                console.log(htmlString);
                 $("#habilidades-editar-conteudo").html(htmlString);
                 
                 $(".habilidade-slider").each(function(index)
@@ -210,33 +210,11 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
                     var handle = $(".habilidade-slider-handle", $(this));
                 $(this).slider({range : "min", max : 100, min : 0, value : $(this).data('habilidade-valor'),slide: function( event, ui ) {handle.text( ui.value );}, create : function() {  handle.text( $( this ).slider( "value" ) ); }});
                  
-                    /*var val = $(this).slider("option", "value");
-                    var id = $(this).data('habilidade-id');
-                    var interesseInput = $('.habilidade-interesse-input[data-habilidade="'+id+'"]');
-                    var interesse;
-                    if(interesseInput.is(":checked"))
-                    {
-                        interesse = true;
-                    }
-                    else
-                    {
-                        interesse = false;
-                    }
-                    habilidadesValor.push({id : id, valor : val, interesse : interesse});*/
                 });
                 
                 
                 $("#modalEditarHabilidades").modal('show');
-               /* if(resposta.tipo == "sucesso")
-                {
-                    GerarNotificacao("Usuário excluido com sucesso", "success");
-                    btn.parent().parent().remove();
-                }
-                else
-                {
-                    GerarNotificacao(resposta.mensagem, "danger");
-                }*/
-                 
+                
                  
              },
              
@@ -294,33 +272,24 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
         $("#table-conteudo").on('click', '.excluir-usuario-btn', function()
         {
             var btn = $(this);
-           
-            //var confirmacao = confirm("Tem certeza que deseja apagar o usuário " + $("td:first-child .visualizar-td-nome", btn.parent().parent()).html());
-            
-           // if(confirmacao === false)
-            //{
-            //    return;
-           // }
             var btnid = btn.data('usuario');
             var excluir = function(){
             var id = btnid;
-            
+            var data = {id : id};
+            AdicionarCSRFTokenObj(data);
            $.ajax({
-             data : {id : id},
-             url : '../controller/usuario/ApagarController.php',
+             data : data,
+             url : '<?php echo UrlManager::GetPathToController("usuario/ApagarController.php"); ?>',
              method : 'POST',
              dataType : 'json',
              
              success : function(resposta)
              {
-                if(resposta.tipo == "sucesso")
+                 GerarNotificacao(resposta.mensagem, resposta.tipo);
+                 
+                if(resposta.tipo == "success")
                 {
-                    GerarNotificacao("Usuário excluido com sucesso", "success");
                     btn.parent().parent().remove();
-                }
-                else
-                {
-                    GerarNotificacao(resposta.mensagem, "danger");
                 }
                  
                  
@@ -488,23 +457,17 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
                     }
                     habilidadesValor.push({id : id, valor : val, interesse : interesse});
                 });
+                var data = {info : habilidadesValor, id : alterarHabilidadeUsuarioId};
+                AdicionarCSRFTokenObj(data);
                  $.ajax({
-                       url : '../controller/habilidades/atualizar.php',
-                       method : 'POST',
+                        url : '<?php echo UrlManager::GetPathToController("habilidades/atualizar.php"); ?>',
+                        method : 'POST',
                         dataType: "json",
-                       data : {info : habilidadesValor, id : alterarHabilidadeUsuarioId},
+                       data : data,
                        
                        success : function(resposta)
                        {
-                           if(resposta.tipo == "sucesso")
-                            {
-                                 GerarNotificacao(resposta.mensagem, 'success');
-                            }
-
-                            else
-                            {
-                                GerarNotificacao(resposta.mensagem, 'danger');
-                            }
+                           GerarNotificacao(resposta.mensagem, resposta.tipo);
                        },
                        complete : function()
                         {
@@ -523,10 +486,9 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
                var form = $(this);
                
                $.ajax({
-                  
-                  url : '../controller/usuario/alterar/AlterarNome.php',
+                  url : '<?php echo UrlManager::GetPathToController("usuario/alterar/AlterarNome.php"); ?>',
                   method : 'POST',
-                  data : form.serialize(),
+                  data : GerarSerializedParam(form),
                   dataType : 'json',
                   beforeSend : function()
                   { 
@@ -536,19 +498,14 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
                   
                   success : function(resposta)
                   {
-                      if(resposta.tipo == "sucesso")
+                      GerarNotificacao(resposta.mensagem, resposta.tipo);
+                      if(resposta.tipo == "success")
                       {
-                           GerarNotificacao(resposta.mensagem, 'success');
                            var id = $(".alterar-hidden-id", form).val();
                            var linha =  $('#table-conteudo a[data-usuario="'+id+'"]').parent().parent();
                            $("td:nth-child(1) .visualizar-td-nome", linha).html($("#modalEditarUsuario-nome").val());
                       }
                      
-                      else
-                      {
-                          GerarNotificacao(resposta.mensagem, 'danger');
-                          
-                      }
                   },
                   
                   complete : function()
@@ -568,10 +525,9 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
                var form = $(this);
                
                $.ajax({
-                  
-                  url : '../controller/usuario/alterar/AlterarEmail.php',
+                  url : '<?php echo UrlManager::GetPathToController("usuario/alterar/AlterarEmail.php"); ?>',
                   method : 'POST',
-                  data : form.serialize(),
+                  data : GerarSerializedParam(form),
                   dataType : 'json',
                   beforeSend : function()
                   { 
@@ -582,17 +538,12 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
                   
                   success : function(resposta)
                   {
-                      if(resposta.tipo == "sucesso")
+                      GerarNotificacao(resposta.mensagem, resposta.tipo);
+                      if(resposta.tipo == "success")
                       {
-                           GerarNotificacao(resposta.mensagem, 'success');
                            var id = $(".alterar-hidden-id", form).val();
                            var linha =  $('#table-conteudo a[data-usuario="'+id+'"]').parent().parent();
                            $("td:nth-child(2)", linha).html($("#modalEditarUsuario-email").val());
-                      }
-                     
-                      else
-                      {
-                          GerarNotificacao(resposta.mensagem, 'danger');
                       }
                   },
                   
@@ -621,10 +572,9 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
                }
                
                $.ajax({
-                  
-                  url : '../controller/usuario/alterar/AlterarSenha.php',
+                  url : '<?php echo UrlManager::GetPathToController("usuario/alterar/AlterarSenha.php"); ?>',
                   method : 'POST',
-                  data : form.serialize(),
+                  data : GerarSerializedParam(form),
                   dataType : 'json',
                   beforeSend : function()
                   { 
@@ -634,15 +584,7 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
                   
                   success : function(resposta)
                   {
-                      if(resposta.tipo == "sucesso")
-                      {
-                           GerarNotificacao(resposta.mensagem, 'success');
-                      }
-                     
-                      else
-                      {
-                           GerarNotificacao(resposta.mensagem, 'danger');
-                      }
+                      GerarNotificacao(resposta.mensagem, resposta.tipo);
                   },
                   
                   complete : function()
@@ -661,11 +603,10 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
            $("#alterar-foto").on("submit", function()
            {
                var form = $(this);
-               var formData = new FormData(this);
-
+               var formData = GerarFormDataFormulario(this);
+               
                $.ajax({
-                  
-                  url : '../controller/usuario/alterar/AlterarFoto.php',
+                  url : '<?php echo UrlManager::GetPathToController("usuario/alterar/AlterarFoto.php"); ?>',
                   method : 'POST',
                   data : formData,
                   dataType : 'json',
@@ -677,18 +618,13 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
                   
                   success : function(resposta)
                   {
-                      if(resposta.tipo == "sucesso")
+                      GerarNotificacao(resposta.mensagem, resposta.tipo);
+                      if(resposta.tipo == "success")
                       {
-                           GerarNotificacao(resposta.mensagem, 'success');
                            $("#modalEditarUsuario-img").attr('src', "../"+resposta.novafoto);
                            var id = $(".alterar-hidden-id", form).val();
                            var linha =  $('#table-conteudo a[data-usuario="'+id+'"]').parent().parent();
                            $("td:nth-child(1) img", linha).attr('src', "../"+resposta.novafoto);
-                      }
-                     
-                      else
-                      {
-                          GerarNotificacao(resposta.mensagem, 'danger');
                       }
                   },
                   
@@ -721,11 +657,12 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
                {
                    administrador = false;
                }
+               var data = {id : id, administrador : administrador};
+            AdicionarCSRFTokenObj(data); 
                $.ajax({
-                  
-                  url : '../controller/usuario/alterar/AlterarAdministrador.php',
+                  url : '<?php echo UrlManager::GetPathToController("usuario/alterar/AlterarAdministrador.php"); ?>',
                   method : 'POST',
-                  data : {id : id, administrador : administrador},
+                  data : data,
                   dataType : 'json',
                   beforeSend : function()
                   { 
@@ -735,9 +672,10 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
                   
                   success : function(resposta)
                   {
-                      if(resposta.tipo == "sucesso")
+                      GerarNotificacao(resposta.mensagem, resposta.tipo);
+                      
+                      if(resposta.tipo == "success")
                       {
-                           GerarNotificacao(resposta.mensagem, 'success');
                            var id = $(".alterar-hidden-id", form).val();
                            var linha =  $('#table-conteudo a[data-usuario="'+id+'"]').parent().parent();
                            var texto;
@@ -753,11 +691,6 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
                            }
                            
                            $("td:nth-child(3)", linha).html(texto);
-                      }
-                     
-                      else
-                      {
-                          GerarNotificacao(resposta.mensagem, 'danger');
                       }
                   },
                   
@@ -787,11 +720,12 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
                {
                    ativo = false;
                }
+               var data = {id : id, ativo : ativo};
+            AdicionarCSRFTokenObj(data); 
                $.ajax({
-                  
-                  url : '../controller/usuario/alterar/AlterarAtivo.php',
+                  url : '<?php echo UrlManager::GetPathToController("usuario/alterar/AlterarAtivo.php"); ?>',
                   method : 'POST',
-                  data : {id : id, ativo : ativo},
+                  data : data,
                   dataType : 'json',
                   beforeSend : function()
                   { 
@@ -801,10 +735,10 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
                   
                   success : function(resposta)
                   {
-                      if(resposta.tipo == "sucesso")
+                      GerarNotificacao(resposta.mensagem, resposta.tipo);
+                      
+                      if(resposta.tipo == "success")
                       {
-                          GerarNotificacao(resposta.mensagem, 'success');
-                           
                            var texto;
                            var id = $(".alterar-hidden-id", form).val();
                            var linha =  $('#table-conteudo a[data-usuario="'+id+'"]').parent().parent();
@@ -823,10 +757,6 @@ $totalpaginas = ceil($dao->GetTotalUsuarios() / $resultadosPorPagina);
                            $("td:nth-child(4)", linha).html(texto);
                       }
                      
-                      else
-                      {
-                          GerarNotificacao(resposta.mensagem, 'danger');
-                      }
                   },
                   
                   complete : function()

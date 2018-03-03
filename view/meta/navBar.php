@@ -33,9 +33,8 @@ $alterarhabilidades = new LinkMenu('Habilidades', 'habilidades');
 
 $confhabilidades = new LinkMenu('Configurar Habilidades', 'configurar-habilidades');
 
-$voltas = UserRootViewFinder::GetBackSlashes();
 
-$perfilPai = New LinkMenu('<img alt="" src="'.$voltas.$usuario->getFoto().'" class = "perfil-menu"><span id = "nome-menu">'.$usuario->getNome().'</span>', "#");
+$perfilPai = New LinkMenu('<img alt="" src="'.UrlManager::GetPathToView($usuario->getFoto()).'" class = "perfil-menu"><span id = "nome-menu">'.$usuario->getNome().'</span>', "#");
 $perfilPai->AdicionarFilho($alterardados);
 $perfilPai->AdicionarFilho($alterarhabilidades);
 
@@ -51,8 +50,8 @@ $perfilPai->AdicionarFilho($alterarhabilidades);
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-          <a class="navbar-brand" href="<?php echo $voltas;?>inicial">
-               <img alt="Atlas" src="<?php echo $voltas;?>recursos/img/logo_limpo.png" class = "logo-menu">
+          <a class="navbar-brand" href="<?php echo UrlManager::GetPathToView("inicial") ?>">
+               <img alt="Atlas" src="<?php echo UrlManager::GetPathToView("recursos/img/logo_limpo.png") ?>" class = "logo-menu">
           </a>
       </div>
 
@@ -77,7 +76,7 @@ $perfilPai->AdicionarFilho($alterarhabilidades);
           <?php
             echo $perfilPai->ToHTML();
           ?>
-          <li><a href ="<?php echo $voltas;?>controller/usuario/logoutController.php">Logout</a></li>
+            <li><a href ="<?php echo UrlManager::GetPathToController("usuario/logoutController")?>">Logout</a></li>
         </ul>
       </div>
     </div>

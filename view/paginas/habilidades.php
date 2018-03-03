@@ -25,25 +25,30 @@ $dao = new HabilidadeDAO();
              <h1>Habilidades</h1>
               <?php
         $habilidades = $dao->GetHabilidadesUsuario($usuario->getId());
-        
-        foreach($habilidades as $habilidade)
+        if(count($habilidades) > 0)
         {
-            //echo '<ul><li>'.$habilidade->getUsuario()->getNome().'</li><li>'.$habilidade->getHabilidade()->getNome().'</li><li>'.$habilidade->getValor().'</li></ul>';
-            
-            echo '<div class = "row"><div class = "col-md-12"><h3>'.$habilidade->getHabilidade()->getNome().'</h3><div class = "habilidade-slider" data-habilidade-id = "'.$habilidade->getHabilidade()->getId().'" data-habilidade-valor = "'.$habilidade->getValor().'"><div class="ui-slider-handle habilidade-slider-handle"></div></div> <div class="checkbox"><label><input type="checkbox" class = "habilidade-interesse-input" data-habilidade = "'.$habilidade->getHabilidade()->getId().'" ';
-            
-            if($habilidade->getInteresse() == true)
-            {
-                echo 'checked';
-            }
-            
-            echo '>Tenho interesse em aprender esta habilidade</label></div></div></div>';
-            
-        }
         
+            foreach($habilidades as $habilidade)
+            {
+                echo '<div class = "row"><div class = "col-md-12"><h3>'.$habilidade->getHabilidade()->getNome().'</h3><div class = "habilidade-slider" data-habilidade-id = "'.$habilidade->getHabilidade()->getId().'" data-habilidade-valor = "'.$habilidade->getValor().'"><div class="ui-slider-handle habilidade-slider-handle"></div></div> <div class="checkbox"><label><input type="checkbox" class = "habilidade-interesse-input" data-habilidade = "'.$habilidade->getHabilidade()->getId().'" ';
+
+                if($habilidade->getInteresse() == true)
+                {
+                    echo 'checked';
+                }
+
+                echo '>Tenho interesse em aprender esta habilidade</label></div></div></div>';
+
+            }
+            echo '<button class ="btn btn-block btn-primary" id = "btn-salvar-habilidades" style = "margin-top: 20px" type = "button">Salvar Habilidades</button>';
+        }
+        else 
+        {
+            echo '<h4 class = "text-center">Nenhuma habilidade para exibir</h4>';
+        }
         ?>
              
-             <button class ="btn btn-block btn-primary" id = "btn-salvar-habilidades" style = "margin-top: 20px" type = "button">Salvar Habilidades</button> 
+             
         </div>
         
         <?php Carregador::CarregarViewFooter(); ?>
@@ -76,23 +81,18 @@ $dao = new HabilidadeDAO();
                     }
                     habilidadesValor.push({id : id, valor : val, interesse : interesse});
                 });
+                
+                var data = {info : habilidadesValor, id : <?php echo SessionController::GetUsuario()->getId(); ?>};
+                AdicionarCSRFTokenObj(data);
                  $.ajax({
-                       url : 'controller/habilidades/atualizar.php',
+                       url : '<?php echo UrlManager::GetPathToController("habilidades/atualizar.php"); ?>',
                        method : 'POST',
                         dataType: "json",
-                       data : {info : habilidadesValor, id : <?php echo SessionController::GetUsuario()->getId(); ?>},
+                       data : data,
                        
                        success : function(resposta)
                        {
-                           if(resposta.tipo == "sucesso")
-                            {
-                                 GerarNotificacao(resposta.mensagem, 'success');
-                            }
-
-                            else
-                            {
-                                GerarNotificacao(resposta.mensagem, 'danger');
-                            }
+                           GerarNotificacao(resposta.mensagem, resposta.tipo);
                        },
                        complete : function()
                         {

@@ -1,6 +1,8 @@
-<?php 
-    header('Content-Type: application/json');
+
+<?php
+SessionController::VerificarCSRFToken();
     $dao = new UsuarioDAO();
+    
     try {
         $usuario = $dao->Autenticar($_POST['email'], $_POST['senha']);
         SessionController::CriarSessao($usuario);
@@ -9,14 +11,13 @@
         {
             SessionController::CriarToken();
         }
-       $resposta = array('tipo' => 'sucesso', 'mensagem' => '');
+        JSONResponder::ResponderSucesso("Login realizado com sucesso", true, true);
         
         
     } 
     catch (Exception $ex) {
-       $resposta = array('tipo' => 'erro', 'mensagem' => $ex->getMessage());
+       JSONResponder::ResponderFalha($ex->getMessage(), true, true);
     }
-    echo json_encode($resposta, JSON_FORCE_OBJECT);
     
     
 

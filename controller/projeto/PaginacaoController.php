@@ -1,4 +1,5 @@
 <?php
+SessionController::VerificarCSRFToken();
     header('Content-Type: application/json');
     if(SessionController::IsAdmin() || (isset($_POST['idusuario']) && $_POST['idusuario'] == SessionController::GetUsuario()->getId()))
     {
@@ -16,12 +17,10 @@
                $devsJson[] = $dev->ToJSONPreparedArray();
            }
            $masterJson = $master->ToJSONPreparedArray();
-           $retorno[] = array('id' => $projeto->getId(),'nome' => $projeto->getNome(),'master' => $masterJson, 'devs' => $devsJson, 'inicio' => $projeto->getInicioFormatted(), 'prazo' => $projeto->getPrazoFormatted(), 'cliente' => $projeto->getCliente(), 'backlog' => $projeto->getBacklog(), 'observacoes' => $projeto->getObservacoes(), 'estagio' => $projeto->getEstagio(), 'porcentual' => $projeto->getPorcentual(), 'farol' => $projeto->getFarol());
+           $retorno[] = array('id' => $projeto->getId(),'nome' => $projeto->getNome(),'master' => $masterJson, 'devs' => $devsJson, 'inicio' => $projeto->getInicioFormatted(), 'prazo' => $projeto->getPrazoFormatted(), 'cliente' => $projeto->getCliente(), 'observacoes' => $projeto->getObservacoes(), 'estagio' => $projeto->getEstagio(), 'porcentual' => $projeto->getPorcentual(), 'farol' => $projeto->getFarol());
        }
        
        echo json_encode($retorno, JSON_FORCE_OBJECT);
-       
-       
        
     }
 

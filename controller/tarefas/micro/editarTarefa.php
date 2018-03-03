@@ -1,6 +1,5 @@
 <?php
-
-    header('Content-Type: application/json');
+SessionController::VerificarCSRFToken();
     $pdao = new ProjetoDAO();
     $macrodao = new TarefaMacroDAO();
     $microdao = new TarefaMicroDAO();
@@ -13,24 +12,15 @@
     {
         try
         {
-            if(isset($_POST['concluida']))
-            {
-                $concluida = true;
-            }
-            else
-            {
-                $concluida = false;
-            }
                 
-            $microdao->AtualizarTarefa($_POST['idmicro'], $_POST['nome'], $_POST['descricao'], $_POST['tempo'], $_POST['links'], $concluida);
-            $resposta = array('tipo' => 'sucesso', 'mensagem' => 'Tarefa micro alterada com sucesso');
+            $microdao->AtualizarTarefa($_POST['idmicro'], $_POST['nome'], $_POST['descricao'],$_POST['observacoes'], $_POST['links'], $_POST['prioridade'], $_POST['estimativa'], $_POST['estado']);
+            JSONResponder::ResponderSucesso("Tarefa micro alterada com sucesso", true, true);
         }
         catch (Exception $e)
         {
-            $resposta = array('tipo' => 'erro', 'mensagem' => $e->getMessage());
+            JSONResponder::ResponderFalha($e->getMessage(), true, true);
         }
         
-        echo json_encode($resposta, JSON_FORCE_OBJECT);
      
     }   
 

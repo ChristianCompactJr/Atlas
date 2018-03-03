@@ -1,10 +1,6 @@
 <?php
 
 
-if(session_status() == PHP_SESSION_NONE)
-{
-    @session_start();
-}
 
 abstract class SessionController
 {
@@ -37,24 +33,23 @@ abstract class SessionController
         
     }
     
+    
+    
+    
     public static function CriarToken()
     {
-        $length = 40;
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $charactersLength = strlen($characters);
         $dao = new UsuarioDAO();
         $token = '';
         do
         {
-            $token = '';
-            
-            for ($i = 0; $i < $length; $i++) {
-                $token .= $characters[rand(0, $charactersLength - 1)];
-            }
+            $token = bin2hex(random_bytes(32));
             
         }while($dao->VerificarToken($token) != false);
+        
+        
+        
         $dao->AtualizarToken($_SESSION['usuario'], $token);
-        setcookie("token", $token, time()+864000, '/');
+        setcookie("token", $token, time()+2592000, '/');
     }
     
     public static function IsAdmin()
@@ -77,7 +72,36 @@ abstract class SessionController
         return $_SESSION['usuario'];
     }
     
+    public static function CriarCSRFToken()
+    {
+        $_SESSION['csrftoken'] = bin2hex(random_bytes(32));
+    }
+    public static function VerificarCSRFToken()
+    {
+        if (!isset($_POST['csrftoken']) || !hash_equals($_SESSION['csrftoken'], $_POST['csrftoken'])){
+            
+            JSONResponder::ResponderFalha($_SESSION['csrftoken']."<br />".$_POST['csrftoken']."Você não tem permição para acessar essa funcionalidade", true, true);
+            
+        }
+    }
     
+    public static function GetCSRFToken()
+    {
+        return $_SESSION['csrftoken'];
+    }
+    
+    
+}
+
+
+if(session_status() == PHP_SESSION_NONE)
+{
+    @session_start();
+}
+
+if(!isset($_POST['csrftoken']))
+{
+    SessionController::CriarCSRFToken();
 }
 
 ?>

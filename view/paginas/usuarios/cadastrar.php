@@ -73,7 +73,7 @@ if(!SessionController::IsAdmin())
                    return;
                }
                validandoCadastro = true;
-               var formData = new FormData(this);
+               var formData = GerarFormDataFormulario(this);
                var form = $(this);
                if($("#confsenha").val() !== $("#senha").val())
                 {
@@ -95,14 +95,7 @@ if(!SessionController::IsAdmin())
                   
                   success : function(resposta)
                   {
-                      if(resposta.tipo == "sucesso")
-                      {
-                          GerarNotificacao("Usuário cadastrado com sucesso", "success");
-                      }
-                      else
-                      {
-                          GerarNotificacao(resposta.mensagem, "danger");
-                      }
+                      GerarNotificacao(resposta.mensagem, resposta.tipo);
                   },
                   
                   complete : function()

@@ -60,7 +60,7 @@
                
                $.ajax({
                   
-                  url : 'controller/email/enviarEmailSuporte.php',
+                  url : '<?php echo UrlManager::GetPathToController('email/enviarEmailSuporte'); ?>',
                   method : 'POST',
                   data : form.serialize(),
                   dataType : 'json',

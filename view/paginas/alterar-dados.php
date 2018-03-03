@@ -80,10 +80,9 @@ $usuario = SessionController::GetUsuario();
                var form = $(this);
                
                $.ajax({
-                  
-                  url : 'controller/usuario/alterar/AlterarNome.php',
+                  url : '<?php echo UrlManager::GetPathToController("usuario/alterar/AlterarNome.php"); ?>',
                   method : 'POST',
-                  data : form.serialize(),
+                  data : GerarSerializedParam(form),
                   dataType : 'json',
                   beforeSend : function()
                   { 
@@ -94,16 +93,14 @@ $usuario = SessionController::GetUsuario();
                   
                   success : function(resposta)
                   {
-                      if(resposta.tipo == "sucesso")
+                      
+                      GerarNotificacao(resposta.mensagem, resposta.tipo);
+                      
+                      if(resposta.tipo == "success")
                       {
-                           alert(resposta.mensagem);
                           $("#nome-menu").html($("#modalEditarUsuario-nome").val());
                       }
                      
-                      else
-                      {
-                          $(".form-aviso", form).html(resposta.mensagem);
-                      }
                   },
                   
                   complete : function()
@@ -126,7 +123,7 @@ $usuario = SessionController::GetUsuario();
                   
                   url : 'controller/usuario/alterar/AlterarEmail.php',
                   method : 'POST',
-                  data : form.serialize(),
+                  data : GerarSerializedParam(form),
                   dataType : 'json',
                   beforeSend : function()
                   { 
@@ -137,16 +134,7 @@ $usuario = SessionController::GetUsuario();
                   
                   success : function(resposta)
                   {
-                      if(resposta.tipo == "sucesso")
-                      {
-                           alert(resposta.mensagem);
-                          
-                      }
-                     
-                      else
-                      {
-                          $(".form-aviso", form).html(resposta.mensagem);
-                      }
+                      GerarNotificacao(resposta.mensagem, resposta.tipo);
                   },
                   
                   complete : function()
@@ -177,7 +165,7 @@ $usuario = SessionController::GetUsuario();
                   
                   url : 'controller/usuario/alterar/AlterarSenha.php',
                   method : 'POST',
-                  data : form.serialize(),
+                  data : GerarSerializedParam(form),
                   dataType : 'json',
                   beforeSend : function()
                   { 
@@ -187,15 +175,7 @@ $usuario = SessionController::GetUsuario();
                   
                   success : function(resposta)
                   {
-                      if(resposta.tipo == "sucesso")
-                      {
-                           alert(resposta.mensagem);
-                      }
-                     
-                      else
-                      {
-                          $(".form-aviso", form).html(resposta.mensagem);
-                      }
+                      GerarNotificacao(resposta.mensagem, resposta.tipo);
                   },
                   
                   complete : function()
@@ -214,7 +194,7 @@ $usuario = SessionController::GetUsuario();
            $("#alterar-foto").on("submit", function()
            {
                var form = $(this);
-               var formData = new FormData(this);
+               var formData = GerarFormDataFormulario(this);
 
                $.ajax({
                   
@@ -231,15 +211,11 @@ $usuario = SessionController::GetUsuario();
                   
                   success : function(resposta)
                   {
-                      if(resposta.tipo == "sucesso")
+                      GerarNotificacao(resposta.mensagem, resposta.tipo);
+                      
+                      if(resposta.tipo == "success")
                       {
-                           alert(resposta.mensagem);
                            $("#modalEditarUsuario-img").attr('src', "../"+resposta.novafoto);
-                      }
-                     
-                      else
-                      {
-                          $(".form-aviso", form).html(resposta.mensagem);
                       }
                   },
                   

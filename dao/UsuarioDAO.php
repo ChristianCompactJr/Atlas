@@ -110,7 +110,7 @@ class UsuarioDAO extends DAO {
         $stmt->bindValue(1, $id);
         $stmt->execute();
         
-        $stmt = parent::getCon()->prepare("insert into atlas_usuario_esqueci_senha values (?, ?, ?)");
+        $stmt = parent::getCon()->prepare("insert into atlas_usuario_esqueci_senha values (?, ?, STR_TO_DATE(?, '%d-%m-%Y %h:%i:%s'))");
         $stmt->bindValue(1, $id);
         $stmt->bindValue(2, $chave);
         $stmt->bindValue(3, $agora);
@@ -122,7 +122,7 @@ class UsuarioDAO extends DAO {
     {
         if($this->ValidarEsqueciSenha($idusuario, $chave))
         {
-            $id = parent::LimparString($id);   
+            $id = parent::LimparString($idusuario);   
             $stmt = parent::getCon()->prepare("update atlas_usuario set senha = ? where id = ?");
             $stmt->bindValue(1, password_hash($senha, PASSWORD_BCRYPT));
             $stmt->bindValue(2, $idusuario);
@@ -130,6 +130,10 @@ class UsuarioDAO extends DAO {
             
             $stmt = parent::getCon()->prepare("delete from atlas_usuario_esqueci_senha where idusuario = ?");
             $stmt->bindValue(1, $idusuario);
+            $stmt->execute();
+            
+            $stmt = parent::getCon()->prepare("delete from atlas_usuario_tentativa where ip = ?");
+            $stmt->bindValue(1, $_SERVER['REMOTE_ADDR']);
             $stmt->execute();
             
             
@@ -145,7 +149,7 @@ class UsuarioDAO extends DAO {
     {
         $id = parent::LimparString($id);
         
-        $stmt = parent::getCon()->prepare("select * from atlas_usuario_esqueci_senha where idusuario = ? limit 1");
+        $stmt = parent::getCon()->prepare("select idusuario, chave, DATE_FORMAT(data_hora, '%d-%m-%Y %h:%i:%s') AS dh from atlas_usuario_esqueci_senha where idusuario = ? limit 1");
         $stmt->bindValue(1, $id);
         $stmt->execute();
         $resultado = $stmt->fetch();
@@ -153,7 +157,7 @@ class UsuarioDAO extends DAO {
         {
             $agora = date('d-m-Y h:i:s', time());
             
-            $diferenca = round(abs(strtotime($agora) - strtotime($resultado->data_hora)) / 60, 0);
+            $diferenca = round(abs(strtotime($agora) - strtotime($resultado->dh)) / 60, 0);
              if($resultado->chave != $chave &&  $diferenca > 1440)
              {
              
@@ -183,15 +187,13 @@ class UsuarioDAO extends DAO {
         $maximas_tentativas = 15;
         $minutos_para_mt = 30;
         
-        $stmt = parent::getCon()->prepare("select * from atlas_usuario_tentativa where ip = ?");
+        $stmt = parent::getCon()->prepare("select ip, tentativas, DATE_FORMAT(data_hora, '%d-%m-%Y %h:%i:%s') AS dh from atlas_usuario_tentativa where ip = ?");
         $stmt->bindValue(1, $_SERVER['REMOTE_ADDR']);
         $stmt->execute();
         $resultadoTentativas = $stmt->fetch();
         if($resultadoTentativas)
         {
-            
-            
-            $diferenca = round(abs(strtotime($agora) - strtotime($resultadoTentativas->data_hora)) / 60, 0);
+            $diferenca = round(abs(strtotime($agora) - strtotime($resultadoTentativas->dh)) / 60, 0);
             if($resultadoTentativas->tentativas >= $maximas_tentativas)
             {
                 if($diferenca <= $minutos_para_mt)
@@ -201,7 +203,6 @@ class UsuarioDAO extends DAO {
                 }
                 else
                 {
-                    //echo $diferenca;
                     $stmt = parent::getCon()->prepare("update atlas_usuario_tentativa set tentativas = 0 where ip = ?");
                     $stmt->bindValue(1, $_SERVER['REMOTE_ADDR']);
                     $stmt->execute();
@@ -220,14 +221,14 @@ class UsuarioDAO extends DAO {
             if($resultadoTentativas)
             {
                 $linha = $stmt->fetch(PDO::FETCH_NUM);
-                $stmt = parent::getCon()->prepare("update atlas_usuario_tentativa set tentativas = tentativas + 1, data_hora = ? where ip = ?");
+                $stmt = parent::getCon()->prepare("update atlas_usuario_tentativa set tentativas = tentativas + 1, data_hora = STR_TO_DATE(?, '%d-%m-%Y %h:%i:%s') where ip = ?");
                 $stmt->bindValue(1, $agora);
                 $stmt->bindValue(2, $resultadoTentativas->ip);
                 $stmt->execute();
             }
             else
             {
-                $stmt = parent::getCon()->prepare("insert into atlas_usuario_tentativa (ip, tentativas, data_hora) values (?, 1, ?)");
+                $stmt = parent::getCon()->prepare("insert into atlas_usuario_tentativa (ip, tentativas, data_hora) values (?, 1, STR_TO_DATE(?, '%d-%m-%Y %h:%i:%s'))");
                 $stmt->bindValue(1, $_SERVER['REMOTE_ADDR']);
                  $stmt->bindValue(2, $agora);
                 $stmt->execute();

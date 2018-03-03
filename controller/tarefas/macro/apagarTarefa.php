@@ -1,6 +1,5 @@
 <?php
-
-    header('Content-Type: application/json');
+SessionController::VerificarCSRFToken();
     $pdao = new ProjetoDAO();
     $macrodao = new TarefaMacroDAO();
     
@@ -13,13 +12,13 @@
         {
             $macrodao->ApagarTarefa($_POST['id']);
             $resposta = array('tipo' => 'sucesso', 'mensagem' => 'Tarefa macro apagada com sucesso');
+            JSONResponder::ResponderSucesso("Tarefa macro apagada com sucesso", true, true);
         }
         catch (Exception $e)
         {
-            $resposta = array('tipo' => 'erro', 'mensagem' => $e->getMessage());
+            JSONResponder::ResponderFalha($e->getMessage(), true, true);
         }
         
-        echo json_encode($resposta, JSON_FORCE_OBJECT);
      
     }   
 

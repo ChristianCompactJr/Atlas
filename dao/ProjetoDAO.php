@@ -35,7 +35,7 @@ class ProjetoDAO extends DAO {
            throw new Exception("O projeto não existe");
        }
        
-       return new Projeto($resultado->id, $resultado->nome, $resultado->scrum_master, $resultado->data_inicio, $resultado->prazo, $resultado->cliente, $resultado->backlog, $resultado->observacoes, $resultado->estagio);
+       return new Projeto($resultado->id, $resultado->nome, $resultado->scrum_master, $resultado->data_inicio, $resultado->prazo, $resultado->cliente, $resultado->observacoes, $resultado->estagio);
        
     }
     
@@ -54,7 +54,7 @@ class ProjetoDAO extends DAO {
        return $stmt->fetch()->total;
    }
    
-   public function AtualizarProjeto($id, $nome, $cliente, $master, $equipe, $inicio, $prazo, $backlog, $obs, $estagio)
+   public function AtualizarProjeto($id, $nome, $cliente, $master, $equipe, $inicio, $prazo, $obs, $estagio)
    {
        $id = parent::LimparString($id);
         $inicio = parent::LimparString($inicio);
@@ -77,20 +77,18 @@ class ProjetoDAO extends DAO {
             $equipe[$i] = parent::LimparString($equipe[$i]);
         }
         
-        $backlog = parent::LimparString($backlog);
         $obs = parent::LimparString($obs);
         $estagio = parent::LimparString($estagio);
         
-        $stmt = parent::getCon()->prepare("update atlas_projeto set nome = ?, scrum_master = ?, data_inicio = ?, prazo = ?, cliente = ?, backlog = ?, observacoes = ?, estagio = ? where id = ?");
+        $stmt = parent::getCon()->prepare("update atlas_projeto set nome = ?, scrum_master = ?, data_inicio = STR_TO_DATE(?, '%d-%m-%Y'), prazo = STR_TO_DATE(?, '%d-%m-%Y'), cliente = ?, observacoes = ?, estagio = ? where id = ?");
         $stmt->bindValue(1, $nome);
         $stmt->bindValue(2, $master);
         $stmt->bindValue(3, $inicio);
         $stmt->bindValue(4, $prazo);
         $stmt->bindValue(5, $cliente);
-        $stmt->bindValue(6, $backlog);
-        $stmt->bindValue(7, $obs);
-        $stmt->bindValue(8, $estagio);
-        $stmt->bindValue(9, $id);
+        $stmt->bindValue(6, $obs);
+        $stmt->bindValue(7, $estagio);
+        $stmt->bindValue(8, $id);
         $stmt->execute();
         
         $stmt = parent::getCon()->prepare("select * from atlas_projeto_desenvolvedor where idprojeto = ?");
@@ -154,7 +152,7 @@ class ProjetoDAO extends DAO {
    
    public function GetTotalTarefasMicroConcluidas($idprojeto)
    {
-       $stmt = parent::getCon()->prepare("select count(*) as total from atlas_projeto_tarefa_micro as micro where micro.concluida = true and exists(select * from atlas_projeto_tarefa_macro as macro where micro.idmacro = macro.id and exists(select * from atlas_projeto as ap where ap.id = ? and macro.idprojeto = ap.id))");
+       $stmt = parent::getCon()->prepare("select count(*) as total from atlas_projeto_tarefa_micro as micro where micro.estado = 'Concluída' and exists(select * from atlas_projeto_tarefa_macro as macro where micro.idmacro = macro.id and exists(select * from atlas_projeto as ap where ap.id = ? and macro.idprojeto = ap.id))");
        $stmt->bindValue(1, $idprojeto);
        $stmt->execute();
        return $stmt->fetch()->total;
@@ -169,13 +167,13 @@ class ProjetoDAO extends DAO {
         
         foreach($resultados as $resultado)
         {
-            $retorno[] = new Projeto($resultado->id, $resultado->nome, $resultado->scrum_master, $resultado->data_inicio, $resultado->prazo, $resultado->cliente, $resultado->backlog, $resultado->observacoes, $resultado->estagio);
+            $retorno[] = new Projeto($resultado->id, $resultado->nome, $resultado->scrum_master, $resultado->data_inicio, $resultado->prazo, $resultado->cliente, $resultado->observacoes, $resultado->estagio);
         }
         return $retorno;
     }
     
     
-    public function CriarProjeto($nome, $cliente, $master, $equipe, $inicio, $prazo, $backlog, $obs, $estagio)
+    public function CriarProjeto($nome, $cliente, $master, $equipe, $inicio, $prazo, $obs, $estagio)
     {
         $inicio = parent::LimparString($inicio);
         $prazo = parent::LimparString($prazo);
@@ -198,19 +196,17 @@ class ProjetoDAO extends DAO {
             $equipe[$i] = parent::LimparString($equipe[$i]);
         }
         
-        $backlog = parent::LimparString($backlog);
         $obs = parent::LimparString($obs);
         $estagio = parent::LimparString($estagio);
         
-        $stmt = parent::getCon()->prepare("insert into atlas_projeto(nome ,scrum_master, data_inicio, prazo, cliente, backlog, observacoes, estagio) values (?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt = parent::getCon()->prepare("insert into atlas_projeto(nome ,scrum_master, data_inicio, prazo, cliente, observacoes, estagio) values (?, ?, STR_TO_DATE(?, '%d-%m-%Y'), STR_TO_DATE(?, '%d-%m-%Y'), ?, ?, ?)");
         $stmt->bindValue(1, $nome);
         $stmt->bindValue(2, $master);
         $stmt->bindValue(3, $inicio);
         $stmt->bindValue(4, $prazo);
         $stmt->bindValue(5, $cliente);
-        $stmt->bindValue(6, $backlog);
-        $stmt->bindValue(7, $obs);
-        $stmt->bindValue(8, $estagio);
+        $stmt->bindValue(6, $obs);
+        $stmt->bindValue(7, $estagio);
         $stmt->execute();
         
         $stmt = parent::getCon()->prepare("select id from atlas_projeto where id = LAST_INSERT_ID() limit 1");
@@ -241,7 +237,7 @@ class ProjetoDAO extends DAO {
         {
             foreach($projetousuario as $pj)
             {
-                $retorno[] = new Projeto($pj->id, $pj->nome, $usuario, $pj->data_inicio, $pj->prazo, $pj->cliente, $pj->backlog, $pj->observacoes, $pj->estagio);
+                $retorno[] = new Projeto($pj->id, $pj->nome, $usuario, $pj->data_inicio, $pj->prazo, $pj->cliente, $pj->observacoes, $pj->estagio);
             }
         }
         
@@ -266,7 +262,7 @@ class ProjetoDAO extends DAO {
         $retorno = array();
         foreach($projetousuario as $pj)
         {
-            $retorno[] = new Projeto($pj->id, $pj->nome, $usuario, $pj->data_inicio, $pj->prazo, $pj->cliente, $pj->backlog, $pj->observacoes, $pj->estagio);
+            $retorno[] = new Projeto($pj->id, $pj->nome, $usuario, $pj->data_inicio, $pj->prazo, $pj->cliente, $pj->observacoes, $pj->estagio);
         }
         
         return $retorno;

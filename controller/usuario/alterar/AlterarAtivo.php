@@ -1,5 +1,5 @@
 <?php
-    header('Content-Type: application/json');
+SessionController::VerificarCSRFToken();
     if(SessionController::IsAdmin())
     {
         try
@@ -11,13 +11,12 @@
             {
                 SessionController::GetUsuario()->setAtivo($ativo);
             }
-            $resposta = array('tipo' => 'sucesso', 'mensagem' => 'Ativo alterado com sucesso');
+            JSONResponder::ResponderSucesso("Ativo alterado com sucesso", true, true);
         }
         catch(Exception $e)
         {
-            $resposta = array('tipo' => 'erro', 'mensagem' => $e->getMessage());
+            JSONResponder::ResponderFalha($e->getMessage(), true, true);
         }
-         echo json_encode($resposta, JSON_FORCE_OBJECT);
     }
     
 

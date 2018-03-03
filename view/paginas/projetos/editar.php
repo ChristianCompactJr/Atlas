@@ -1,13 +1,19 @@
 <?php
 
+if(!SessionController::TemSessao())
+{
+    header('locationn ../index.php');
+}
+    
 
 $dao = new ProjetoDAO();
 
 try
 {
+      
+    
     $projeto = $dao->GetProjeto($_GET['id']);
 
-    
     if(SessionController::GetUsuario()->getId() != $projeto->getScrumMaster() && !SessionController::IsAdmin())
     {
         header("location: ../index.php");
@@ -124,19 +130,41 @@ catch(Exception $e)
                             <input type ="text" name = "prazo" id ="prazo" class ="form-control" placeholder = "O prazo do projeto" value="<?php echo $projeto->getPrazoFormatted(); ?>"  required>
                         </div>
                         <div class ="form-group">
-                            <label for="backlog">Backlog:</label>
-                            <textarea rows ="7" name = "backlog" class ="form-control" placeholder = "O backlog do projeto"><?php echo preg_replace("/[\r\n]+/", "\n", $projeto->getBacklog()); ?></textarea>
-                        </div>
-                        <div class ="form-group">
                             <label for="obs">Observações:</label>
                             <textarea rows ="7" name = "obs" class ="form-control" placeholder = "Observações importantes do projeto"><?php echo preg_replace("/[\r\n]+/", "\n", $projeto->getObservacoes());?></textarea>
                         </div>
                          <div class ="form-group">
                             <label for="estagio">Estágio:</label>
                             <select name ="estagio" class ="form-control" value = "">
-                                <option value ="Desenvolvimento">Desenvolvimento</option>
-                                <option value ="Entrege">Entrege</option>
-                                <option value ="Manutenção">Manutenção</option>
+                                
+                                <?php
+                                $estagio = $projeto->getEstagio();
+                                $htmlString = '';
+                                $htmlString .= '<option value ="Desenvolvimento"';
+                                if($estagio == 'Desenvolvimento')
+                                {
+                                    $htmlString .= ' selected';
+                                }
+                                $htmlString .= '>Desenvolvimento</option>';
+                                
+                                $htmlString .= '<option value ="Entrege"';
+                                if($estagio == 'Entrege')
+                                {
+                                    $htmlString .= ' selected';
+                                }
+                                $htmlString .= '>Entrege</option>';
+                                
+                                
+                                $htmlString .= '<option value ="Manutenção"';
+                                if($estagio == 'Manutenção')
+                                {
+                                    $htmlString .= ' selected';
+                                }
+                                $htmlString .= '>Manutenção</option>';
+                                
+                                echo $htmlString;
+                                
+                                ?>
                             </select>
                         </div>   
                          <span class = "form-aviso"></span>
@@ -451,7 +479,7 @@ catch(Exception $e)
             {
                 $.ajax(
                 {
-                    url: '../controller/usuario/CarregarJSONCompleto.php',
+                    url : '<?php echo UrlManager::GetPathToController("usuario/CarregarJSONCompleto.php"); ?>',
                     method: 'POST',
                     dataType: 'json',
                     success: function(resposta)
@@ -520,10 +548,9 @@ catch(Exception $e)
                 var form = $(this);
                 
                 $.ajax({
-                  
-                  url : '../controller/projeto/EditarController.php',
+                  url : '<?php echo UrlManager::GetPathToController("projeto/EditarController.php"); ?>',
                   method : 'POST',
-                  data : form.serialize(),
+                  data : GerarSerializedParam(form),
                   dataType : 'json',
                   beforeSend : function()
                   { 
@@ -533,15 +560,7 @@ catch(Exception $e)
                   
                   success : function(resposta)
                   {
-                        if(resposta.tipo == "sucesso")
-                        {
-                             GerarNotificacao(resposta.mensagem, 'success');
-                        }
-
-                        else
-                        {
-                            GerarNotificacao(resposta.mensagem, 'danger');
-                        }
+                        GerarNotificacao(resposta.mensagem, resposta.tipo);
                         
                         CarregarJSON();
                   },

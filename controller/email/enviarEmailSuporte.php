@@ -1,11 +1,11 @@
 <?php
-    header('Content-Type: application/json');
+SessionController::VerificarCSRFToken();
     try {
         EnviadorEmail::EnviarEmail('Suporte: '.$_POST['assunto'], $_POST['mensagem'], $_POST['email']);
-       $resposta = array('tipo' => 'sucesso', 'mensagem' => 'Mensagem enviada com sucesso'); 
+       JSONResponder::ResponderSucesso("Mensagem enviada com sucesso", true, true);
     } 
     catch (Exception $ex) {
-        $resposta = array('tipo' => 'erro', 'mensagem' => $ex->getMessage());
+        JSONResponder::ResponderFalha($e->getMessage(), true, true);
     }
      echo json_encode($resposta, JSON_FORCE_OBJECT);
      

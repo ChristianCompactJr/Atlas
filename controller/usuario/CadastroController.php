@@ -1,5 +1,5 @@
 <?php
-    header('Content-Type: application/json');
+SessionController::VerificarCSRFToken();
     $dao = new UsuarioDAO();
     try {
         if($_POST['senha'] != $_POST['confsenha'])
@@ -39,7 +39,7 @@
         {
             $administrador = true;
         }
-        //$dao->Cadastrar($_POST['nome'], $_POST['email'], $_POST['senha'], 'uploads/fotos/'.$foto, $administrador);
+        
         
         if($foto != '')
         {
@@ -50,12 +50,11 @@
         {
              $dao->Cadastrar($_POST['nome'], $_POST['email'], $_POST['senha'], '', $administrador);
         }
-        $resposta = array('tipo' => 'sucesso', 'mensagem' => '');
+        JSONResponder::ResponderSucesso("Usuário cadastrado com sucesso", true, true);
     } 
     catch (Exception $ex) {
-        $resposta = array('tipo' => 'erro', 'mensagem' => $ex->getMessage());
+        JSONResponder::ResponderFalha($ex->getMessage(), true, true);
     }
-    echo json_encode($resposta, JSON_FORCE_OBJECT);
 
 ?>
 

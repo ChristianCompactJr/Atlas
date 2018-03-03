@@ -24,7 +24,7 @@ class TarefaMacro{
         {
             $microsArray[] = $m->toArray();
         }
-        return array('id' => $this->id, 'projeto' => $this->projeto, 'nome' => $this->nome, 'descricao' => $this->getDescricaoFormatted(), 'micros' => $microsArray);
+        return array('id' => $this->id, 'projeto' => $this->projeto, 'nome' => $this->nome, 'descricao' => $this->getDescricaoFormatted(),'descricaoUnformatted' => $this->descricao , 'micros' => $microsArray);
     }
     function getId() {
         return $this->id;

@@ -1,26 +1,23 @@
 <?php
-    header('Content-Type: application/json');
+SessionController::VerificarCSRFToken();
     if(SessionController::IsAdmin() || SessionController::GetUsuario()->getId() == $_POST['id'])
     {
         try
         {
             if($_POST['senha'] !== $_POST['confsenha'])
             {
-                $resposta = array('tipo' => 'sucesso', 'mensagem' => 'A senha e a confirmação de senha não conferem.');
-                echo json_encode($resposta, JSON_FORCE_OBJECT);
-                return;
+                JSONResponder::ResponderFalha("A senha e a confirmação de senha não conferem.", true, true);
             }
             
             $dao = new UsuarioDAO();
             $dao->AtualizarSenha($_POST['id'], $_POST['senha']);
             
-            $resposta = array('tipo' => 'sucesso', 'mensagem' => 'Senha alterada com sucesso');
+            JSONResponder::ResponderSucesso("Senha alterada com sucesso", true, true);
         }
         catch(Exception $e)
         {
-            $resposta = array('tipo' => 'erro', 'mensagem' => $e->getMessage());
+            JSONResponder::ResponderFalha($e->getMessage(), true, true);
         }
-         echo json_encode($resposta, JSON_FORCE_OBJECT);
     }
     
 

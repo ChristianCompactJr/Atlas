@@ -66,9 +66,6 @@ $scrumMaster = $udao->GetUsuario($projeto->getScrumMaster());
             </div>
             
             <div class ="row">
-                <p><h3>Backlog: </h3><span style = "font-size: 17px"><?php echo $projeto->getBacklogFormatted(); ?></span></p> 
-            </div>
-            <div class ="row">
                 <p><h3>Observações: </h3><span style = "font-size: 17px"><?php echo $projeto->GetObservacoesFormatted(); ?></span></p> 
             </div>
              <div class ="row">
@@ -115,7 +112,7 @@ $scrumMaster = $udao->GetUsuario($projeto->getScrumMaster());
             </div>
             
             <div class ="row">
-                <p><h3>Tarefas: </h3></p>
+                <p><h3>Backlog: </h3></p>
             
                 <div class="col-md-12" id = "tarefas-conteudo">
 		</div>
@@ -128,8 +125,12 @@ $scrumMaster = $udao->GetUsuario($projeto->getScrumMaster());
             <div class="col-md-offset-3 col-md-6 text-center">                         
                 <button type="button"  class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#modalAdicionarMacro">Adicionar Tarefa Macro</button>
             </div>
+            <div class="col-md-offset-3 col-md-6 text-center" style = "margin-top: 10px">                         
+                <a href = "sprints/?idprojeto=<?php echo $projeto->getId(); ?>"><button type="button"  class="btn btn-primary btn-lg btn-block">Ver Sprints</button></a>
+            </div>
                 <?php } ?>
         </div>
+      
                    
         <?php Carregador::CarregarViewFooter(); ?>
          <script>
@@ -137,51 +138,64 @@ $scrumMaster = $udao->GetUsuario($projeto->getScrumMaster());
              var idprojeto = <?php echo $projeto->getId() ?>;
              function carregarJSON()
              {
+                 var data = {idprojeto : idprojeto};
+                AdicionarCSRFTokenObj(data);
                  $.ajax({
                  method : 'POST',
-                 url : '../controller/tarefas/macro/carregarJSON.php',
-                 data : {idprojeto : idprojeto},
+                 url : '<?php echo UrlManager::GetPathToController("tarefas/macro/carregarJSON.php"); ?>',
+                 data : data,
                  
                  success : function(json)
                  {
                      var htmlString = '';
                      var totalMacro = Object.keys(json).length;
-                     
                          
                      for(var i = 0; i < totalMacro; i++)
                      {
                          htmlString += '<div class="panel panel-primary"><div class="panel-heading"><h3 class="panel-title"><a data-toggle="collapse" href="#macro-conteudo_'+json[i].id+'">'+json[i].nome+'</a></h3></div>';
                          htmlString += '<div class ="panel-collapse collapse tarefa-macro-panel" id="macro-conteudo_'+json[i].id+'"><div class="panel-body"><p>'+json[i].descricao+'</p></div>';
-                         htmlString += '<ul class = "list-group">';
+                         htmlString += '<div class = "table-responsive"><table class = "table"><thead><tr><th>Nome</th><th>Prioridade</th><th>Estimativa</th><th>Estado</th><th>Ações</th></tr></thead><tbody>';
                          var totalMicro = Object.keys(json[i].micros).length;
                          for(var j = 0; j < totalMicro; j++)
                          {
+                             htmlString += "<tr>"
                              var concluidaString;
                              
-                             if(json[i].micros[j].concluida == true)
+                             if(json[i].micros[j].estado == 'Incompleta')
                              {
-                                 concluidaString = '<label class="btn btn-success btn-sm concluida-btn"><span><i class="fa fa-check"></i> Concluída</span></label>';
+                                 concluidaString = '<label class="btn btn-danger btn-sm concluida-btn"><span><i class="fa fa-times"></i> Incompleta</span></label>';
+                             }
+                             else if(json[i].micros[j].estado == 'Instável')
+                             {
+                                 concluidaString = '<label class="btn btn-warning btn-sm concluida-btn"><span class=""><i class="fa fa-exclamation-triangle"></i> Instável</span></label>';
+                             }
+                             else if(json[i].micros[j].estado == 'Qualificada')
+                             {
+                                 concluidaString = '<label class="btn btn-success btn-sm concluida-btn"><span class=""><i class="fa fa-check"></i> Qualificada</span></label>';
                              }
                              else
                              {
-                                 concluidaString = '<label class="btn btn-warning btn-sm concluida-btn"><span class=""><i class="fa fa-exclamation"></i> Não Concluída</span></label>';
+                                 concluidaString = '<label class="btn btn-dark btn-sm concluida-btn"><span class=""><i class="fa fa-question-circle"></i> Desconhecido</span></label>';
                              }
+                        
                              
-                             htmlString += '<li class ="list-group-item">'+concluidaString+'<h4>'+json[i].micros[j].nome+'</h4>';
-                             
-                             var btnString = '<div class="pull-right"><button class="btn btn-primary btn-abrir-modal-ver-micro" data-id-micro='+json[i].micros[j].id+'><i class = "fa fa-eye"></i></button>';
+                             htmlString += '<td>'+json[i].micros[j].nome+'</td><td>'+json[i].micros[j].prioridade+'</td>';
+                             htmlString += '<td>'+json[i].micros[j].estimativa+'</td><td>'+concluidaString+'</td>';
+                             var btnString = '<td><button class="btn btn-primary btn-abrir-modal-ver-micro" data-id-micro='+json[i].micros[j].id+'><i class = "fa fa-eye"></i></button>';
                             <?php if($podeGerenciar){ ?>
                                     btnString += '<button class="btn btn-success btn-abrir-modal-editar-micro" data-id-micro='+json[i].micros[j].id+'><i class = "fa fa-edit"></i></button><button class="btn btn-danger btn-excluir-micro" data-id-micro = "'+json[i].micros[j].id+'" data-nome-micro = "'+json[i].micros[j].nome+'"><i class = "fa fa-trash"></i></button>';
                             <?php }  ?>
-                             
+                             btnString += '</td>';
                              htmlString += btnString;
+                             htmlString += '</tr>';
                          }
+                         htmlString += '</tbody></table>';
                          <?php if($podeGerenciar){ ?>
-                             htmlString += '<li class ="list-group-item"><div class="pull-right"><button class="btn btn-success btn-abrir-modal-adicionar-micro" data-id-macro='+json[i].id+'><i class = "fa fa-plus-circle"></i> Adicionar Tarefa Micro</button><button class="btn btn-primary btn-abrir-modal-editar-macro" data-id-macro='+json[i].id+'><i class = "fa fa-edit"></i> Editar Tarefa Macro</button><button class="btn btn-danger btn-excluir-macro" data-id-macro="'+json[i].id+'" data-nome-macro="'+json[i].nome+'"><i class = "fa fa-trash"></i> Excluir Tarefa Macro</button></div></li>'
+                             htmlString += '<div class = "panel-footer" style = "display:flow-root"><div class="pull-right"><button class="btn btn-success btn-abrir-modal-adicionar-micro" data-id-macro='+json[i].id+'><i class = "fa fa-plus-circle"></i> Adicionar Tarefa Micro</button><button class="btn btn-primary btn-abrir-modal-editar-macro" data-id-macro='+json[i].id+'><i class = "fa fa-edit"></i> Editar Tarefa Macro</button><button class="btn btn-danger btn-excluir-macro" data-id-macro="'+json[i].id+'" data-nome-macro="'+json[i].nome+'"><i class = "fa fa-trash"></i> Excluir Tarefa Macro</button></div>'
                      <?php }  ?>
                          
                          
-                         htmlString += '</ul></div></div>';
+                         htmlString += '</div></div></div>';
                              
                          
                      }
@@ -193,6 +207,7 @@ $scrumMaster = $udao->GetUsuario($projeto->getScrumMaster());
                  },
                  error : function(a)
                  {
+                     console.log(a.responseText);
                      GerarNotificacao("Houve um erro ao carregar as tarefas", 'danger');
                  }
                  
@@ -305,12 +320,29 @@ $scrumMaster = $udao->GetUsuario($projeto->getScrumMaster());
                               <textarea name = "descricao" class="form-control" style = "resize:vertical" rows="6" placeholder="Descrição da tarefa macro" required></textarea>
                             </div>
                             <div class="form-group">
-                              <label for="tempo">Tempo previsto para conclusão: </label>
-                               <input type="text" name = "tempo" class="form-control" placeholder="Tempo previsto para a concluisão da tarefa">
+                              <label for="observacoes">Observacoes: </label>
+                              <textarea name = "observacoes" class="form-control" style = "resize:vertical" rows="6" placeholder="Observações da tarefa macro" required></textarea>
                             </div>
+                            
                             <div class="form-group">
                               <label for="links">Links úteis: </label>
-                              <textarea name = "links" class="form-control" style = "resize:vertical" rows="6" placeholder="Links"></textarea>
+                              <textarea name = "links" class="form-control" style = "resize:vertical" rows="4" placeholder="Links"></textarea>
+                            </div>
+                            <div class="form-group">
+                              <label for="prioridade">Prioridade: </label>
+                               <input type="number" name = "prioridade" class="form-control" value="1" min="1" required>
+                            </div>
+                            <div class="form-group">
+                              <label for="estimativa">Estimativa: </label>
+                               <input type="number" name = "estimativa" class="form-control" value="1" min="1" required>
+                            </div>
+                            <div class="form-group">
+                              <label for="estado">Estado: </label>
+                              <select name = "estado" class="form-control">
+                                  <option value="Incompleta">Incompleta</option>
+                                  <option value="Instável">Instável</option>
+                                  <option value="Qualificada">Qualificada</option>
+                              </select>
                             </div>
                             <div class="col-md-offset-3 col-md-6 text-center">                         
                                 <button type="submit"  class="btn btn-primary btn-lg btn-block">Adicionar</button>
@@ -344,21 +376,32 @@ $scrumMaster = $udao->GetUsuario($projeto->getScrumMaster());
                             </div>
                             <div class="form-group">
                               <label for="descricao">Descricao: </label>
-                              <textarea name = "descricao" id ="descricao-edit-micro" class="form-control" style = "resize:vertical" rows="6" placeholder="Descrição da tarefa macro" required></textarea>
+                              <textarea name = "descricao" id ="descricao-edit-micro" class="form-control" style = "resize:vertical" rows="6" placeholder="Descrição da tarefa micro" required></textarea>
                             </div>
                             <div class="form-group">
-                              <label for="tempo">Tempo previsto para conclusão: </label>
-                               <input type="text" name = "tempo" id ="tempo-edit-micro" class="form-control" placeholder="Tempo previsto para a concluisão da tarefa">
+                              <label for="observacoes">Observações: </label>
+                              <textarea name = "observacoes" id ="observacoes-edit-micro" class="form-control" style = "resize:vertical" rows="6" placeholder="Observações da tarefa micro" required></textarea>
                             </div>
                             <div class="form-group">
                               <label for="links">links_utis: </label>
                               <textarea name = "links" class="form-control" id ="link-edit-micro" style = "resize:vertical" rows="6" placeholder="Links"></textarea>
                             </div>
-                            <div class="checkbox">
-                                <label>
-                                  <input type="checkbox" name = "concluida" id="concluida-edit-micro"> Concluída
-                                </label>
-                              </div>
+                            <div class="form-group">
+                              <label for="prioridade">Prioridade: </label>
+                               <input type="number" name = "prioridade" id ="prioridade-edit-micro" class="form-control"  min="1" required>
+                            </div>
+                            <div class="form-group">
+                              <label for="estimativa">Estimativa: </label>
+                               <input type="number" name = "estimativa" id ="estimativa-edit-micro" class="form-control" min="1" required>
+                            </div>
+                            <div class="form-group">
+                              <label for="estado">Estado: </label>
+                              <select name = "estado" class="form-control" id ="estado-edit-micro">
+                                  <option value="Incompleta">Incompleta</option>
+                                  <option value="Instável">Instável</option>
+                                  <option value="Qualificada">Qualificada</option>
+                              </select>
+                            </div>
                             <div class="col-md-offset-3 col-md-6 text-center">                         
                                 <button type="submit" class="btn btn-primary btn-lg btn-block">Editar</button>
                             </div>
@@ -378,11 +421,10 @@ $scrumMaster = $udao->GetUsuario($projeto->getScrumMaster());
            var btn = $("button[type='submit']", form);
            
            $.ajax({
-              
-              url : '../controller/tarefas/macro/adicionarTarefa.php',
+              url : '<?php echo UrlManager::GetPathToController("tarefas/macro/adicionarTarefa.php"); ?>',
               method : 'POST',
               dataType:'json',
-              data : form.serialize(),
+              data : GerarSerializedParam(form),
               
               beforeSend : function()
               {
@@ -391,18 +433,12 @@ $scrumMaster = $udao->GetUsuario($projeto->getScrumMaster());
               
               success : function(resposta)
               {
-                  var tipo;
-                  if(resposta.tipo == "sucesso")
+                  GerarNotificacao(resposta.mensagem, resposta.tipo);
+                  if(resposta.tipo == "success")
                   {
-                      tipo = 'success';
                       carregarJSON();
                   }
-                  else
-                  {
-                      tipo = 'danger';
-                  }
                   
-                  GerarNotificacao(resposta.mensagem, tipo);
               },
               
               error : function()
@@ -428,11 +464,10 @@ $scrumMaster = $udao->GetUsuario($projeto->getScrumMaster());
            var btn = $("button[type='submit']", form);
            
            $.ajax({
-              
-              url : '../controller/tarefas/macro/editarTarefa.php',
+              url : '<?php echo UrlManager::GetPathToController("tarefas/macro/editarTarefa.php"); ?>',
               method : 'POST',
               dataType:'json',
-              data : form.serialize(),
+              data : GerarSerializedParam(form),
               
               beforeSend : function()
               {
@@ -441,23 +476,15 @@ $scrumMaster = $udao->GetUsuario($projeto->getScrumMaster());
               
               success : function(resposta)
               {
-                  var tipo;
-                  if(resposta.tipo == "sucesso")
+                  GerarNotificacao(resposta.mensagem, resposta.tipo);
+                  if(resposta.tipo == "success")
                   {
-                      tipo = 'success';
                       carregarJSON();
                   }
-                  else
-                  {
-                      tipo = 'danger';
-                  }
-                  
-                  GerarNotificacao(resposta.mensagem, tipo);
               },
               
-              error : function(a)
+              error : function()
               {
-                  
                   GerarNotificacao("Houve um erro ao cadastrar a tarefa macro", 'danger');
               },
               complete : function()
@@ -479,11 +506,10 @@ $scrumMaster = $udao->GetUsuario($projeto->getScrumMaster());
            var btn = $("button[type='submit']", form);
            
            $.ajax({
-              
-              url : '../controller/tarefas/micro/editarTarefa.php',
+              url : '<?php echo UrlManager::GetPathToController("tarefas/micro/editarTarefa.php"); ?>',
               method : 'POST',
               dataType:'json',
-              data : form.serialize(),
+              data : GerarSerializedParam(form),
               
               beforeSend : function()
               {
@@ -492,23 +518,16 @@ $scrumMaster = $udao->GetUsuario($projeto->getScrumMaster());
               
               success : function(resposta)
               {
-                  var tipo;
-                  if(resposta.tipo == "sucesso")
+                  GerarNotificacao(resposta.mensagem, resposta.tipo);
+                  if(resposta.tipo == "success")
                   {
-                      tipo = 'success';
                       carregarJSON();
                   }
-                  else
-                  {
-                      tipo = 'danger';
-                  }
                   
-                  GerarNotificacao(resposta.mensagem, tipo);
               },
               
-              error : function(a)
+              error : function()
               {
-                  
                   GerarNotificacao("Houve um erro ao editar a tarefa micro", 'danger');
               },
               complete : function()
@@ -531,11 +550,10 @@ $scrumMaster = $udao->GetUsuario($projeto->getScrumMaster());
            var btn = $("button[type='submit']", form);
            
            $.ajax({
-              
-              url : '../controller/tarefas/micro/adicionarTarefa.php',
+              url : '<?php echo UrlManager::GetPathToController("tarefas/micro/adicionarTarefa.php"); ?>',
               method : 'POST',
               dataType:'json',
-              data : form.serialize(),
+              data : GerarSerializedParam(form),
               
               beforeSend : function()
               {
@@ -544,22 +562,14 @@ $scrumMaster = $udao->GetUsuario($projeto->getScrumMaster());
               
               success : function(resposta)
               {
-                  var tipo;
-                  if(resposta.tipo == "sucesso")
+                  GerarNotificacao(resposta.mensagem, resposta.tipo);
+                  if(resposta.tipo == "success")
                   {
-                      tipo = 'success';
                       carregarJSON();
-                  }
-                  else
-                  {
-                      tipo = 'danger';
-                  }
-                  
-                  GerarNotificacao(resposta.mensagem, tipo);
-                  
+                  } 
               },
               
-              error : function()
+              error : function(a)
               {
                   GerarNotificacao("Houve um erro ao cadastrar a tarefa micro", 'danger');
               },
@@ -587,12 +597,13 @@ $scrumMaster = $udao->GetUsuario($projeto->getScrumMaster());
             {
                 
                 var btn = btne;
+                var data = {id: btn.data('id-micro')};
+                AdicionarCSRFTokenObj(data);
                 $.ajax({
-
-                  url : '../controller/tarefas/micro/apagarTarefa.php',
+                url : '<?php echo UrlManager::GetPathToController("tarefas/micro/apagarTarefa.php"); ?>',       
                   method : 'POST',
                   dataType:'json',
-                  data : {id: btn.data('id-micro')},
+                  data : data,
 
                   beforeSend : function()
                   {
@@ -601,19 +612,12 @@ $scrumMaster = $udao->GetUsuario($projeto->getScrumMaster());
 
                   success : function(resposta)
                   {
-                      var tipo;
-                      if(resposta.tipo == "sucesso")
+                      console.log(resposta);
+                      GerarNotificacao(resposta.mensagem, resposta.tipo);
+                      if(resposta.tipo == "success")
                       {
-                          tipo = 'success';
                            btn.parent().parent().remove();
                       }
-                      else
-                      {
-                          tipo = 'danger';
-                      }
-                     
-
-                      GerarNotificacao(resposta.mensagem, tipo);
                   },
 
                   error : function(a)
@@ -641,12 +645,13 @@ $scrumMaster = $udao->GetUsuario($projeto->getScrumMaster());
             {
                 
                 var btn = btne;
+                var data = {id: btn.data('id-macro')};
+                AdicionarCSRFTokenObj(data);
                 $.ajax({
-
-                  url : '../controller/tarefas/macro/apagarTarefa.php',
+                    url : '<?php echo UrlManager::GetPathToController("tarefas/macro/apagarTarefa.php"); ?>', 
                   method : 'POST',
                   dataType:'json',
-                  data : {id: btn.data('id-macro')},
+                  data : data,
 
                   beforeSend : function()
                   {
@@ -655,19 +660,12 @@ $scrumMaster = $udao->GetUsuario($projeto->getScrumMaster());
 
                   success : function(resposta)
                   {
-                      var tipo;
-                      if(resposta.tipo == "sucesso")
+                      GerarNotificacao(resposta.mensagem, resposta.tipo);
+                      if(resposta.tipo == "success")
                       {
                           tipo = 'success';
                           btn.parent().parent().parent().parent().parent().remove();
                       }
-                      else
-                      {
-                          tipo = 'danger';
-                      }
-                      
-
-                      GerarNotificacao(resposta.mensagem, tipo);
                   },
 
                   error : function(a)
@@ -698,7 +696,7 @@ $scrumMaster = $udao->GetUsuario($projeto->getScrumMaster());
             
             $("#hidden-edit-macro").val(escolhidoId);
             $("#nome-edit-macro").val(escolhido[0].nome);
-            $("#descricao-edit-macro").html(escolhido[0].descricao);
+            $("#descricao-edit-macro").html(escolhido[0].descricaoUnformatted);
             $("#modalEditarMacro").modal('show');
         });
         
@@ -731,30 +729,30 @@ $scrumMaster = $udao->GetUsuario($projeto->getScrumMaster());
             {
                 return;
             }    
-            var concluida;
-            if(escolhido.concluida == true)
-            {
-                concluida = true;
-            }
-            else
-            {
-                concluida = false;
-            }
-            $("#concluida-edit-micro").attr('checked', concluida)
+
             $("#hidden-edit-micro").val(escolhidoId);
             $("#nome-edit-micro").val(escolhido.nome);
-            $("#descricao-edit-micro").html(escolhido.descricao);
-            $("#tempo-edit-micro").html(escolhido.tempo);
-            $("#link-edit-micro").html(escolhido.links);
+            $("#descricao-edit-micro").html(escolhido.descricaoUnformatted);
+            $("#observacoes-edit-micro").html(escolhido.observacoesUnformatted);
+            $("#estimativa-edit-micro").val(escolhido.estimativa);
+            $("#prioridade-edit-micro").val(escolhido.prioridade);
+            $("#estado-edit-micro option").attr('selected', false);
+            $("#estado-edit-micro option[value='"+escolhido.estado+"']").attr('selected', true);
+            $("#link-edit-micro").html(escolhido.linksUnformatted);
+            
+         
             $("#modalEditarMicro").modal('show');
            
         });
+        
+        
         </script>
         
         <?php } ?>
         <script>
-             $("#tarefas-conteudo").on('click',".btn-abrir-modal-ver-micro", function()
+        $("#tarefas-conteudo").on('click',".btn-abrir-modal-ver-micro", function()
         {
+            
             var escolhidoId = $(this).data('id-micro');
             var escolhido = null;
            
@@ -792,20 +790,33 @@ $scrumMaster = $udao->GetUsuario($projeto->getScrumMaster());
                 concluida = false;
             }
             
+            
+            
+            
             var concluidaString;
                              
-            if(escolhido.concluida == true)
+            if(escolhido.estado == 'Incompleta')
             {
-                concluidaString = '<label class="btn btn-success btn-sm btn-block concluida-btn"><span><i class="fa fa-check"></i> Concluída</span></label>';
+                concluidaString = '<label class="btn btn-danger btn-block btn-sm concluida-btn"><span><i class="fa fa-times"></i> Incompleta</span></label>';
+            }
+            else if(escolhido.estado == 'Instável')
+            {
+                concluidaString = '<label class="btn btn-warning btn-block btn-sm concluida-btn"><span class=""><i class="fa fa-exclamation-triangle"></i> Instável</span></label>';
+            }
+            else if(escolhido.estado == 'Qualificada')
+            {
+                concluidaString = '<label class="btn btn-success btn-block btn-sm concluida-btn"><span class=""><i class="fa fa-check"></i> Qualificada</span></label>';
             }
             else
             {
-                concluidaString = '<label class="btn btn-warning btn-sm btn-block concluida-btn"><span class=""><i class="fa fa-exclamation"></i> Não Concluída</span></label>';
+                concluidaString = '<label class="btn btn-dark btn-sm btn-block concluida-btn"><span class=""><i class="fa fa-question-circle"></i> Desconhecido</span></label>';
             }
             $("#ver-micro-nome").html(escolhido.nome);
             $("#ver-micro-descricao").html(escolhido.descricao);
-            $("#ver-micro-tempo").html(escolhido.tempo);
             $("#ver-micro-links").html(escolhido.links);
+            $("#ver-micro-observacoes").html(escolhido.observacoes);
+            $("#ver-micro-prioridade").html(escolhido.prioridade);
+            $("#ver-micro-estimativa").html(escolhido.estimativa);
             $("#ver-micro-concluida").html(concluidaString);
             $("#modalVerMicro").modal('show');
            
@@ -836,14 +847,28 @@ $scrumMaster = $udao->GetUsuario($projeto->getScrumMaster());
                     </div>
                     <div class ="row">
                         <p>
-                            <h3>Tempo previsto para conclusão: </h3>
-                            <span style = "font-size: 17px" id = "ver-micro-tempo"></span>
+                            <h3>Observações: </h3>
+                            <span style = "font-size: 17px" id = "ver-micro-observacoes"></span>
                         </p> 
                     </div>
                     <div class ="row">
                         <p>
                             <h3>Links úteis: </h3>
                             <span style = "font-size: 17px" id = "ver-micro-links"></span>
+                        </p> 
+                    </div>
+                    
+                    <div class ="row">
+                        <p>
+                            <h3>Prioridade: </h3>
+                            <span style = "font-size: 17px" id = "ver-micro-prioridade"></span>
+                        </p> 
+                    </div>
+                    
+                    <div class ="row">
+                        <p>
+                            <h3>Estimativa: </h3>
+                            <span style = "font-size: 17px" id = "ver-micro-estimativa"></span>
                         </p> 
                     </div>
                     <div class ="row" id = "ver-micro-concluida">

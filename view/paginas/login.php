@@ -100,13 +100,14 @@
                    return;
                }
                validando = true;
+               var dados = GerarFormDataFormulario(this);
                var form = $(this);
-               
+               console.log(GerarSerializedParam(form));
                $.ajax({
                   
-                  url : 'controller/usuario/LoginController.php',
+                  url : '<?php echo UrlManager::GetPathToController("usuario/LoginController"); ?>',
                   method : 'POST',
-                  data : form.serialize(),
+                  data : GerarSerializedParam(form),
                   dataType : 'json',
                   beforeSend : function()
                   { 
@@ -116,13 +117,13 @@
                   
                   success : function(resposta)
                   {
-                      if(resposta.tipo == "sucesso")
+                      
+                      GerarNotificacao(resposta.mensagem, resposta.tipo);
+                      
+                      
+                      if(resposta.tipo == "success")
                       {
                           window.location.href = "inicial";
-                      }
-                      else
-                      {
-                          $(".form-aviso", form).html(resposta.mensagem);
                       }
                   },
                   
@@ -134,7 +135,10 @@
                   error : function(jqXHR, textStatus, errorThrown)
                   {
                        GerarNotificacao(jqXHR.responseText, 'danger');
-                  } 
+                  },
+                         
+                cache: false,
+                    processData: false
                });
                
            });
@@ -148,10 +152,9 @@
                var form = $(this);
                
                $.ajax({
-                  
-                  url : 'controller/email/enviarEmailEsqueci.php',
+                  url : ' <?php echo UrlManager::GetPathToController("email/enviarEmailEsqueci"); ?>',
                   method : 'POST',
-                  data : form.serialize(),
+                  data : GerarSerializedParam(form),
                   dataType : 'json',
                   beforeSend : function()
                   { 
@@ -160,7 +163,7 @@
                   
                   success : function(resposta)
                   {
-                      if(resposta.tipo == "sucesso")
+                      if(resposta.tipo == "success")
                       {
                           var htmlString = '<img src = "recursos/img/email.png" class = "img-responsive" style = "display:block;margin:auto;max-width:140px;"> <h3 class = "text-center">Enviamos uma mensagem para seu email</h3><p>Siga as instruções na mensagem para alterar sua senha.<br /><strong>Não se esqueça de checar sua caixa de entrada de span.</strong></p>';
                          $("#conteudo-enviar-esqueci").html(htmlString);

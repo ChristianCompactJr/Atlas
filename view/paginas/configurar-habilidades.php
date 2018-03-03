@@ -69,8 +69,7 @@ $habilidades = $dao->GetHabilidades();
             function CarregarHabilidades()
             {
                  $.ajax({
-                   
-                   url : 'controller/habilidades/carregarTodas.php',
+                   url : '<?php echo UrlManager::GetPathToController("habilidades/carregarTodas.php"); ?>',
                    method : 'POST',
                    
                    beforeSend : function()
@@ -102,10 +101,9 @@ $habilidades = $dao->GetHabilidades();
             {
                var form = $(this);
                $.ajax({
-                   
-                   url : 'controller/habilidades/criar',
+                   url : '<?php echo UrlManager::GetPathToController("habilidades/criar"); ?>',
                    method : 'POST',
-                   data : form.serialize(),
+                   data : GerarSerializedParam(form),
                    
                    beforeSend : function()
                    {
@@ -114,15 +112,13 @@ $habilidades = $dao->GetHabilidades();
                    
                    success : function(resposta)
                    {
-                      if(resposta.tipo == 'erro')
+                       
+                      GerarNotificacao(resposta.mensagem, resposta.tipo);
+                      if(resposta.tipo == 'success')
                       {
-                          GerarNotificacao(resposta.mensagem, 'danger');
-                      }
-                      else
-                      {
-                          GerarNotificacao(resposta.mensagem, 'success');
                           CarregarHabilidades();
-                      }
+                      }  
+                      
                    },
                    complete : function ()
                    {
@@ -157,11 +153,12 @@ $habilidades = $dao->GetHabilidades();
                var linha = $(this).parent().parent();
                var input =  $("td:nth-child(1) .salvar-habilidade-input", linha);
                var texto = $("td:nth-child(1) span", linha);
-                       
+               var data = {id : id, nome : input.val()};
+                AdicionarCSRFTokenObj(data);        
                $.ajax({
-                  url : 'controller/habilidades/alterar.php',
+                   url : '<?php echo UrlManager::GetPathToController("habilidades/alterar.php"); ?>',
                   method : 'POST',
-                  data : {id : id, nome : input.val()},
+                  data : data,
                   
                   beforeSend : function ()
                   {
@@ -172,14 +169,7 @@ $habilidades = $dao->GetHabilidades();
                   success : function (resposta)
                   {
                       
-                      if(resposta.tipo == 'erro')
-                      {
-                          GerarNotificacao(resposta.mensagem, 'danger');
-                      }
-                      else
-                      {
-                          GerarNotificacao(resposta.mensagem, 'success');
-                      }
+                      GerarNotificacao(resposta.mensagem, resposta.tipo);
                       
                       texto.html(input.val());
                       texto.show();
@@ -211,11 +201,12 @@ $habilidades = $dao->GetHabilidades();
                var alterar = function(){
                     var id = idhabilidade;
                    var linha = linhahab;
-                   
+                   var data = {id : id};
+                AdicionarCSRFTokenObj(data); 
                    $.ajax({
-                   url : 'controller/habilidades/apagar.php',
+                     url : '<?php echo UrlManager::GetPathToController("habilidades/apagar.php"); ?>',   
                   method : 'POST',
-                  data : {id : id},
+                  data : data,
                   
                   beforeSend : function ()
                   {
@@ -224,14 +215,13 @@ $habilidades = $dao->GetHabilidades();
                   
                   success : function (resposta)
                   {
-                      if(resposta.tipo == 'erro')
+                      GerarNotificacao(resposta.mensagem, resposta.tipo);
+                      if(resposta.tipo != 'success')
                       {
-                          GerarNotificacao(resposta.mensagem, 'danger');
                           $("input, button", linha).attr('disabled', false);
                       }
                       else
                       {
-                          GerarNotificacao(resposta.mensagem, 'success');
                           linha.remove();
                       }
                   },

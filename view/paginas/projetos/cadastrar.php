@@ -82,10 +82,6 @@ if(!SessionController::IsAdmin())
                             <input type ="text" name = "prazo" id ="prazo" class ="form-control" placeholder = "O prazo do projeto" required>
                         </div>
                         <div class ="form-group">
-                            <label for="backlog">Backlog:</label>
-                            <textarea rows ="7" name = "backlog" class ="form-control" placeholder = "O backlog do projeto"></textarea>
-                        </div>
-                        <div class ="form-group">
                             <label for="obs">Observações:</label>
                             <textarea rows ="7" name = "obs" class ="form-control" placeholder = "Observações importantes do projeto"></textarea>
                         </div>
@@ -410,7 +406,7 @@ if(!SessionController::IsAdmin())
                 {
                     $.ajax(
                     {
-                        url: '../controller/usuario/CarregarJSONCompleto.php',
+                        url : '<?php echo UrlManager::GetPathToController("usuario/CarregarJSONCompleto.php"); ?>',
                         method: 'POST',
 
                         success: function(resposta)
@@ -444,7 +440,7 @@ if(!SessionController::IsAdmin())
                 {
                     $.ajax(
                     {
-                        url: '../controller/usuario/CarregarJSONCompleto.php',
+                        url : '<?php echo UrlManager::GetPathToController("usuario/CarregarJSONCompleto.php"); ?>',
                         method: 'POST',
 
                         success: function(resposta)
@@ -485,10 +481,9 @@ if(!SessionController::IsAdmin())
                 var form = $(this);
                 
                 $.ajax({
-                  
-                  url : '../controller/projeto/CadastroController.php',
+                  url : '<?php echo UrlManager::GetPathToController("projeto/CadastroController.php"); ?>',
                   method : 'POST',
-                  data : form.serialize(),
+                  data : GerarSerializedParam(form),
                   dataType : 'json',
                   beforeSend : function()
                   { 
@@ -498,15 +493,7 @@ if(!SessionController::IsAdmin())
                   
                   success : function(resposta)
                   {
-                        if(resposta.tipo == "sucesso")
-                        {
-                             GerarNotificacao(resposta.mensagem, 'success');
-                        }
-
-                        else
-                        {
-                            GerarNotificacao(resposta.mensagem, 'danger');
-                        }
+                        GerarNotificacao(resposta.mensagem, resposta.tipo);
                   },
                   
                   complete : function()
