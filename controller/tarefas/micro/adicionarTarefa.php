@@ -1,5 +1,4 @@
 <?php
-SessionController::VerificarCSRFToken();
     $pdao = new ProjetoDAO();
     $projeto = $pdao->GetProjeto($_POST['idprojeto']);
     if(SessionController::IsAdmin() || SessionController::GetUsuario()->getID() == $projeto->getScrumMaster())

@@ -477,11 +477,14 @@ catch(Exception $e)
             
             function CarregarJSON(__callback)
             {
+                var data = {};
+                    AdicionarCSRFTokenObj(data);
                 $.ajax(
                 {
                     url : '<?php echo UrlManager::GetPathToController("usuario/CarregarJSONCompleto.php"); ?>',
                     method: 'POST',
                     dataType: 'json',
+                    data : data,
                     success: function(resposta)
                     {
                         resultadoDeUsuarioArray = $.map(resposta, function(el)

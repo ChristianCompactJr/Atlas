@@ -1,5 +1,4 @@
 <?php
-SessionController::VerificarCSRFToken();
     $pdao = new ProjetoDAO();
     $macrodao = new TarefaMacroDAO();
     $microdao = new TarefaMicroDAO();

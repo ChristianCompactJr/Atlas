@@ -41,7 +41,7 @@
         <?php if(SessionController::TemSessao()) {Carregador::CarregarViewNavbar();} ?>  
         <div class="error">
             <div class="error-code m-b-10 m-t-20">Erro 404 <i class="fa fa-exclamation fa-sm"></i></div>
-                <h3 class="font-bold">Nós não conseguimos encontrar a página.. We couldn't find the page..</h3>
+                <h3 class="font-bold">Nós não conseguimos encontrar a página.</h3>
 
             <div class="error-desc">
                 Desculpe, mas a pagina que você esta procurando não foi encontrada ou não existe.<br />

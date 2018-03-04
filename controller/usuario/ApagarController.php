@@ -1,5 +1,4 @@
     <?php
-    SessionController::VerificarCSRFToken();
     try
     {
         $dao = new UsuarioDAO();  

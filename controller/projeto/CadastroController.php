@@ -1,5 +1,4 @@
 <?php
-SessionController::VerificarCSRFToken();
     if(SessionController::IsAdmin())
     {
         if(!isset($_POST['dev']) || !isset($_POST['master']))

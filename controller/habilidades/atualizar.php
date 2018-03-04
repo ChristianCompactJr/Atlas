@@ -1,5 +1,4 @@
 <?php
-     SessionController::VerificarCSRFToken();
      if(SessionController::IsAdmin() || (SessionController::TemSessao() && SessionController::GetUsuario()->getId() == $_POST['id']))
      {
          

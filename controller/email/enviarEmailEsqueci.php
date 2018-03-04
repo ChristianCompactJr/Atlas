@@ -1,5 +1,4 @@
 <?php
-SessionController::VerificarCSRFToken();
     try {
         $dao = new UsuarioDAO();
         $usuario = $dao->EncontrarUsuarioComEmail($_POST['email']);
@@ -38,7 +37,6 @@ SessionController::VerificarCSRFToken();
     catch (Exception $ex) {
         JSONResponder::ResponderFalha($e->getMessage(), true, true);
     }
-     echo json_encode($resposta, JSON_FORCE_OBJECT);
      
 ?>
 

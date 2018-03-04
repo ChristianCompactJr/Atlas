@@ -68,10 +68,12 @@ $habilidades = $dao->GetHabilidades();
             var loader = '<div class="container"><div class="row"> <div id="loader"> <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="lading"></div></div></div>'; 
             function CarregarHabilidades()
             {
+                var data = {};
+                    AdicionarCSRFTokenObj(data);
                  $.ajax({
                    url : '<?php echo UrlManager::GetPathToController("habilidades/carregarTodas.php"); ?>',
                    method : 'POST',
-                   
+                   data : data,
                    beforeSend : function()
                    {
                        $("#table-conteudo").html(loader);

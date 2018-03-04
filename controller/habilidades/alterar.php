@@ -1,5 +1,4 @@
 <?php
-SessionController::VerificarCSRFToken();
     if(SessionController::IsAdmin())
     {
         try 
@@ -13,5 +12,4 @@ SessionController::VerificarCSRFToken();
             JSONResponder::ResponderFalha($e->getMessage(), true, true);
         }       
     }
-    echo json_encode($resposta, JSON_FORCE_OBJECT);
 ?>

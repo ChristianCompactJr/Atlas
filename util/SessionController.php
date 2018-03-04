@@ -80,7 +80,7 @@ abstract class SessionController
     {
         if (!isset($_POST['csrftoken']) || !hash_equals($_SESSION['csrftoken'], $_POST['csrftoken'])){
             
-            JSONResponder::ResponderFalha($_SESSION['csrftoken']."<br />".$_POST['csrftoken']."Você não tem permição para acessar essa funcionalidade", true, true);
+            JSONResponder::ResponderFalha("Você não tem permição para acessar essa funcionalidade", true, true);
             
         }
     }
@@ -102,6 +102,11 @@ if(session_status() == PHP_SESSION_NONE)
 if(!isset($_POST['csrftoken']))
 {
     SessionController::CriarCSRFToken();
+}
+
+if(!empty($_POST))
+{
+    SessionController::VerificarCSRFToken();
 }
 
 ?>

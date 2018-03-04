@@ -1,5 +1,4 @@
 <?php
-SessionController::VerificarCSRFToken();
     header('Content-Type: application/json');
     if(SessionController::TemSessao())
     {

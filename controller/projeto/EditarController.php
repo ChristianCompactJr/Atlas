@@ -1,5 +1,4 @@
 <?php
-SessionController::VerificarCSRFToken();
     $dao = new ProjetoDAO();
     $projeto = $dao->GetProjeto($_POST['idprojeto']);
     

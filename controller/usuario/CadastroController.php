@@ -1,5 +1,4 @@
 <?php
-SessionController::VerificarCSRFToken();
     $dao = new UsuarioDAO();
     try {
         if($_POST['senha'] != $_POST['confsenha'])

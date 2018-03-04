@@ -404,13 +404,17 @@ if(!SessionController::IsAdmin())
                 }
                 else
                 {
+                    var data = {};
+                    AdicionarCSRFTokenObj(data);
                     $.ajax(
                     {
+                        
                         url : '<?php echo UrlManager::GetPathToController("usuario/CarregarJSONCompleto.php"); ?>',
                         method: 'POST',
-
+                        data: data,
                         success: function(resposta)
                         {
+                            
                             resultadoDeUsuarioArray = $.map(resposta, function(el)
                             {
                                 return el
@@ -438,10 +442,13 @@ if(!SessionController::IsAdmin())
                 }
                 else
                 {
+                    var data = {};
+                    AdicionarCSRFTokenObj(data);
                     $.ajax(
                     {
                         url : '<?php echo UrlManager::GetPathToController("usuario/CarregarJSONCompleto.php"); ?>',
                         method: 'POST',
+                        data : data,
 
                         success: function(resposta)
                         {

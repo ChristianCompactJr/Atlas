@@ -1,5 +1,4 @@
 <?php
-SessionController::VerificarCSRFToken();
     if(SessionController::IsAdmin())
     {
         try

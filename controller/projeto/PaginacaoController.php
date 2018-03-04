@@ -1,5 +1,4 @@
 <?php
-SessionController::VerificarCSRFToken();
     header('Content-Type: application/json');
     if(SessionController::IsAdmin() || (isset($_POST['idusuario']) && $_POST['idusuario'] == SessionController::GetUsuario()->getId()))
     {

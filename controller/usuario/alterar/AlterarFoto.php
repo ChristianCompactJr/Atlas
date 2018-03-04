@@ -1,5 +1,4 @@
 <?php
-SessionController::VerificarCSRFToken();
     if(SessionController::IsAdmin() || SessionController::GetUsuario()->getId() == $_POST['id'] && is_file($_FILES['foto']['tmp_name']))
     {
         try
