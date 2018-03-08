@@ -38,15 +38,6 @@ abstract class DAO {
     {
         self::init();
 
-       try
-       {
-           self::$con->query('select 1');
-       }
-       catch(PDOException $e)
-       {
-           self::init();
-       }
-
         return self::$con;
     }
 

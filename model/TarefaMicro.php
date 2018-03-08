@@ -9,7 +9,9 @@ class TarefaMicro {
     private $linkUteis;
     private $prioridade;
     private $estimativa;
-    private $estado;
+    private $estado; //Incompleta, Instável ou Qualificada
+    
+    
     function __construct($id, $macro, $nome, $descricao, $observacoes, $linkUteis, $prioridade, $estimativa, $estado) {
         $this->id = $id;
         $this->macro = $macro;
@@ -26,7 +28,7 @@ class TarefaMicro {
     
     public function toArray()
     {
-        return array('id' => $this->id, 'macro' => $this->macro, 'nome' => $this->nome, 'descricao' => $this->getDescricaoFormatted(), 'descricaoUnformatted' => $this->descricao, 'observacoes' => $this->getObservacoesFormatted(), 'observacoesUnformatted' => $this->observacoes ,'links' => $this->getLinksUteisFormatted(), 'linksUnformatted' => $this->linkUteis, 'estimativa' => $this->estimativa, 'prioridade' => $this->prioridade, 'estado' => $this->estado);
+        return array('id' => $this->id, 'macro' => $this->macro, 'nome' => $this->nome, 'descricao' => $this->getDescricaoFormatted(), 'descricaoUnformatted' => $this->descricao, 'observacoes' => $this->getObservacoesFormatted(), 'observacoesUnformatted' => $this->observacoes ,'links' => $this->getLinksUteisFormatted(), 'linksUnformatted' => $this->linkUteis, 'estimativa' => $this->estimativa, 'estadocolored' => $this->getEstadoColored() ,'prioridade' => $this->prioridade, 'estado' => $this->estado);
     }
     
         function getObservacoes() {
@@ -35,6 +37,28 @@ class TarefaMicro {
 
        function getEstado() {
         return $this->estado;
+    }
+    
+    function getEstadoColored()
+    {
+        if($this->estado == 'Incompleta')
+        {
+            $classe = 'danger';
+        }
+        else if($this->estado == 'Qualificada')
+        {
+            $classe = 'success';
+        }
+        else if($this->estado = 'Instável')
+        {
+            $classe = 'warning';
+        }
+        else
+        {
+            $classe = 'danger';
+        }
+        
+        return '<span class = "text-'.$classe.'"><b>'.$this->estado.'</b></span>';
     }
 
     function setEstado($estado) {

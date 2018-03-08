@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 04-Mar-2018 às 04:33
+-- Generation Time: 08-Mar-2018 às 19:41
 -- Versão do servidor: 10.1.21-MariaDB
 -- PHP Version: 7.1.1
 
@@ -83,9 +83,9 @@ CREATE TABLE `atlas_projeto_sprint` (
   `id` int(11) NOT NULL,
   `projeto` int(11) NOT NULL,
   `nome` varchar(70) NOT NULL,
-  `data_incio` date NOT NULL,
+  `data_inicio` date NOT NULL,
   `prazo` date NOT NULL,
-  `andamento` enum('Atrasada','Em Desenvolvimento','Sucedida','Aguardando') NOT NULL
+  `estagio` enum('Desenvolvimento','Revisão','Concluída') NOT NULL DEFAULT 'Desenvolvimento'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -286,12 +286,12 @@ ALTER TABLE `atlas_usuario_tentativa`
 -- AUTO_INCREMENT for table `atlas_habilidades`
 --
 ALTER TABLE `atlas_habilidades`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `atlas_projeto`
 --
 ALTER TABLE `atlas_projeto`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `atlas_projeto_sprint`
 --

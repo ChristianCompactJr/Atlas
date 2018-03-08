@@ -4,7 +4,7 @@
 
 if(!SessionController::TemSessao())
 {
-    header('locationn ../index.php');
+    header('locationn ../../index.php');
 }
     
 
@@ -40,15 +40,7 @@ try
     
     if(SessionController::GetUsuario()->getId() != $projeto->getScrumMaster() && !SessionController::IsAdmin())
     {
-        header("location: ../index.php");
-    }
-
-    $tdao = new TarefaMacroDAO();
-    $tarefasMacro = $tdao->getTarefasMacro($projeto->getID());
-    $arrayMacro = array();
-    foreach($tarefasMacro as $tm)
-    {
-        $arrayMacro[] = $tm->toArray();
+        header("location: ../../index.php");
     }
     
 }
@@ -57,14 +49,14 @@ try
 
 catch(Exception $e)
 {
-    header("location: ../index.php");
+    header("location: ../../index.php");
 }
 ?>
 <!DOCTYPE html>
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>Editar Projeto - Atlas</title>
+        <title>Sprints - <?php echo $projeto->getNome();?></title>
         <?php Carregador::CarregarViewHeadMeta(); ?>  
             
     </head>
@@ -74,6 +66,7 @@ catch(Exception $e)
 
         
         <div class ="container">
+            
             <h1>Sprints - <?php echo $projeto->getNome();?></h1>
             <div class ="table-responsive">
                 <table class = "table table-bordered">
@@ -82,24 +75,91 @@ catch(Exception $e)
                             <th>Nome</th>
                             <th>Data de Início</th>
                             <th>Prazo</th>
-                            <th>Andamento</th>
+                            <th>Estagio</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
                     <tbody>
-                        
+                        <?php
+                            $sprintdao = new SprintDAO();
+                            
+                            $sprints = $sprintdao->GetSprintsProjeto($projeto->getId());
+                            foreach($sprints as $sprint)
+                            {
+                                $linkVisualizar = UrlManager::GetPathToView("projetos/sprints/visulizar")."?idsprint=".$sprint->getId();
+                                echo '<tr>';
+                                echo '<td><a href = "'.$linkVisualizar.'">'.$sprint->getNome().'</a></td>';
+                                echo '<td>'.$sprint->getData_InicioFormatted().'</td>';
+                                echo '<td>'.$sprint->getPrazoFormatted().'</td>';
+                                echo '<td>'.$sprint->getEstagio().'</td>';
+                                
+                                
+                                echo '<td><a href = "'.$linkVisualizar.'" class = "btn btn-primary" title = "Visualizar sprint"><i class = "fa fa-eye"></i></a>';
+                                if($nivelAcesso == 2)
+                                {
+                                    echo '<button type = "button" class = "btn btn-danger excluir-sprint-btn"  data-id-sprint = "'.$sprint->getId().'" data-nome-sprint = "'.$sprint->getNome().'" title = "Excluir sprint"><i class = "fa fa-trash"></i></button>';
+                                }
+                                
+                                echo '</td></tr>';
+                            }
+                            
+                        ?>
                     </tbody>
                 </table>
             </div>
             <?php if($nivelAcesso >= 2)
             { ?>
                 <div class="col-md-offset-3 col-md-6 text-center">                         
-                    <a href ="adicionar?idprojeto=?<?php echo $projeto->getId(); ?>" class="btn btn-primary btn-lg btn-block">Adicionar Sprint</a>
+                    <a href ="adicionar?idprojeto=<?php echo $projeto->getId(); ?>" class="btn btn-primary btn-lg btn-block">Adicionar Sprint</a>
                 </div>
             <?php } ?>
+            <div class ='col-md-offset-3 col-md-6' style = "margin-top:10px">
+                <a href ="<?php echo UrlManager::GetPathToView("projetos/visualizar?id=".$projeto->getId()); ?>" class="btn btn-primary btn-lg btn-block"><i class="fa fa-arrow-circle-left"></i> Voltar para o projeto</a>
+            </div>
             
         </div>
         
         <?php Carregador::CarregarViewFooter(); ?>
+        <?php if($nivelAcesso == 2)
+        { ?>
+        <script>
+            $(".excluir-sprint-btn").on('click', function()
+            {
+                
+                
+                var btne = $(this);
+                var excluir = function(btn)
+                {
+                    var btn = btne;
+                    var id = btn.data('id-sprint');
+                    var obj = {'id' :id};
+                    AdicionarCSRFTokenObj(obj);
+                    
+                    $.ajax({
+                    url : '<?php echo UrlManager::GetPathToController("sprints/excluir"); ?>',
+                    method : 'POST',
+                    data : obj,
+                   
+                    success : function(resposta)
+                     {
+                         btn.parent().parent().remove();
+                         GerarNotificacao(resposta.mensagem, resposta.tipo);
+                     },
+                    error : function ()
+                    {
+                        GerarNotificacao("Houve um erro interno na aplicação", "danger");
+                    }  
+                   
+                    });
+                };
+                
+                GerarConfirmacao("Tens certeza que desejas apagar a sprint <i>"+$(this).data('nome-sprint')+"</i>", excluir);
+                
+              
+               
+            });
+        </script>
+        
+        <?php } ?>
     </body>
 </html>

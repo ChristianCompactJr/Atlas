@@ -88,15 +88,16 @@
         {
             if(empty($_POST))
             {
-               
+            
                 include_once'../meta/404.php';
-                 //carregar página 404
+                
             }
             else
             {
                  echo "erro 404";
             }
             
+            return;
             
         }
         else
@@ -115,6 +116,7 @@
     }
     else
     {
+ 
         include_once 'inicial.php';
     }
 

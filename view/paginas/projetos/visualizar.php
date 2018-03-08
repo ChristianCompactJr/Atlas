@@ -159,7 +159,7 @@ $scrumMaster = $udao->GetUsuario($projeto->getScrumMaster());
                          for(var j = 0; j < totalMicro; j++)
                          {
                              htmlString += "<tr>"
-                             var concluidaString;
+                             /*var concluidaString;
                              
                              if(json[i].micros[j].estado == 'Incompleta')
                              {
@@ -176,11 +176,11 @@ $scrumMaster = $udao->GetUsuario($projeto->getScrumMaster());
                              else
                              {
                                  concluidaString = '<label class="btn btn-dark btn-sm concluida-btn"><span class=""><i class="fa fa-question-circle"></i> Desconhecido</span></label>';
-                             }
+                             }*/
                         
                              
                              htmlString += '<td>'+json[i].micros[j].nome+'</td><td>'+json[i].micros[j].prioridade+'</td>';
-                             htmlString += '<td>'+json[i].micros[j].estimativa+'</td><td>'+concluidaString+'</td>';
+                             htmlString += '<td>'+json[i].micros[j].estimativa+'</td><td>'+json[i].micros[j].estadocolored+'</td>';
                              var btnString = '<td><button class="btn btn-primary btn-abrir-modal-ver-micro" data-id-micro='+json[i].micros[j].id+'><i class = "fa fa-eye"></i></button>';
                             <?php if($podeGerenciar){ ?>
                                     btnString += '<button class="btn btn-success btn-abrir-modal-editar-micro" data-id-micro='+json[i].micros[j].id+'><i class = "fa fa-edit"></i></button><button class="btn btn-danger btn-excluir-micro" data-id-micro = "'+json[i].micros[j].id+'" data-nome-micro = "'+json[i].micros[j].nome+'"><i class = "fa fa-trash"></i></button>';
@@ -191,7 +191,7 @@ $scrumMaster = $udao->GetUsuario($projeto->getScrumMaster());
                          }
                          htmlString += '</tbody></table>';
                          <?php if($podeGerenciar){ ?>
-                             htmlString += '<div class = "panel-footer" style = "display:flow-root"><div class="pull-right"><button class="btn btn-success btn-abrir-modal-adicionar-micro" data-id-macro='+json[i].id+'><i class = "fa fa-plus-circle"></i> Adicionar Tarefa Micro</button><button class="btn btn-primary btn-abrir-modal-editar-macro" data-id-macro='+json[i].id+'><i class = "fa fa-edit"></i> Editar Tarefa Macro</button><button class="btn btn-danger btn-excluir-macro" data-id-macro="'+json[i].id+'" data-nome-macro="'+json[i].nome+'"><i class = "fa fa-trash"></i> Excluir Tarefa Macro</button></div>'
+                             htmlString += '<div class = "panel-footer" style = "display:flow-root"><div class="pull-right"><button class="btn btn-success btn-abrir-modal-adicionar-micro" data-id-macro='+json[i].id+'><i class = "fa fa-plus-circle"></i> Adicionar Tarefa Micro</button><button class="btn btn-primary btn-abrir-modal-editar-macro" data-id-macro='+json[i].id+'><i class = "fa fa-edit"></i> Editar Tarefa Macro</button><button class="btn btn-danger btn-excluir-macro" data-id-macro="'+json[i].id+'" data-nome-macro="'+json[i].nome+'"><i class = "fa fa-trash"></i> Excluir Tarefa Macro</button></div></div>';
                      <?php }  ?>
                          
                          
@@ -249,7 +249,7 @@ $scrumMaster = $udao->GetUsuario($projeto->getScrumMaster());
                             </div>
                             <div class="form-group">
                               <label for="nome">Descricao: </label>
-                              <textarea name = "descricao" class="form-control" style = "resize:vertical" rows="6" placeholder="Descrição da tarefa macro" required></textarea>
+                              <textarea name = "descricao" class="form-control" style = "resize:vertical" rows="6" placeholder="Descrição da tarefa macro"></textarea>
                             </div>
                             <div class="col-md-offset-3 col-md-6 text-center">                         
                                 <button type="submit"  class="btn btn-primary btn-lg btn-block">Adicionar</button>
@@ -282,7 +282,7 @@ $scrumMaster = $udao->GetUsuario($projeto->getScrumMaster());
                             </div>
                             <div class="form-group">
                               <label for="nome">Descricao: </label>
-                              <textarea name = "descricao" id ="descricao-edit-macro" class="form-control" style = "resize:vertical" rows="6" placeholder="Descrição da tarefa macro" required></textarea>
+                              <textarea name = "descricao" id ="descricao-edit-macro" class="form-control" style = "resize:vertical" rows="6" placeholder="Descrição da tarefa macro"></textarea>
                             </div>
                             <div class="col-md-offset-3 col-md-6 text-center">                         
                                 <button type="submit"  class="btn btn-primary btn-lg btn-block">Editar</button>
@@ -321,7 +321,7 @@ $scrumMaster = $udao->GetUsuario($projeto->getScrumMaster());
                             </div>
                             <div class="form-group">
                               <label for="observacoes">Observacoes: </label>
-                              <textarea name = "observacoes" class="form-control" style = "resize:vertical" rows="6" placeholder="Observações da tarefa macro" required></textarea>
+                              <textarea name = "observacoes" class="form-control" style = "resize:vertical" rows="6" placeholder="Observações da tarefa macro"></textarea>
                             </div>
                             
                             <div class="form-group">
@@ -380,7 +380,7 @@ $scrumMaster = $udao->GetUsuario($projeto->getScrumMaster());
                             </div>
                             <div class="form-group">
                               <label for="observacoes">Observações: </label>
-                              <textarea name = "observacoes" id ="observacoes-edit-micro" class="form-control" style = "resize:vertical" rows="6" placeholder="Observações da tarefa micro" required></textarea>
+                              <textarea name = "observacoes" id ="observacoes-edit-micro" class="form-control" style = "resize:vertical" rows="6" placeholder="Observações da tarefa micro"></textarea>
                             </div>
                             <div class="form-group">
                               <label for="links">links_utis: </label>

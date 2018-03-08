@@ -299,3 +299,9 @@ footer
     margin-top: 5px;
     margin-right: 5px;
 }
+
+.select2-container {
+    width: 100% !important;
+    text-align: left;
+    z-index: 9000;
+}

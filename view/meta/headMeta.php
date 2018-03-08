@@ -7,6 +7,7 @@ $voltas = UrlManager::GetBackSlashes();
 <link rel="icon" href="<?php echo UrlManager::GetPathToView("recursos/img/logo_limpo.png"); ?>" type="image/png">
 <link rel ="stylesheet" type ="text/css" href ="<?php echo UrlManager::GetPathToView("recursos/css/bootstrap.min.css"); ?>" />    
 <link rel ="stylesheet" type ="text/css" href ="<?php echo UrlManager::GetPathToView("recursos/css/animate.css"); ?>" />
+<link href="<?php echo UrlManager::GetPathToView("recursos/css/select2.min.css"); ?>" rel="stylesheet" />
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
 <link rel ="stylesheet" type ="text/css" href ="<?php echo UrlManager::GetPathToView("recursos/css/style.css"); ?>" />
@@ -16,6 +17,8 @@ $voltas = UrlManager::GetBackSlashes();
 <script type ="text/javascript" src = "<?php echo UrlManager::GetPathToView("recursos/js/bootstrap-notify.min.js"); ?>"></script>
 <script type ="text/javascript" src = "<?php echo UrlManager::GetPathToView("recursos/js/bootbox.min.js"); ?>"></script>
 <script type ="text/javascript" src = "<?php echo UrlManager::GetPathToView("recursos/js/font-awesome.js"); ?>"></script>
+    <script type ="text/javascript" src = "<?php echo UrlManager::GetPathToView("recursos/js/select2.full.min.js"); ?>"></script>
+
 <script> 
     function GerarNotificacao(mensagem, tipo)
     {
