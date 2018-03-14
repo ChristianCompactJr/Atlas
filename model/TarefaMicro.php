@@ -49,7 +49,7 @@ class TarefaMicro {
         {
             $classe = 'success';
         }
-        else if($this->estado = 'Instável')
+        else if($this->estado == 'Instável')
         {
             $classe = 'warning';
         }

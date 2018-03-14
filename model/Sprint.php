@@ -8,16 +8,55 @@ class Sprint {
     private $data_inicio;
     private $prazo;
     private $estagio;
+    private $retrospectiva;
     
-    
-    function __construct($id, $projeto, $nome, $data_inicio, $prazo, $estagio) {
+   
+
+        function __construct($id, $projeto, $nome, $data_inicio, $prazo, $estagio, $retrospectiva) {
         $this->id = $id;
         $this->nome = $nome;
         $this->projeto = $projeto;
         $this->data_inicio = $data_inicio;
         $this->prazo = $prazo;
         $this->estagio = $estagio;
-    }   
+        $this->retrospectiva = $retrospectiva;
+    }
+    
+     function getRetrospectiva() {
+        return $this->retrospectiva;
+    }
+
+    function setRetrospectiva($retrospectiva) {
+        $this->retrospectiva = $retrospectiva;
+    }
+    
+    
+    public function getRetrospectivaFormatted()
+    {
+       $texto =  preg_replace("/[\r\n]+/", "\n", $this->retrospectiva);
+          return str_replace(array("\r\n", "\r", "\n"), "<br /><br />", $texto);
+    }
+    
+    public function GetEstagioColored()
+    {
+        $class = '';
+        switch($this->estagio)
+        {
+            case 'Desenvolvimento':
+                $class = "text-danger";
+                break;
+            case 'Revisão':
+                $class = 'text-warning';
+                break;
+            case 'Concluída':
+                $class = 'text-success';
+        }
+        
+        return '<b><span class = "'.$class.'">'.$this->estagio.'</span></b>';
+    }
+    
+    
+    
     
     function getNome() {
         return $this->nome;

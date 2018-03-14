@@ -21,7 +21,7 @@ catch(Exception $e)
 $scrumMaster = $udao->GetUsuario($projeto->getScrumMaster());
  $devs = $dao->GetDevsProjeto($_GET['id']);
  $podeGerenciar = SessionController::IsAdmin() || $projeto->getScrumMaster() == SessionController::GetUsuario()->getId();
- 
+ $podeConcluir = $projeto->podeConcluir();
 ?>
 <!DOCTYPE html>
 <html>
@@ -120,19 +120,118 @@ $scrumMaster = $udao->GetUsuario($projeto->getScrumMaster());
             
             <?php
                 if($podeGerenciar)
-                {?>
-            
-            <div class="col-md-offset-3 col-md-6 text-center">                         
+                {   
+                    if($podeConcluir == true && $projeto->getEstagio() == 'Desenvolvimento')
+                    { ?>
+                        <div class="col-md-offset-3 col-md-6 text-center">                         
+                <button type="button"  class="btn btn-success btn-lg btn-block" id = "btn-set-entrege">Concluir projeto</button>
+            </div>
+               <?php } else if($projeto->getEstagio() == 'Entrege') 
+               { ?>
+                    <div class="col-md-offset-3 col-md-6 text-center">                         
+                        <button type="button"  class="btn btn-success btn-lg btn-block" id = "btn-set-desenvolvimento">Desenvolver projeto</button>
+                    </div>
+               <?php }
+               ?>
+                
+                    
+            <div class="col-md-offset-3 col-md-6 text-center" style = "margin-top: 10px">                         
                 <button type="button"  class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#modalAdicionarMacro">Adicionar Tarefa Macro</button>
             </div>
+            
+                <?php } ?>
             <div class="col-md-offset-3 col-md-6 text-center" style = "margin-top: 10px">                         
                 <a href = "sprints/?idprojeto=<?php echo $projeto->getId(); ?>"><button type="button"  class="btn btn-primary btn-lg btn-block">Ver Sprints</button></a>
             </div>
-                <?php } ?>
         </div>
       
                    
-        <?php Carregador::CarregarViewFooter(); ?>
+        <?php Carregador::CarregarViewFooter(); 
+        
+        if($podeConcluir == true && $projeto->getEstagio() == 'Desenvolvimento')
+                    {  ?>
+            
+            <script>
+            $("#btn-set-entrege").on('click', function()
+            {
+                
+                
+                var concluir = function()
+                {
+                    var obj = {'id' : <?php echo $projeto->getId(); ?>};
+                    AdicionarCSRFTokenObj(obj);
+                    
+                    $.ajax({
+                    url : '<?php echo UrlManager::GetPathToController("projeto/marcarEntrege"); ?>',
+                    method : 'POST',
+                    data : obj,
+                    dataType : 'json',
+                   
+                    success : function(resposta)
+                     {
+                         if(resposta.tipo == 'success')
+                         {
+                             location.reload();
+                         }
+                         
+                         GerarNotificacao(resposta.mensagem, resposta.tipo);
+                         
+                        
+                     },
+                    error : function ()
+                    {
+                        GerarNotificacao("Houve um erro interno na aplicação", "danger");
+                    }  
+                   
+                    });
+                };
+              
+                GerarConfirmacao("Tens certeza que desejas concluir o projeto <i><?php echo $projeto->getNome(); ?>?</i>", concluir);
+                });
+            </script>
+            
+         <?php } else if($projeto->getEstagio() == 'Entrege' && $podeGerenciar == true) 
+            { ?>
+                 <script>
+            $("#btn-set-desenvolvimento").on('click', function()
+            {
+                var concluir = function()
+                {
+                    var obj = {'id' : <?php echo $projeto->getId(); ?>};
+                    AdicionarCSRFTokenObj(obj);
+                    
+                    $.ajax({
+                    url : '<?php echo UrlManager::GetPathToController("projeto/marcarDesenvolvimento"); ?>',
+                    method : 'POST',
+                    data : obj,
+                    dataType : 'json',
+                   
+                    success : function(resposta)
+                     {
+                         if(resposta.tipo == 'success')
+                         {
+                             location.reload();
+                         }
+                         
+                         GerarNotificacao(resposta.mensagem, resposta.tipo);
+                         
+                        
+                     },
+                    error : function ()
+                    {
+                        GerarNotificacao("Houve um erro interno na aplicação", "danger");
+                    }  
+                   
+                    });
+                };
+              
+                GerarConfirmacao("Tens certeza que desejas desenvolver o projeto <i><?php echo $projeto->getNome(); ?>?</i>", concluir);
+                });
+            </script>
+            <?php }
+            ?>
+        
+        
          <script>
              var carregado;
              var idprojeto = <?php echo $projeto->getId() ?>;
@@ -159,24 +258,7 @@ $scrumMaster = $udao->GetUsuario($projeto->getScrumMaster());
                          for(var j = 0; j < totalMicro; j++)
                          {
                              htmlString += "<tr>"
-                             /*var concluidaString;
                              
-                             if(json[i].micros[j].estado == 'Incompleta')
-                             {
-                                 concluidaString = '<label class="btn btn-danger btn-sm concluida-btn"><span><i class="fa fa-times"></i> Incompleta</span></label>';
-                             }
-                             else if(json[i].micros[j].estado == 'Instável')
-                             {
-                                 concluidaString = '<label class="btn btn-warning btn-sm concluida-btn"><span class=""><i class="fa fa-exclamation-triangle"></i> Instável</span></label>';
-                             }
-                             else if(json[i].micros[j].estado == 'Qualificada')
-                             {
-                                 concluidaString = '<label class="btn btn-success btn-sm concluida-btn"><span class=""><i class="fa fa-check"></i> Qualificada</span></label>';
-                             }
-                             else
-                             {
-                                 concluidaString = '<label class="btn btn-dark btn-sm concluida-btn"><span class=""><i class="fa fa-question-circle"></i> Desconhecido</span></label>';
-                             }*/
                         
                              
                              htmlString += '<td>'+json[i].micros[j].nome+'</td><td>'+json[i].micros[j].prioridade+'</td>';

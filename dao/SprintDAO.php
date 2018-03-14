@@ -43,7 +43,7 @@ class SprintDAO extends DAO {
         $retorno = array();
         foreach($resultado as $linha)
         {
-            $retorno[] = new Sprint($linha->id, $linha->projeto,$linha->nome ,$linha->data_inicio, $linha->prazo, $linha->estagio);
+            $retorno[] = new Sprint($linha->id, $linha->projeto,$linha->nome ,$linha->data_inicio, $linha->prazo, $linha->estagio, $linha->retrospectiva);
         }
         return $retorno;
         
@@ -57,16 +57,14 @@ class SprintDAO extends DAO {
         $stmt->execute();
     }
     
-    public function CadastrarSprintTarefa(int $sprint, int $micro, string $estagio = 'Desenvolvimento', array $responsaveis = array())
+    public function CadastrarSprintTarefa(int $sprint, int $micro, array $responsaveis = array())
     {
         $sprint = parent::LimparString($sprint);
-        $micro = parent::LimparString($micro);
-        $estagio = parent::LimparString($estagio);
+        $micro = parent::LimparString($micro);  
         
-        $stmt = parent::getCon()->prepare("insert into atlas_projeto_sprint_tarefa(idsprint, idmicro, estagio) values (?, ?, ?)");
+        $stmt = parent::getCon()->prepare("insert into atlas_projeto_sprint_tarefa(idsprint, idmicro) values (?, ?)");
         $stmt->bindValue(1, $sprint);
         $stmt->bindValue(2, $micro);
-        $stmt->bindValue(3, $estagio);
         $stmt->execute();
         $idtarefasprint = parent::getCon()->lastInsertId();
         
@@ -89,7 +87,53 @@ class SprintDAO extends DAO {
         
     }
     
+    public function GetSprint($id)
+    {
+        $id = parent::LimparString($id);
+        
+        $stmt = parent::getCon()->prepare("select * from atlas_projeto_sprint where id = ? limit 1");
+        $stmt->bindValue(1, $id);
+        $stmt->execute();
+        
+        if($stmt->rowCount() == 0)
+        {
+            throw new Exception("Esta sprint não existe");
+        }
+        
+        
+        
+        $linha = $stmt->fetch();
+        return new Sprint($linha->id, $linha->projeto,$linha->nome ,$linha->data_inicio, $linha->prazo, $linha->estagio, $linha->retrospectiva);
+    }
     
+    public function MarcarRevisao($idsprint)
+    {
+        $idsprint = parent::LimparString($idsprint);
+        
+        $stmt = parent::getCon()->prepare("update atlas_projeto_sprint set estagio = 'Revisão' where id = ?");
+        $stmt->bindValue(1,$idsprint);
+        $stmt->execute();
+    }
+    
+    public function MarcarConcluida(int $idsprint, string $retrospectiva)
+    {
+        $idsprint = parent::LimparString($idsprint);
+        $retrospectiva = parent::LimparString($retrospectiva);
+        $stmt = parent::getCon()->prepare("update atlas_projeto_sprint set estagio = 'Concluída', retrospectiva = ? where id = ?");
+        $stmt->bindValue(1, $retrospectiva);
+        $stmt->bindValue(2, $idsprint);
+        $stmt->execute();
+        
+    }
+    
+    public function MarcarDesenvolvimento($idsprint)
+    {
+        $idsprint = parent::LimparString($idsprint);
+        
+        $stmt = parent::getCon()->prepare("update atlas_projeto_sprint set estagio = 'Desenvolvimento' where id = ?");
+        $stmt->bindValue(1,$idsprint);
+        $stmt->execute();
+    }
     
     
     

@@ -18,7 +18,7 @@ try
     $projeto = $dao->GetProjeto($_GET['idprojeto']);
     $master = $projeto->getScrumMaster();
     
-    if(SessionController::IsAdmin() || SessionController::GetUsuario()->getId() == $master->getId())
+    if(SessionController::IsAdmin() || SessionController::GetUsuario()->getId() == $master)
     {
         $nivelAcesso = 2;
     }
@@ -36,12 +36,7 @@ try
         }
         
     }
-    
-    
-    if(SessionController::GetUsuario()->getId() != $projeto->getScrumMaster() && !SessionController::IsAdmin())
-    {
-        header("location: ../../index.php");
-    }
+
     
 }
 
@@ -86,18 +81,24 @@ catch(Exception $e)
                             $sprints = $sprintdao->GetSprintsProjeto($projeto->getId());
                             foreach($sprints as $sprint)
                             {
-                                $linkVisualizar = UrlManager::GetPathToView("projetos/sprints/visulizar")."?idsprint=".$sprint->getId();
+                                $linkVisualizar = UrlManager::GetPathToView("projetos/sprints/visualizar")."?idsprint=".$sprint->getId();
+                                $linkRevisao = UrlManager::GetPathToView("projetos/sprints/revisao")."?idsprint=".$sprint->getId();
                                 echo '<tr>';
                                 echo '<td><a href = "'.$linkVisualizar.'">'.$sprint->getNome().'</a></td>';
                                 echo '<td>'.$sprint->getData_InicioFormatted().'</td>';
                                 echo '<td>'.$sprint->getPrazoFormatted().'</td>';
-                                echo '<td>'.$sprint->getEstagio().'</td>';
+                                echo '<td>'.$sprint->GetEstagioColored().'</td>';
                                 
                                 
                                 echo '<td><a href = "'.$linkVisualizar.'" class = "btn btn-primary" title = "Visualizar sprint"><i class = "fa fa-eye"></i></a>';
-                                if($nivelAcesso == 2)
+                                if($nivelAcesso > 0)
                                 {
-                                    echo '<button type = "button" class = "btn btn-danger excluir-sprint-btn"  data-id-sprint = "'.$sprint->getId().'" data-nome-sprint = "'.$sprint->getNome().'" title = "Excluir sprint"><i class = "fa fa-trash"></i></button>';
+                                    if(($sprint->getEstagio() == 'Revisão' && $nivelAcesso > 1) || ($sprint->getEstagio() == 'Concluída' && $nivelAcesso > 0))
+                                    {
+                                        echo '<a href = "'.$linkRevisao.'" class = "btn btn-success" title = "Revisão"><i class = "fa fa-archive"></i></a>';
+                                    }
+                                    
+                                    if($nivelAcesso > 1) { echo '<button type = "button" class = "btn btn-danger excluir-sprint-btn"  data-id-sprint = "'.$sprint->getId().'" data-nome-sprint = "'.$sprint->getNome().'" title = "Excluir sprint"><i class = "fa fa-trash"></i></button>';}
                                 }
                                 
                                 echo '</td></tr>';

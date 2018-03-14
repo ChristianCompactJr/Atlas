@@ -12,11 +12,11 @@
              {
                 if(isset($escolhida['responsaveis']))
                 {
-                    $sprintdao->CadastrarSprintTarefa($idsprint, $escolhida['id'], 'Desenvolvimento', $escolhida['responsaveis']);
+                    $sprintdao->CadastrarSprintTarefa($idsprint, $escolhida['id'], $escolhida['responsaveis']);
                 }
                 else
                 {
-                    $sprintdao->CadastrarSprintTarefa($idsprint, $escolhida['id'], 'Desenvolvimento');
+                    $sprintdao->CadastrarSprintTarefa($idsprint, $escolhida['id']);
                 }
                
              }
@@ -26,7 +26,7 @@
     
     catch(Exception $e)
     {
-        JSONResponder::ResponderSucesso($e->getMessage(), true, true);
+        JSONResponder::ResponderFalha($e->getMessage(), true, true);
     }
     
     

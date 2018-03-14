@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 08-Mar-2018 às 19:41
+-- Generation Time: 14-Mar-2018 às 19:18
 -- Versão do servidor: 10.1.21-MariaDB
 -- PHP Version: 7.1.1
 
@@ -31,6 +31,20 @@ CREATE TABLE `atlas_habilidades` (
   `nome` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Extraindo dados da tabela `atlas_habilidades`
+--
+
+INSERT INTO `atlas_habilidades` (`id`, `nome`) VALUES
+(1, 'HTML'),
+(2, 'CSS'),
+(3, 'Javascript'),
+(4, 'Jquery'),
+(5, 'PHP'),
+(6, 'SQL'),
+(7, 'Django'),
+(8, 'Python');
+
 -- --------------------------------------------------------
 
 --
@@ -43,6 +57,36 @@ CREATE TABLE `atlas_habilidade_usuario` (
   `valor` int(11) NOT NULL,
   `interesse` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Extraindo dados da tabela `atlas_habilidade_usuario`
+--
+
+INSERT INTO `atlas_habilidade_usuario` (`idhabilidade`, `idusuario`, `valor`, `interesse`) VALUES
+(1, 6, 0, 0),
+(1, 8, 0, 0),
+(1, 10, 0, 0),
+(2, 6, 0, 0),
+(2, 8, 0, 0),
+(2, 10, 0, 0),
+(3, 6, 0, 0),
+(3, 8, 0, 0),
+(3, 10, 0, 0),
+(4, 6, 0, 0),
+(4, 8, 0, 0),
+(4, 10, 0, 0),
+(5, 6, 0, 0),
+(5, 8, 0, 0),
+(5, 10, 0, 0),
+(6, 6, 0, 0),
+(6, 8, 0, 0),
+(6, 10, 0, 0),
+(7, 6, 0, 0),
+(7, 8, 0, 0),
+(7, 10, 0, 0),
+(8, 6, 0, 0),
+(8, 8, 0, 0),
+(8, 10, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -61,6 +105,13 @@ CREATE TABLE `atlas_projeto` (
   `estagio` enum('Desenvolvimento','Entrege','Manutenção') NOT NULL DEFAULT 'Desenvolvimento'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Extraindo dados da tabela `atlas_projeto`
+--
+
+INSERT INTO `atlas_projeto` (`id`, `nome`, `scrum_master`, `data_inicio`, `prazo`, `cliente`, `observacoes`, `estagio`) VALUES
+(1, 'Atlas', 6, '2018-03-01', '2018-03-28', 'Compact Jr', '', 'Entrege');
+
 -- --------------------------------------------------------
 
 --
@@ -72,6 +123,13 @@ CREATE TABLE `atlas_projeto_desenvolvedor` (
   `idusuario` int(11) NOT NULL,
   `ativo` tinyint(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Extraindo dados da tabela `atlas_projeto_desenvolvedor`
+--
+
+INSERT INTO `atlas_projeto_desenvolvedor` (`idprojeto`, `idusuario`, `ativo`) VALUES
+(1, 8, 1);
 
 -- --------------------------------------------------------
 
@@ -85,7 +143,8 @@ CREATE TABLE `atlas_projeto_sprint` (
   `nome` varchar(70) NOT NULL,
   `data_inicio` date NOT NULL,
   `prazo` date NOT NULL,
-  `estagio` enum('Desenvolvimento','Revisão','Concluída') NOT NULL DEFAULT 'Desenvolvimento'
+  `estagio` enum('Desenvolvimento','Revisão','Concluída') NOT NULL DEFAULT 'Desenvolvimento',
+  `retrospectiva` text
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -98,7 +157,9 @@ CREATE TABLE `atlas_projeto_sprint_tarefa` (
   `id` int(11) NOT NULL,
   `idsprint` int(11) NOT NULL,
   `idmicro` int(11) NOT NULL,
-  `estagio` enum('Desenvolvimento','Falha','Sucedida','Revisão') DEFAULT NULL
+  `desempenho` enum('Muito baixo','Baixo','Normal','Alto','Muito Alto') DEFAULT NULL,
+  `historico_atual` enum('Incompleta','Instável','Qualificada') DEFAULT NULL,
+  `historico_novo` enum('incompleta','Instável','Qualificada') DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -125,6 +186,13 @@ CREATE TABLE `atlas_projeto_tarefa_macro` (
   `descricao` text
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Extraindo dados da tabela `atlas_projeto_tarefa_macro`
+--
+
+INSERT INTO `atlas_projeto_tarefa_macro` (`id`, `idprojeto`, `nome`, `descricao`) VALUES
+(1, 1, 'Design', '');
+
 -- --------------------------------------------------------
 
 --
@@ -142,6 +210,14 @@ CREATE TABLE `atlas_projeto_tarefa_micro` (
   `estimativa` int(11) NOT NULL,
   `estado` enum('Incompleta','Instável','Qualificada') NOT NULL DEFAULT 'Incompleta'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Extraindo dados da tabela `atlas_projeto_tarefa_micro`
+--
+
+INSERT INTO `atlas_projeto_tarefa_micro` (`id`, `idmacro`, `nome`, `descricao`, `observacoes`, `link_uteis`, `prioridade`, `estimativa`, `estado`) VALUES
+(1, 1, 'Criar logomarca nova', 'Não temos direitos autorais para utilizar a atual. Precisamos de uma nova.', '', '', 5, 3, 'Qualificada'),
+(2, 1, 'Protótipo', 'Fazer os protótipos de telas', '', '', 1, 1, 'Qualificada');
 
 -- --------------------------------------------------------
 
@@ -166,7 +242,8 @@ CREATE TABLE `atlas_usuario` (
 
 INSERT INTO `atlas_usuario` (`id`, `nome`, `email`, `senha`, `foto`, `administrador`, `token`, `ativo`) VALUES
 (6, 'Christian Lemos', 'christian@compactjr.com', '$2y$10$71rqX2sI0Fi4pOMqL.ByzOYBmfUsjeqbqFQb/bvqB7L/J47rjK6MW', 'uploads/fotos/perfil_xWZIKXexGfVFaNFRy3wj.jpg', 1, NULL, 1),
-(8, 'Eduardo Hirt', 'eduardo.hirt@compactjr.com', '$2y$10$vwhWsgyO7gxd/SPjAiEqj.gkSgDbAbjcbcmoB1jo9xhqEDgAXzxqy', 'uploads/fotos/perfil_w9AnmN2QbosxlnWGFJ50.jpg', 0, NULL, 1);
+(8, 'Eduardo Hirt', 'eduardo.hirt@compactjr.com', '$2y$10$vwhWsgyO7gxd/SPjAiEqj.gkSgDbAbjcbcmoB1jo9xhqEDgAXzxqy', 'uploads/fotos/perfil_w9AnmN2QbosxlnWGFJ50.jpg', 1, NULL, 1),
+(10, 'Giovanni Sacchet', 'giovanni@compactjr.com', '$2y$10$PnCNazq1cFMvXHuyy8ni3OWNzfgUOOGYwlQetSXcT1v3nCVKs5Lt.', 'uploads/fotos/perfil_4tO5GCgb2KXuXRv6fEuI.jpg', 0, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -286,12 +363,12 @@ ALTER TABLE `atlas_usuario_tentativa`
 -- AUTO_INCREMENT for table `atlas_habilidades`
 --
 ALTER TABLE `atlas_habilidades`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 --
 -- AUTO_INCREMENT for table `atlas_projeto`
 --
 ALTER TABLE `atlas_projeto`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT for table `atlas_projeto_sprint`
 --
@@ -306,17 +383,17 @@ ALTER TABLE `atlas_projeto_sprint_tarefa`
 -- AUTO_INCREMENT for table `atlas_projeto_tarefa_macro`
 --
 ALTER TABLE `atlas_projeto_tarefa_macro`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT for table `atlas_projeto_tarefa_micro`
 --
 ALTER TABLE `atlas_projeto_tarefa_micro`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `atlas_usuario`
 --
 ALTER TABLE `atlas_usuario`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 --
 -- Constraints for dumped tables
 --

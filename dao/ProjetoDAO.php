@@ -271,4 +271,20 @@ class ProjetoDAO extends DAO {
     }
     
     
+    public function SetEntrege($idprojeto)
+    {
+        $stmt = parent::getCon()->prepare("update atlas_projeto set estagio = 'Entrege' where id = ?");
+        $stmt->bindValue(1, $idprojeto);
+        $stmt->execute();
+            
+    }
+    public function SetDesenvolvimento($idprojeto)
+    {
+        $stmt = parent::getCon()->prepare("update atlas_projeto set estagio = 'Desenvolvimento' where id = ?");
+        $stmt->bindValue(1, $idprojeto);
+        $stmt->execute();
+            
+    }
+    
+    
 }

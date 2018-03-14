@@ -30,25 +30,71 @@ class Projeto {
         return $dao->GetDevsProjeto($this->id);
     }
     
+    
+    public function podeConcluir()
+    {
+        $macrodao = new TarefaMacroDAO();
+       $macros = $macrodao->getTarefasMacro($this->id);
+       $microdao = New TarefaMicroDAO();
+       foreach($macros as $mac)
+       {
+          $tmpMicros = $microdao->getTarefasMicro($mac->getId());
+          
+          foreach($tmpMicros as $tmpmic)
+          {
+              if($tmpmic->getEstado() != "Qualificada")
+              {
+                  return false;
+              }
+          }
+       }
+       
+       return true;
+    }
+    
+    
     function getPorcentual()
     {
+          
         
-        $dao = new ProjetoDAO();
-        $total = $dao->GetTotalTarefasMicro($this->id);
-        $concluidas = $dao->GetTotalTarefasMicroConcluidas($this->id);
-
-        
-        if($total != 0)
-        {
-             $porcentual = ceil((100 * $concluidas) / $total);
-             return $porcentual; 
-        }
-        else
-        {
-            return 0;
-        }
+       $macrodao = new TarefaMacroDAO();
+       $macros = $macrodao->getTarefasMacro($this->id);
+       $microdao = New TarefaMicroDAO();
+       $micros = array();
+       foreach($macros as $mac)
+       {
+          $tmpMicros = $microdao->getTarefasMicro($mac->getId());
+          
+          foreach($tmpMicros as $tmpmic)
+          {
+              $micros[] = $tmpmic;
+          }
+       }
        
-             
+       if(count($micros) == 0)
+       {
+           return 0;
+       }
+       
+       
+       $totalEstimativa = 0;
+       $estimativaCompleta = 0;
+       
+       foreach($micros as $tarmic)
+       {
+           $totalEstimativa += $tarmic->getEstimativa();
+           if($tarmic->getEstado() == "Instável")
+           {
+               $estimativaCompleta += $tarmic->getEstimativa() / 2;
+           }
+           else if ($tarmic->getEstado() == "Qualificada")
+           {
+               $estimativaCompleta += $tarmic->getEstimativa();
+           }
+       }    
+       
+        return  ceil((100 * $estimativaCompleta) / $totalEstimativa); 
+            
     }
     
     function getFarol()
@@ -75,13 +121,17 @@ class Projeto {
        $diferenca = strtotime($prazo) - strtotime($inicio);
        $diferenca = round($diferenca / (60 * 60 * 24));
    
-       $andamentoPrevisto = ($agora - strtotime($inicio));
-       $andamentoPrevisto = round( $andamentoPrevisto / (60 * 60 * 24), 0);
+       $andamentoAgora = ($agora - strtotime($inicio));
+      
+       $andamentoAgora = round( $andamentoAgora / (60 * 60 * 24), 0);
+       $andamentoPrevisto = ceil((100 / $diferenca) * $andamentoAgora);
+       
+       
        $porcentagem = $this->getPorcentual();
        
        
        $metrica = $porcentagem - $andamentoPrevisto;
-       
+ 
        if($metrica >= 15)
        {
            return "verde";

@@ -45,9 +45,35 @@ class TarefaMicroDAO extends DAO {
         $stmt->bindValue(8, $idmicro);
         $stmt->execute();
     }
+    
+    public function AtualizarEstado(int $idmicro, string $novoestado)
+    {
+        $stmt = parent::getCon()->prepare("update atlas_projeto_tarefa_micro set estado = ? where id = ? ");
+        $stmt->bindValue(1, $novoestado);
+        $stmt->bindValue(2, $idmicro);
+        $stmt->execute();
+    }
+    
+    
     public function getTarefasMicro($idMacro)
     {
          $stmt = parent::getCon()->prepare("select * from atlas_projeto_tarefa_micro where idmacro = ?");
+        $stmt->bindValue(1, $idMacro);
+        $stmt->execute();
+        
+        $resultado = $stmt->fetchAll();
+        $retorno = array();
+        foreach($resultado as $tarefa)
+        {
+            $retorno[] = new TarefaMicro($tarefa->id, $tarefa->idmacro, $tarefa->nome, $tarefa->descricao, $tarefa->observacoes, $tarefa->link_uteis, $tarefa->prioridade, $tarefa->estimativa, $tarefa->estado);
+        }
+        return $retorno;
+        
+    }
+    
+    public function getTarefasMicroDisponiveisSprint($idMacro)
+    {
+         $stmt = parent::getCon()->prepare("select * from atlas_projeto_tarefa_micro as mic where idmacro = ? and not exists(select idmicro from atlas_projeto_sprint_tarefa as st where st.idmicro = mic.id and not exists(select * from atlas_projeto_sprint as sprint where sprint.id = st.idsprint and sprint.estagio = 'Concluída'))");
         $stmt->bindValue(1, $idMacro);
         $stmt->execute();
         

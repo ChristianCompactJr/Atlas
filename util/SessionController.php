@@ -78,10 +78,9 @@ abstract class SessionController
     }
     public static function VerificarCSRFToken()
     {
-        if (!isset($_POST['csrftoken']) || !hash_equals($_SESSION['csrftoken'], $_POST['csrftoken'])){
-            
+        if (!isset($_POST['csrftoken']) || !hash_equals($_SESSION['csrftoken'], $_POST['csrftoken']))
+        {
             JSONResponder::ResponderFalha("Você não tem permição para acessar essa funcionalidade", true, true);
-            
         }
     }
     

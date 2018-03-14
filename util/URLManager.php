@@ -1,13 +1,14 @@
 <?php
 
 abstract class UrlManager {
+        
+    
     
 
     public static function SetHeaderLocation($pagina)
-    {
-        
-        
-        header("location: ".self::GetUrlToView($pagina));  
+    {    
+        header("location: ".self::GetPathToView($pagina));  
+       // echo self::GetPathToView($pagina);
     }
     
     public static function GetPathToController($controller)

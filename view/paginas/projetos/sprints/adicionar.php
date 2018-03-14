@@ -64,20 +64,20 @@ catch(Exception $e)
                 </div>
                 <div class ="form-group">
                     <label for="nome">Data de Início:</label>
-                    <input type ="text" class = "form-control form-data" name = "nome" id ="sprint-inicio" required>
+                    <input type ="text" class = "form-control form-data" name = "nome" id ="sprint-inicio" placeholder ="A data de início da Sprint" required>
                 </div>
                 <div class ="form-group">
                     <label for="nome">Prazo:</label>
-                    <input type ="text" class = "form-control form-data" name = "nome" id ="sprint-prazo" required>
+                    <input type ="text" class = "form-control form-data" name = "nome" id ="sprint-prazo" placeholder = "A data prazo da sprint" accept=""required>
                 </div>
-                <h2>Tarefas</h2> 
+                <h2>Tarefas Disponíveis</h2> 
                 <?php 
                             
                             foreach($tarefasMacro as $tarefaMacro)
                             {
                                 
                                  echo  '<h3>'.$tarefaMacro->getNome().'</h3><div class ="table-responsive"><table class = "table table-hover table-bordered"><thead><tr><th>Selecionar</th><th>Nome</th><th>Prioridade</th><th>Estimativa</th><th>Estado</th> </tr></thead><tbody>';
-                                $tarefasMicro = $microdao->getTarefasMicro($tarefaMacro->getId());
+                                $tarefasMicro = $microdao->getTarefasMicroDisponiveisSprint($tarefaMacro->getId());
                                 
                                 foreach($tarefasMicro as $tarefaMicro)
                                 {
