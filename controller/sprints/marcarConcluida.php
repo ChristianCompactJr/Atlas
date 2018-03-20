@@ -15,7 +15,12 @@
             foreach($_POST['resultado'] as $res)
             {
                 $micro = $microdao->getTarefa($res['idmicro']);
+                
+                $projetodao->AddToBurndown($projeto->getId(), $micro->getId(), $res['estadoNovo']);
+                
+                
                 $microdao->AtualizarEstado($micro->getId(), $res['estadoNovo']);
+                
                 $tarefasprintdao->SetHistorico($res['idtarefasprint'], $res['desempenho'], $micro->getEstado(), $res['estadoNovo']);
             }
             

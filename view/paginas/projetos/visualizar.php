@@ -110,14 +110,20 @@ $scrumMaster = $udao->GetUsuario($projeto->getScrumMaster());
                 <p><h3>Progresso: </h3></p> 
             <div class="progress"><div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="<?php echo $porcentual; ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $porcentual; ?>%"><span class="sr-only"><?php echo $porcentual; ?>% Completado</span></div><span class="progress-type">Completado</span><span class="progress-completed" style = "padding: 3px 10px 2px;"><?php echo $porcentual; ?>%</span></div>
             </div>
-            
+            <div class ="row">
+                <p><h3>Burndown: </h3></p> 
+            <div class = "col-md-offset-1 col-md-10">
+                
+		<canvas id="canvas"></canvas>
+            </div>
+            </div>
             <div class ="row">
                 <p><h3>Backlog: </h3></p>
             
                 <div class="col-md-12" id = "tarefas-conteudo">
 		</div>
             </div>
-            
+             
             <?php
                 if($podeGerenciar)
                 {   
@@ -144,7 +150,101 @@ $scrumMaster = $udao->GetUsuario($projeto->getScrumMaster());
                 <a href = "sprints/?idprojeto=<?php echo $projeto->getId(); ?>"><button type="button"  class="btn btn-primary btn-lg btn-block">Ver Sprints</button></a>
             </div>
         </div>
-      
+       
+        
+        <script>
+            //var timeFormat = 'DD/MM/YYYY';
+                timeFormat = 'YYYY-MM-DD';
+		function newDate(days) {
+			return moment().add(days, 'd').toDate();
+		}
+
+		function newDateString(days) {
+			return moment().add(days, 'd').format(timeFormat);
+		}
+                
+                
+                var pontos = <?php echo json_encode($projeto->getPontosBurndown(), JSON_FORCE_OBJECT); ?>;
+                var pontosProgresso = new Array();
+                console.log(pontos);
+                pontosProgresso.push({x : pontos.ideal[0].dia, y : pontos.ideal[0].valor});
+                for(var i = 0; i < Object.keys(pontos.progresso).length; i++)
+                {
+                    pontosProgresso.push({x : pontos.progresso[i].dia, y : pontos.progresso[i].valor});
+                }
+                console.log(pontosProgresso);
+                
+		var color = Chart.helpers.color;
+		var config = {
+			type: 'line',
+			data: {
+				labels: [ // Date Objects
+					pontos.ideal[0].dia,
+                                        pontos.ideal[1].dia
+                                       
+				],
+                                
+				datasets: [ {
+					label: 'Ideal',
+					backgroundColor: color(window.chartColors.green).alpha(0.5).rgbString(),
+					borderColor: window.chartColors.green,
+                                        
+					fill: false,
+                                        
+					data: [{
+						x: pontos.ideal[0].dia,
+						y: pontos.ideal[0].valor
+					}, {
+						x: pontos.ideal[1].dia,
+						y: 0
+					}],
+				},{
+					label: 'Progresso',
+					backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
+					borderColor: window.chartColors.red,
+                                        lineTension: 0,
+					fill: false,
+                                        
+					data: pontosProgresso,
+				}]
+			},
+			options: {
+				title: {
+					text: 'Chart.js Time Scale'
+				},
+                                
+				scales: {
+					xAxes: [{
+						type: 'time',
+						time: {
+							format: timeFormat,
+							// round: 'day'
+							tooltipFormat: 'll HH:mm'
+						},
+						scaleLabel: {
+							display: true,
+							labelString: 'Dia'
+						}
+					}],
+					yAxes: [{
+						scaleLabel: {
+							display: true,
+							labelString: 'Estimativa Total'
+						}
+					}]
+				},
+			}
+		};
+
+		window.onload = function() {
+			var ctx = document.getElementById('canvas').getContext('2d');
+			window.myLine = new Chart(ctx, config);
+
+		};
+
+
+        
+        </script>
                    
         <?php Carregador::CarregarViewFooter(); 
         

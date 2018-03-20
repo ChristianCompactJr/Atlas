@@ -90,7 +90,7 @@ if(!SessionController::IsAdmin())
                             <select name ="estagio" class ="form-control">
                                 <option value ="Desenvolvimento">Desenvolvimento</option>
                                 <option value ="Entrege">Entrege</option>
-                                <option value ="Manutenção">Manutenção</option>
+                                
                             </select>
                         </div>   
                          <span class = "form-aviso"></span>

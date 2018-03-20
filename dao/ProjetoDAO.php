@@ -5,6 +5,129 @@ class ProjetoDAO extends DAO {
    
 
     
+    public function AddToBurndown($projeto, $idmicro, $novoestado)
+    {
+        $microdao = new TarefaMicroDAO();
+        $micro = $microdao->getTarefa($idmicro);
+        $estado = $micro->getEstado();
+        $estimativa = $micro->getEstimativa();
+        
+         $dia = date('Y-m-d', time());
+        $stmt = parent::getCon()->prepare("select * from atlas_projeto_burndown where idprojeto = ? and idmicro = ? and dia = ? ");
+        $stmt->bindValue(1, $projeto);
+        $stmt->bindValue(2, $idmicro);
+        $stmt->bindValue(3, $dia);
+        $stmt->execute();
+        
+        if($stmt->rowCount() <= 0)
+        {
+            $stmt = parent::getCon()->prepare("insert into atlas_projeto_burndown (idprojeto, idmicro, dia, estado_original_dia) values (?, ?, ?, ?)");
+            $stmt->bindValue(1, $projeto);
+            $stmt->bindValue(2, $idmicro);
+            $stmt->bindValue(3, $dia);
+            $stmt->bindValue(4, $estado);
+            $stmt->execute();
+            
+            $stmt = parent::getCon()->prepare("select * from atlas_projeto_burndown where idprojeto = ? and idmicro = ? and dia = ? ");
+            $stmt->bindValue(1, $projeto);
+            $stmt->bindValue(2, $idmicro);
+            $stmt->bindValue(3, $dia);
+            $stmt->execute();
+        }
+        
+        $estado = $stmt->fetch()->estado_original_dia;
+        
+        if($estado == 'Incompleta')
+        {
+            $pseudovalor = $estimativa;
+        }
+        else if($estado == 'Instável')
+        {
+            $pseudovalor = ($estimativa / 2);
+        }
+        else if($estado == 'Qualificada')
+        {
+            $pseudovalor = 0;
+        }
+        else
+        {
+            return;
+        }
+        
+        if($novoestado == 'Incompleta')
+        {
+            $pseudovalor2 = $estimativa;
+        }
+        else if($novoestado == 'Instável')
+        {
+            $pseudovalor2 = ($estimativa / 2);
+        }
+        else if($novoestado == 'Qualificada')
+        {
+            $pseudovalor2 = 0;
+        }
+        else
+        {
+            return;
+        }
+        
+        $valor = -($pseudovalor) + $pseudovalor2;  
+          
+        $stmt = parent::getCon()->prepare("update atlas_projeto_burndown set valor = ? where idprojeto = ? and idmicro = ? and dia = ? ");
+        $stmt->bindValue(2, $projeto);
+        $stmt->bindValue(3, $idmicro);
+        $stmt->bindValue(4, $dia);
+        $stmt->bindValue(1, $valor);
+        $stmt->execute();
+        
+    }
+    
+    public function GetDatasBurndown($projeto)
+    {
+        $stmt = parent::getCon()->prepare("select distinct dia from atlas_projeto_burndown where idprojeto = ?");
+        $stmt->bindValue(1, $projeto);
+        $stmt->execute();
+        
+        $retorno = array();
+        
+        while($resultado = $stmt->fetch())
+        {
+            $retorno[] = $resultado->dia;
+        }
+        
+        return $retorno;
+    }
+    
+    public function GetValorDiaBurdown($projeto, $dia, $total = false)
+    { 
+        $stmt = parent::getCon()->prepare("select valor from atlas_projeto_burndown where idprojeto = ? and dia = ?");
+        $stmt->bindValue(1, $projeto);
+        $stmt->bindValue(2, $dia);
+        $stmt->execute();
+        
+        $resultado = $stmt->fetchAll();
+        
+        if($total == true)
+        {
+            $total = 0;
+            foreach($resultado as $r)
+            {
+                $total += $r->valor;
+            }
+            return $total;
+        }
+        else
+        {
+            $retorno = array();
+            foreach($resultado as $r)
+            {
+                $retorno[] = $r->valor;
+            }
+            return $retorno;
+        }
+        
+    }
+    
     public function GetDevsProjeto($idprojeto)
     {
         $udao = new UsuarioDAO();

@@ -213,7 +213,6 @@ catch(Exception $e)
                
                obj['resultado'] = resultado;
                obj['retrospectiva'] = $("#retrospectiva").val();
-               console.log(obj);
                 var revisao = function()
                 {
                     var info = obj;
@@ -230,6 +229,7 @@ catch(Exception $e)
                      },
                     error : function (a)
                     {
+                        console.log(a);
                         GerarNotificacao("Houve um erro interno na aplicação", "danger");
                     }  
                    

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 14-Mar-2018 às 19:18
+-- Generation Time: 20-Mar-2018 às 20:00
 -- Versão do servidor: 10.1.21-MariaDB
 -- PHP Version: 7.1.1
 
@@ -63,30 +63,46 @@ CREATE TABLE `atlas_habilidade_usuario` (
 --
 
 INSERT INTO `atlas_habilidade_usuario` (`idhabilidade`, `idusuario`, `valor`, `interesse`) VALUES
-(1, 6, 0, 0),
+(1, 6, 88, 1),
 (1, 8, 0, 0),
 (1, 10, 0, 0),
-(2, 6, 0, 0),
+(1, 11, 70, 0),
+(1, 12, 0, 0),
+(2, 6, 86, 1),
 (2, 8, 0, 0),
 (2, 10, 0, 0),
-(3, 6, 0, 0),
+(2, 11, 70, 0),
+(2, 12, 0, 0),
+(3, 6, 55, 1),
 (3, 8, 0, 0),
 (3, 10, 0, 0),
-(4, 6, 0, 0),
+(3, 11, 0, 1),
+(3, 12, 0, 0),
+(4, 6, 80, 1),
 (4, 8, 0, 0),
 (4, 10, 0, 0),
-(5, 6, 0, 0),
+(4, 11, 0, 1),
+(4, 12, 0, 0),
+(5, 6, 85, 1),
 (5, 8, 0, 0),
 (5, 10, 0, 0),
-(6, 6, 0, 0),
+(5, 11, 0, 1),
+(5, 12, 0, 0),
+(6, 6, 55, 1),
 (6, 8, 0, 0),
 (6, 10, 0, 0),
-(7, 6, 0, 0),
+(6, 11, 38, 0),
+(6, 12, 0, 0),
+(7, 6, 10, 1),
 (7, 8, 0, 0),
 (7, 10, 0, 0),
-(8, 6, 0, 0),
+(7, 11, 18, 1),
+(7, 12, 0, 0),
+(8, 6, 5, 1),
 (8, 8, 0, 0),
-(8, 10, 0, 0);
+(8, 10, 0, 0),
+(8, 11, 65, 0),
+(8, 12, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -102,7 +118,7 @@ CREATE TABLE `atlas_projeto` (
   `prazo` date DEFAULT NULL,
   `cliente` text NOT NULL,
   `observacoes` text,
-  `estagio` enum('Desenvolvimento','Entrege','Manutenção') NOT NULL DEFAULT 'Desenvolvimento'
+  `estagio` enum('Desenvolvimento','Entrege') NOT NULL DEFAULT 'Desenvolvimento'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -110,7 +126,21 @@ CREATE TABLE `atlas_projeto` (
 --
 
 INSERT INTO `atlas_projeto` (`id`, `nome`, `scrum_master`, `data_inicio`, `prazo`, `cliente`, `observacoes`, `estagio`) VALUES
-(1, 'Atlas', 6, '2018-03-01', '2018-03-28', 'Compact Jr', '', 'Entrege');
+(2, 'Site SM Estacas', 6, '2018-02-28', '2018-05-04', 'SM Estacas', '', 'Desenvolvimento');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `atlas_projeto_burndown`
+--
+
+CREATE TABLE `atlas_projeto_burndown` (
+  `idprojeto` int(11) NOT NULL,
+  `idmicro` int(11) NOT NULL,
+  `dia` date NOT NULL,
+  `valor` float DEFAULT NULL,
+  `estado_original_dia` enum('Incompleta','Instável','Qualificada') NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -129,7 +159,8 @@ CREATE TABLE `atlas_projeto_desenvolvedor` (
 --
 
 INSERT INTO `atlas_projeto_desenvolvedor` (`idprojeto`, `idusuario`, `ativo`) VALUES
-(1, 8, 1);
+(2, 11, 1),
+(2, 12, 1);
 
 -- --------------------------------------------------------
 
@@ -191,7 +222,12 @@ CREATE TABLE `atlas_projeto_tarefa_macro` (
 --
 
 INSERT INTO `atlas_projeto_tarefa_macro` (`id`, `idprojeto`, `nome`, `descricao`) VALUES
-(1, 1, 'Design', '');
+(2, 2, 'Página Inicial', ''),
+(3, 2, 'Padrões', 'Isto está relacionado a \"coisas\" que vão estar em todas as páginas.'),
+(4, 2, 'Página Quem somos', ''),
+(5, 2, 'Página Portfólio', ''),
+(6, 2, 'Página Serviços', ''),
+(7, 2, 'Página Contato', '');
 
 -- --------------------------------------------------------
 
@@ -216,8 +252,19 @@ CREATE TABLE `atlas_projeto_tarefa_micro` (
 --
 
 INSERT INTO `atlas_projeto_tarefa_micro` (`id`, `idmacro`, `nome`, `descricao`, `observacoes`, `link_uteis`, `prioridade`, `estimativa`, `estado`) VALUES
-(1, 1, 'Criar logomarca nova', 'Não temos direitos autorais para utilizar a atual. Precisamos de uma nova.', '', '', 5, 3, 'Qualificada'),
-(2, 1, 'Protótipo', 'Fazer os protótipos de telas', '', '', 1, 1, 'Qualificada');
+(3, 3, 'Menu', 'Criar um menu contendo o logo da empresa e links para todas as outras páginas', '', '', 1, 2, 'Incompleta'),
+(4, 3, 'Rodapé', 'Criar o rodapé do site contendo apenas a frase de Copyright e link para o site da Compact Jr.', '', '', 1, 1, 'Incompleta'),
+(5, 2, 'Seção Slider', 'É uma seção onde irá conter um Slider (uma galeria de imagens que irão ficar alternando entre si, que serão passadas com animação).', '', 'https://getbootstrap.com/docs/3.3/javascript/#carousel', 2, 2, 'Incompleta'),
+(6, 2, 'Seção “SM Estacas”', 'Uma breve seção que explica o que é a Sm e  mostra alguns ideais da empresa (com o que trabalha, diferenciais, cuidados especiais e os motivos de fazerem o que estão fazendo são algumas ideias para colocar aqui).', '', '', 2, 1, 'Incompleta'),
+(7, 2, 'Seção \"Nossos Serviços\"', 'Aqui, será colocada uma explicação sobre os serviços realizados pela SM Estacas, cada um com uma imagem e uma breve descrição. Indicamos colocar imagens para explicar que trabalham com fundações e sondagens.', '', '', 2, 1, 'Incompleta'),
+(8, 2, 'Seção \"Depoimentos\"', 'Seção opcional. Os depoimentos seriam colocados com uma imagem, nome de quem fez e o depoimento em si.', '', '', 1, 1, 'Incompleta'),
+(9, 2, 'Seção Vídeo', 'Sessão opcional. Aqui será colocado um vídeo, podendo ser da empresa ou algum de seu interesse para mostrar visualmente como e com o que a empresa trabalha.', '', '', 1, 1, 'Incompleta'),
+(10, 4, 'Seção Missão, Visão e Valores', 'O porquê de trabalharem e aonde querem chegar seriam colocados aqui.', '', '', 2, 1, 'Incompleta'),
+(11, 5, 'Imagens de serviços prestados', 'Imagens de serviços prestados', '', '', 2, 2, 'Incompleta'),
+(12, 7, 'Formulário \"Me Ligue\"', 'Um formulário que envia email com os campos:\r\n- Nome;\r\n- Assunto;\r\n- Telefone.', 'Já que não tem campo email, então enviar o email para si', '', 1, 2, 'Incompleta'),
+(13, 7, 'Formulário Email', 'Um formulário que envia email com os campos:\r\n- Nome;\r\n- Assunto;\r\n- Telefone;\r\n- Email;\r\n- Mensagem.', '', '', 1, 2, 'Incompleta'),
+(14, 6, 'Itens serviços', 'Colocar foto, com uma descrição detalhada de como é feito e os cuidados que são realizados pela empresa para realizar tal serviço (qualificação dos responsáveis por exemplo).', '', '', 2, 2, 'Incompleta'),
+(15, 6, 'Seção “Ariosto”', 'Seção opcional. Aqui pode ser feito uma breve descrição da formação do Ariosto, com diplomas e qualificações, mostrando que é um profissional capacitado, transmitindo segurança e confiabilidade para os clientes.', '', '', 1, 2, 'Incompleta');
 
 -- --------------------------------------------------------
 
@@ -241,9 +288,11 @@ CREATE TABLE `atlas_usuario` (
 --
 
 INSERT INTO `atlas_usuario` (`id`, `nome`, `email`, `senha`, `foto`, `administrador`, `token`, `ativo`) VALUES
-(6, 'Christian Lemos', 'christian@compactjr.com', '$2y$10$71rqX2sI0Fi4pOMqL.ByzOYBmfUsjeqbqFQb/bvqB7L/J47rjK6MW', 'uploads/fotos/perfil_xWZIKXexGfVFaNFRy3wj.jpg', 1, NULL, 1),
+(6, 'Christian Lemos', 'christian@compactjr.com', '$2y$10$/VUk7aEnCREdFzrGvahZ2eVDAYshsjArg5.yBqyFk1Ec.6QwxkCs.', 'uploads/fotos/perfil_xWZIKXexGfVFaNFRy3wj.jpg', 1, NULL, 1),
 (8, 'Eduardo Hirt', 'eduardo.hirt@compactjr.com', '$2y$10$vwhWsgyO7gxd/SPjAiEqj.gkSgDbAbjcbcmoB1jo9xhqEDgAXzxqy', 'uploads/fotos/perfil_w9AnmN2QbosxlnWGFJ50.jpg', 1, NULL, 1),
-(10, 'Giovanni Sacchet', 'giovanni@compactjr.com', '$2y$10$PnCNazq1cFMvXHuyy8ni3OWNzfgUOOGYwlQetSXcT1v3nCVKs5Lt.', 'uploads/fotos/perfil_4tO5GCgb2KXuXRv6fEuI.jpg', 0, NULL, 1);
+(10, 'Giovanni Sacchet', 'giovanni@compactjr.com', '$2y$10$PnCNazq1cFMvXHuyy8ni3OWNzfgUOOGYwlQetSXcT1v3nCVKs5Lt.', 'uploads/fotos/perfil_4tO5GCgb2KXuXRv6fEuI.jpg', 0, NULL, 1),
+(11, 'Mattheus Einloft', 'mattheus.einloft@compactjr.com', '$2y$10$jRGt8cF5/24D4K/1tMZGMem5nbo1Y4dVcgoGXuFVy/vLtnf3RwvxK', 'uploads/fotos/perfil_aTIByN6Pzv3JS6HzcQjG.jpg', 0, NULL, 1),
+(12, 'Eduardo Nedel', 'eduardo.nedel@compactjr.com', '$2y$10$xhDn5vM/2BhABD9eRn3t..LpLc7AsRLMbyaptX/dTC.SN3gFhjY9W', 'uploads/fotos/perfil_HPZaotGFqFodL8pwlWqt.jpg', 0, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -292,6 +341,13 @@ ALTER TABLE `atlas_habilidade_usuario`
 ALTER TABLE `atlas_projeto`
   ADD PRIMARY KEY (`id`),
   ADD KEY `scrum_master` (`scrum_master`);
+
+--
+-- Indexes for table `atlas_projeto_burndown`
+--
+ALTER TABLE `atlas_projeto_burndown`
+  ADD PRIMARY KEY (`idprojeto`,`idmicro`,`dia`),
+  ADD KEY `idmicro` (`idmicro`);
 
 --
 -- Indexes for table `atlas_projeto_desenvolvedor`
@@ -368,32 +424,32 @@ ALTER TABLE `atlas_habilidades`
 -- AUTO_INCREMENT for table `atlas_projeto`
 --
 ALTER TABLE `atlas_projeto`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `atlas_projeto_sprint`
 --
 ALTER TABLE `atlas_projeto_sprint`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT for table `atlas_projeto_sprint_tarefa`
 --
 ALTER TABLE `atlas_projeto_sprint_tarefa`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT for table `atlas_projeto_tarefa_macro`
 --
 ALTER TABLE `atlas_projeto_tarefa_macro`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 --
 -- AUTO_INCREMENT for table `atlas_projeto_tarefa_micro`
 --
 ALTER TABLE `atlas_projeto_tarefa_micro`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 --
 -- AUTO_INCREMENT for table `atlas_usuario`
 --
 ALTER TABLE `atlas_usuario`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 --
 -- Constraints for dumped tables
 --
@@ -410,6 +466,13 @@ ALTER TABLE `atlas_habilidade_usuario`
 --
 ALTER TABLE `atlas_projeto`
   ADD CONSTRAINT `atlas_projeto_ibfk_1` FOREIGN KEY (`scrum_master`) REFERENCES `atlas_usuario` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Limitadores para a tabela `atlas_projeto_burndown`
+--
+ALTER TABLE `atlas_projeto_burndown`
+  ADD CONSTRAINT `atlas_projeto_burndown_ibfk_1` FOREIGN KEY (`idprojeto`) REFERENCES `atlas_projeto` (`id`),
+  ADD CONSTRAINT `atlas_projeto_burndown_ibfk_2` FOREIGN KEY (`idmicro`) REFERENCES `atlas_projeto_tarefa_micro` (`id`);
 
 --
 -- Limitadores para a tabela `atlas_projeto_desenvolvedor`

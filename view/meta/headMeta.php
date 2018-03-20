@@ -17,7 +17,10 @@ $voltas = UrlManager::GetBackSlashes();
 <script type ="text/javascript" src = "<?php echo UrlManager::GetPathToView("recursos/js/bootstrap-notify.min.js"); ?>"></script>
 <script type ="text/javascript" src = "<?php echo UrlManager::GetPathToView("recursos/js/bootbox.min.js"); ?>"></script>
 <script type ="text/javascript" src = "<?php echo UrlManager::GetPathToView("recursos/js/font-awesome.js"); ?>"></script>
-    <script type ="text/javascript" src = "<?php echo UrlManager::GetPathToView("recursos/js/select2.full.min.js"); ?>"></script>
+<script type ="text/javascript" src = "<?php echo UrlManager::GetPathToView("recursos/js/select2.full.min.js"); ?>"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
+        <script src="http://www.chartjs.org/samples/latest/utils.js"></script>  
+<script type ="text/javascript" src = "<?php echo UrlManager::GetPathToView("recursos/js/Chart.min.js"); ?>"></script>
 
 <script> 
     function GerarNotificacao(mensagem, tipo)

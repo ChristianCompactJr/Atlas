@@ -154,14 +154,6 @@ catch(Exception $e)
                                 }
                                 $htmlString .= '>Entrege</option>';
                                 
-                                
-                                $htmlString .= '<option value ="Manutenção"';
-                                if($estagio == 'Manutenção')
-                                {
-                                    $htmlString .= ' selected';
-                                }
-                                $htmlString .= '>Manutenção</option>';
-                                
                                 echo $htmlString;
                                 
                                 ?>

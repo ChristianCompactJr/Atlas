@@ -2,8 +2,17 @@
     try
     {
         $sprintdao = new SprintDAO();
-        $sprintdao->MarcarRevisao($_POST['id']);
-        JSONResponder::ResponderSucesso("Sprint marcada para revisão com sucesso", true, true);
+        $projetodao = new ProjetoDAO();
+        $sprint = $sprintdao->GetSprint($_POST['id']);
+        $tarefasprintdao = new TarefaSprintDAO();
+        $projeto = $projetodao->GetProjeto($sprint->getProjeto());
+        
+        if(SessionController::GetUsuario()->getId() == $projeto->getScrumMaster() || SessionController::IsAdmin())
+        {
+            $sprintdao->MarcarRevisao($_POST['id']);
+            JSONResponder::ResponderSucesso("Sprint marcada para revisão com sucesso", true, true);
+        }
+
     }
     
     catch(Exception $e)

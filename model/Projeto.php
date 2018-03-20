@@ -52,6 +52,48 @@ class Projeto {
        return true;
     }
     
+    public function getPontosBurndown()
+    {
+        $retorno = array('ideal' => array(), 'progresso' => array());
+        
+        $macrodao = new TarefaMacroDAO();
+       $macros = $macrodao->getTarefasMacro($this->id);
+       $microdao = New TarefaMicroDAO();
+       $totalEstimativa = 0;
+         foreach($macros as $mac)
+       {
+          $tmpMicros = $microdao->getTarefasMicro($mac->getId());
+          
+          foreach($tmpMicros as $tmpmic)
+          {
+              $totalEstimativa += $tmpmic->getEstimativa();
+          }
+       }
+       
+       $retorno['ideal'][] = array('valor' => $totalEstimativa, 'dia' => $this->inicio);
+       $retorno['ideal'][] = array('valor' => 0, 'dia' => $this->prazo);
+       
+       $projetodao = new ProjetoDAO();
+       
+       $dias = $projetodao->GetDatasBurndown($this->id);
+       $aux = $totalEstimativa;
+       foreach($dias as $diaburn)
+       {
+           $valordia = $projetodao->GetValorDiaBurdown($this->id, $diaburn, true);
+           $aux += $valordia;
+           if($aux > $totalEstimativa)
+           {
+               $aux = $totalEstimativa;
+           }
+           
+           $retorno['progresso'][] = array('valor' => $aux, 'dia' => $diaburn);
+           
+       }
+      
+       return $retorno;
+        
+    }
+    
     
     function getPorcentual()
     {
