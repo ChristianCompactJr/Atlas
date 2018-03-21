@@ -108,7 +108,7 @@ catch(Exception $e)
                     </tbody>
                 </table>
             </div>
-            <?php if($nivelAcesso >= 2)
+            <?php if($nivelAcesso >= 2 && $projeto->getEstagio() == 'Desenvolvimento')
             { ?>
                 <div class="col-md-offset-3 col-md-6 text-center">                         
                     <a href ="adicionar?idprojeto=<?php echo $projeto->getId(); ?>" class="btn btn-primary btn-lg btn-block">Adicionar Sprint</a>

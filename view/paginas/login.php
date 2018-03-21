@@ -1,7 +1,7 @@
 <?php
    if(SessionController::TemSessao())
    {
-       header("location: inicial");
+       header("location: projetos/index.php");
    }
    
 ?>
@@ -123,7 +123,7 @@
                       
                       if(resposta.tipo == "success")
                       {
-                          window.location.href = "inicial";
+                          window.location.href = "<?php echo PROJECT_FRIENDLY_HOMEPAGE; ?>";
                       }
                   },
                   

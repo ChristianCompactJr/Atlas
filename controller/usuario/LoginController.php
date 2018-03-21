@@ -1,4 +1,3 @@
-
 <?php
     $dao = new UsuarioDAO();
     
@@ -11,8 +10,6 @@
             SessionController::CriarToken();
         }
         JSONResponder::ResponderSucesso("Login realizado com sucesso", true, true);
-        
-        
     } 
     catch (Exception $ex) {
        JSONResponder::ResponderFalha($ex->getMessage(), true, true);

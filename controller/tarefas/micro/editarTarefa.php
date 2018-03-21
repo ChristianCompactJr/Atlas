@@ -11,7 +11,8 @@
     {
         try
         {
-                
+            $pdao->AddToBurndown($projeto->getId(), $_POST['idmicro'], $_POST['estado']);
+            
             $microdao->AtualizarTarefa($_POST['idmicro'], $_POST['nome'], $_POST['descricao'],$_POST['observacoes'], $_POST['links'], $_POST['prioridade'], $_POST['estimativa'], $_POST['estado']);
             JSONResponder::ResponderSucesso("Tarefa micro alterada com sucesso", true, true);
         }

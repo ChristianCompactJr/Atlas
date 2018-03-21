@@ -33,13 +33,14 @@
     if(isset($_GET['url']))
     {
         $url = $_GET['url'];
-        
-        if(strtolower(pathinfo($url, PATHINFO_FILENAME)) == 'index')
+        $path = pathinfo(strtolower($url));
+        $dirFile = $path['dirname'].'/'.$path['filename'];
+        if($dirFile == 'index')
         {
             include_once 'login.php';
             return;
         }
-        $extencao = pathinfo($url, PATHINFO_EXTENSION);
+        $extencao = $path['extension'];
        
         $larguraExtencao = -1 + -strlen($extencao);
         $ultimoChar = substr($url, $larguraExtencao);
@@ -116,8 +117,7 @@
     }
     else
     {
- 
-        include_once 'inicial.php';
+        include_once PROJECT_HOMEPAGE;
     }
 
 ?>

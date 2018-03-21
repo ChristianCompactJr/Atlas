@@ -137,15 +137,16 @@ $scrumMaster = $udao->GetUsuario($projeto->getScrumMaster());
                     <div class="col-md-offset-3 col-md-6 text-center">                         
                         <button type="button"  class="btn btn-success btn-lg btn-block" id = "btn-set-desenvolvimento">Desenvolver projeto</button>
                     </div>
-               <?php }
+               <?php } else
+               {
                ?>
                 
-                    
-            <div class="col-md-offset-3 col-md-6 text-center" style = "margin-top: 10px">                         
+                    <div class="col-md-offset-3 col-md-6 text-center" style = "margin-top: 10px">                         
                 <button type="button"  class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#modalAdicionarMacro">Adicionar Tarefa Macro</button>
             </div>
             
-                <?php } ?>
+            
+               <?php } } ?>
             <div class="col-md-offset-3 col-md-6 text-center" style = "margin-top: 10px">                         
                 <a href = "sprints/?idprojeto=<?php echo $projeto->getId(); ?>"><button type="button"  class="btn btn-primary btn-lg btn-block">Ver Sprints</button></a>
             </div>

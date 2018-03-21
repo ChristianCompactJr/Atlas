@@ -2,7 +2,7 @@
 
 $usuario = SessionController::GetUsuario();
 
-$paginaInicial = new LinkMenu("Página Inicial", "inicial");
+//$paginaInicial = new LinkMenu("Página Inicial", "inicial");
 
 
 $usuarios = new LinkMenu("Usuários", "#");
@@ -50,7 +50,7 @@ $perfilPai->AdicionarFilho($alterarhabilidades);
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-          <a class="navbar-brand" href="<?php echo UrlManager::GetPathToView("inicial") ?>">
+          <a class="navbar-brand" href="<?php echo UrlManager::GetPathToView("projetos/") ?>">
                <img alt="Atlas" src="<?php echo UrlManager::GetPathToView("recursos/img/logo_limpo.png") ?>" class = "logo-menu">
           </a>
       </div>
@@ -60,7 +60,7 @@ $perfilPai->AdicionarFilho($alterarhabilidades);
         <ul class="nav navbar-nav">
          
           <?php 
-          echo $paginaInicial->ToHTML(); 
+          //echo $paginaInicial->ToHTML(); 
           echo $projetos->ToHTML();
           if(SessionController::IsAdmin() == true)
           {

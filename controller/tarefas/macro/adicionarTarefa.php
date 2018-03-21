@@ -1,7 +1,7 @@
 <?php
     $pdao = new ProjetoDAO();
     $projeto = $pdao->GetProjeto($_POST['idprojeto']);
-    if(SessionController::IsAdmin() || SessionController::GetUsuario()->getID() == $projeto->getScrumMaster())
+    if(SessionController::IsAdmin() || SessionController::GetUsuario()->getID() == $projeto->getScrumMaster() && $projeto->getEstagio() == 'Desenvolvimento')
     {
         try
         {

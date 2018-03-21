@@ -3,7 +3,7 @@
     {
         $pdao = new ProjetoDAO();
         $projeto = $pdao->GetProjeto($_POST['projeto']);
-        if(SessionController::IsAdmin() || SessionController::GetUsuario()->getId() != $projeto->getScrumMaster())
+        if(SessionController::IsAdmin() || SessionController::GetUsuario()->getId() != $projeto->getScrumMaster() && $projeto->getEstagio() == 'Desenvolvimento')
         {
             
              $sprintdao = new SprintDAO();
