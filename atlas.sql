@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 20-Mar-2018 às 20:00
+-- Generation Time: 22-Mar-2018 às 16:10
 -- Versão do servidor: 10.1.21-MariaDB
 -- PHP Version: 7.1.1
 
@@ -126,7 +126,8 @@ CREATE TABLE `atlas_projeto` (
 --
 
 INSERT INTO `atlas_projeto` (`id`, `nome`, `scrum_master`, `data_inicio`, `prazo`, `cliente`, `observacoes`, `estagio`) VALUES
-(2, 'Site SM Estacas', 6, '2018-02-28', '2018-05-04', 'SM Estacas', '', 'Desenvolvimento');
+(2, 'Site SM Estacas', 6, '2018-02-28', '2018-05-04', 'SM Estacas', '', 'Desenvolvimento'),
+(3, 'Teste', 10, '2018-03-19', '2018-03-22', 'TEste', '', 'Entrege');
 
 -- --------------------------------------------------------
 
@@ -141,6 +142,15 @@ CREATE TABLE `atlas_projeto_burndown` (
   `valor` float DEFAULT NULL,
   `estado_original_dia` enum('Incompleta','Instável','Qualificada') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Extraindo dados da tabela `atlas_projeto_burndown`
+--
+
+INSERT INTO `atlas_projeto_burndown` (`idprojeto`, `idmicro`, `dia`, `valor`, `estado_original_dia`) VALUES
+(2, 5, '2018-03-21', 0, 'Incompleta'),
+(2, 6, '2018-03-21', 0, 'Incompleta'),
+(2, 11, '2018-03-21', -2, 'Incompleta');
 
 -- --------------------------------------------------------
 
@@ -160,7 +170,8 @@ CREATE TABLE `atlas_projeto_desenvolvedor` (
 
 INSERT INTO `atlas_projeto_desenvolvedor` (`idprojeto`, `idusuario`, `ativo`) VALUES
 (2, 11, 1),
-(2, 12, 1);
+(2, 12, 1),
+(3, 6, 1);
 
 -- --------------------------------------------------------
 
@@ -260,7 +271,7 @@ INSERT INTO `atlas_projeto_tarefa_micro` (`id`, `idmacro`, `nome`, `descricao`, 
 (8, 2, 'Seção \"Depoimentos\"', 'Seção opcional. Os depoimentos seriam colocados com uma imagem, nome de quem fez e o depoimento em si.', '', '', 1, 1, 'Incompleta'),
 (9, 2, 'Seção Vídeo', 'Sessão opcional. Aqui será colocado um vídeo, podendo ser da empresa ou algum de seu interesse para mostrar visualmente como e com o que a empresa trabalha.', '', '', 1, 1, 'Incompleta'),
 (10, 4, 'Seção Missão, Visão e Valores', 'O porquê de trabalharem e aonde querem chegar seriam colocados aqui.', '', '', 2, 1, 'Incompleta'),
-(11, 5, 'Imagens de serviços prestados', 'Imagens de serviços prestados', '', '', 2, 2, 'Incompleta'),
+(11, 5, 'Imagens de serviços prestados', 'Imagens de serviços prestados', '', '', 2, 2, 'Qualificada'),
 (12, 7, 'Formulário \"Me Ligue\"', 'Um formulário que envia email com os campos:\r\n- Nome;\r\n- Assunto;\r\n- Telefone.', 'Já que não tem campo email, então enviar o email para si', '', 1, 2, 'Incompleta'),
 (13, 7, 'Formulário Email', 'Um formulário que envia email com os campos:\r\n- Nome;\r\n- Assunto;\r\n- Telefone;\r\n- Email;\r\n- Mensagem.', '', '', 1, 2, 'Incompleta'),
 (14, 6, 'Itens serviços', 'Colocar foto, com uma descrição detalhada de como é feito e os cuidados que são realizados pela empresa para realizar tal serviço (qualificação dos responsáveis por exemplo).', '', '', 2, 2, 'Incompleta'),
@@ -424,17 +435,17 @@ ALTER TABLE `atlas_habilidades`
 -- AUTO_INCREMENT for table `atlas_projeto`
 --
 ALTER TABLE `atlas_projeto`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `atlas_projeto_sprint`
 --
 ALTER TABLE `atlas_projeto_sprint`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `atlas_projeto_sprint_tarefa`
 --
 ALTER TABLE `atlas_projeto_sprint_tarefa`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `atlas_projeto_tarefa_macro`
 --
@@ -471,8 +482,8 @@ ALTER TABLE `atlas_projeto`
 -- Limitadores para a tabela `atlas_projeto_burndown`
 --
 ALTER TABLE `atlas_projeto_burndown`
-  ADD CONSTRAINT `atlas_projeto_burndown_ibfk_1` FOREIGN KEY (`idprojeto`) REFERENCES `atlas_projeto` (`id`),
-  ADD CONSTRAINT `atlas_projeto_burndown_ibfk_2` FOREIGN KEY (`idmicro`) REFERENCES `atlas_projeto_tarefa_micro` (`id`);
+  ADD CONSTRAINT `atlas_projeto_burndown_ibfk_1` FOREIGN KEY (`idprojeto`) REFERENCES `atlas_projeto` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `atlas_projeto_burndown_ibfk_2` FOREIGN KEY (`idmicro`) REFERENCES `atlas_projeto_tarefa_micro` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Limitadores para a tabela `atlas_projeto_desenvolvedor`
