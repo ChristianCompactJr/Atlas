@@ -11,7 +11,6 @@ abstract class SessionController
     
     public static function TemSessao()
     {
-
         if(isset($_SESSION['usuario']) && $_SESSION['usuario']->getAtivo() == true)
         {
             return true;
@@ -69,7 +68,12 @@ abstract class SessionController
     
     public static function GetUsuario()
     {
-        return $_SESSION['usuario'];
+        if(isset($_SESSION['usuario']))
+        {
+            return $_SESSION['usuario'];
+        }
+        return false;
+        
     }
     
     public static function CriarCSRFToken()

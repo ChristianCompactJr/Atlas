@@ -47,7 +47,7 @@
                 Desculpe, mas a pagina que você esta procurando não foi encontrada ou não existe.<br />
                 Tente atualizar a página ou clique no botão abaixo para voltar para a página inicial.
                 <div>
-                    <a class=" login-detail-panel-button btn" href="<?php echo UrlManager::GetPathToView("inicial")?>">
+                    <a class=" login-detail-panel-button btn" href="<?php echo UrlManager::GetPathToView(PROJECT_FRIENDLY_HOMEPAGE)?>">
                         <i class="fa fa-arrow-left"></i>
                             Voltar para a página inicial                       
                     </a>

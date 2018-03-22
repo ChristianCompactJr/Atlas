@@ -89,9 +89,7 @@
         {
             if(empty($_POST))
             {
-            
                 include_once'../meta/404.php';
-                
             }
             else
             {

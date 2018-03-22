@@ -2,7 +2,7 @@
 
 if(!SessionController::TemSessao())
 {
-    header("location: ../login");
+    header("location:".UrlManager::GetPathToView("login"));
 }
 
 

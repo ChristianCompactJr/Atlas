@@ -4,7 +4,6 @@ $usuario = SessionController::GetUsuario();
 
 //$paginaInicial = new LinkMenu("Página Inicial", "inicial");
 
-
 $usuarios = new LinkMenu("Usuários", "#");
 $cadastrarUsuario = new LinkMenu("Cadastrar Usuários", "usuarios/cadastrar");
 $visualizarUsuario = new LinkMenu("Visualizar Usuários", "usuarios/visualizar");
